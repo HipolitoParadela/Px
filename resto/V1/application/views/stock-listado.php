@@ -31,8 +31,8 @@ include "header-body.php";
                         <div class="page-header">
                             <div class="page-title">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="#">Sistema restaurant</a></li>
-                                    <li class="breadcrumb-item active">Gestión de Stock</li>
+                                    <li class="breadcrumb-item"><a href="#">Stock</a></li>
+                                    <li class="breadcrumb-item active">Listado</li>
                                 </ol>
                             </div>
                         </div>
