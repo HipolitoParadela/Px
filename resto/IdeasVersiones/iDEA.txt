@@ -1,0 +1,168 @@
+Formulario de solicitud de servicio
+
+Nombre y apellido 
+Teléfono
+Teléfono para whatsapp
+Email
+
+Razón social del local gastronómico
+Dirección
+Localidad
+Provincia
+Pais
+Teléfono
+
+Como nos encontró?
+
+Ideas para hacer videos http://www.cosmos-soft.com.ar/productos.php
+
+Idea para que aparezca un modal con enviar mensaje http://www.mrcomanda.com/web/index.php
+
+
+sistema para restaurant.
+https://app-v2.e-resto.com/#!/cash_counts/new tomar idea para modulos desde aca
+
+Modulo proveedores y stock
+	listado de proveedores con su descripción, y datos de contacto
+	
+	stock, debe contabilizarse al finalizar la jornada, hay que anotar un aproximado de que se gasto en ese momento.
+		y a su vez anotar lo que se agrega y los costos
+
+modulo empleados
+	en el listado de empleados deben tener información de sueldos, fechas que se liquida y montos.
+
+modulo caja
+	en este modulo se unifican las entradas y salidas de plata, tanto sueldos, compras, ventas, pago de impuestos y servicios, inversiones.
+
+modulo opiniones de la gente. 
+	algo tipo encuesta sobre lo que comio la atencion y algun mensaje 
+
+modulo
+	planificaciones con el sistema de calendario
+
+
+
+
+Pagina para modulos inhabilitados
+
+- listado de items en la cocina. O sea buscar y agrupar los items que hay sin entregar, y luego con un foreach repasar contando cuantos hay de cada uno. Posiblemente este
+reemplace a lo que esta ahora, para achicar las listas. VER SI CONVIENE
+
+
+						- ocultar la descripcion de un producto asi se ve mejor en tablets y telefonos. Poner un ojito o algo que muestre la descripcion.
+
+		
+						el moso en el resumen de comandas solo puede ver sus propias comandas
+	
+						--- minuto a minuto de comandas... deberia armar un log, para que valla mostrando los sucesos minuto a minuto, simplemente cargar 
+						tbl_comandas_minuto_a_minuto | Id, Comanda_id, Accion_Id, Hora.
+						1 Mesa abierta, 2 entrada entregada, 3 menu entregado, 4 mesa cerrada		
+						terminar esto poniendo paginacion. al menos una basica
+
+					contador de tiempo bueno
+
+						buscador para el moso que carga items
+
+						Control presencial
+						Listado de los usuarios activos, en la cual averigue si esta actualmente trabajando o no segun el ultimo estado de la tabla log.
+						Si esta ausente, pone un boton INGRESO, y viseversa EGRESO. Cada boton genera una fecha y hora.
+						Activar y desactivar mosos. Es decir darle de alta y baja en el día para inicio de trabajo.
+						Solo el usuario que aparezca con Ingreso activo puede loguearse y comenzar a trabajar con el sistema.
+
+						Debe poder poner el descuento
+
+
+						Teléfono de los usuarios
+
+						Cargar archivos. Esto puede servir para el control de stock, ya que pueden sacarle una foto al remito y agregarlo.	
+
+	
+	
+
+
+
+0. ______________________________ Funciones
+					- funcion para recargar la pagina automaticamente setTimeout("location.reload()", 5000);
+					- registro con facebook
+
+1. ______________________________ Administración
+	
+						- Seccion para cargar, editar, eliminar menu. Debe contener: Id, nombre, categoría (entrada, menu, postre, promo, bebida, otros), foto, precio, tiempo de cocción/preparación (3 opciones, rapida-moderada-lenta), fecha-actualizado
+						- Sección con el listado de todas las comidas, con su filtro por categoría, por nombre etc.
+
+
+
+						- Sección de control de las ventas: listado de todos los pedidos, por fecha y horario de pedido, precios. Sumar totales.
+						Aca debe ser una tabla en la cual pueda buscar ventas de hoy, de ayer, del mes, del año. Y por año.
+						La tabla debe ser exportable. asiq no deberia hacerse con Vue, si no con php directamente. tratar de hacer andar si o si el table-export. ver de quitar todo lo que no sirva.
+
+
+
+						- Listado de categorías: Postre, menu, bebida, entrada, otros.  
+
+2. ______________________________ Mosos y operador general.
+	
+						- Listado de mesas: Id, numero de mesa, lugar (interior, exterior). ( Mesa para llevar. )
+						El moso antes de llegar a la mesa debe cargar: Id, Id_mesa, cant_personas, Cliente_referente, Fecha_hora, Id_moso, ganancia, descuento, adicional.
+						esto deberia ser una serie de cuadros, cada uno con datos sobre la mesa, el pedido, el tiempo etc. El cuadro debería tener una seccion propia donde aparezca la lista de 
+						items para añadir a la comanda. 
+						ademas un boton Nueva comanda,
+
+						- Listado de pedidos: trabajarlo con un Log donde se van a ir listando todo lo que la persona pida. 
+						Es decir una tabla donde tiene: Id, mesa, Id_comida, Estado (Pedido, Entregado, Pagado), Fecha_hora_entregado. -------esto es para calcular el tiempo desde que se pidio, hasta que se entrego.
+						Debe poder continuar con la misma mesa agregando pedidos.
+						- Listado de pedidos para el administrador de mesas: 
+						Acá debo mostrar en orden de pedidos, un panel lindo, donde se valla listando los pedidos que estan corriendo.
+						Según el estado, puedo diferenciarlo con algun color. Debe mostrar por pedido, la lista de items (ordenados segun bebida, entrada, menu, postre), cada uno con su correspondiente estado
+		
+					y el tiempo transcurrido, si detecta un tiempo mayor al estimado, marcarse con alerta. 
+
+
+						Se ira viendo el gasto de cada mesa.
+		
+						- El moso también debe poder ver sus mesas. Y manejarlas segun el sistema.
+						Por lo tanto mediante script debe poder loguearse y poder ir viendo las mesas cargadas en ese momento/dia y con un panel similar al del operador general.
+
+						- Tanto el operador general como el moso debe poder ir actualizando el estado de los pedidos, boton de entregado.
+
+						- El sistema automaticamente va a ir sumando los precios de todo, y tendrá un boton que diga cobrar. 
+						Analizar la posibilidad de imprimir la cuenta. Un excel o pdf.
+		
+
+		Puede sumar, agregarle a esa misma impresión una publicidad, promoción o baucher.
+	
+
+3. _____________________________ Cheff
+						- listado en pantalla de todos los pedidos que van saliendo con su correspondiente estado.
+
+
+
+
+4. _____________________________ A FUTURO
+	- sistema de analisis
+		- comidas más vendidas
+		- ganancias por día, mes
+		- cantidad de comensales por día, mes
+		- estadisticas del moso
+
+
+
+s encountered
+Severity: Notice
+
+Message: Undefined variable: resultEntregados
+
+Filename: controllers/restaurant.php
+
+Line Number: 479
+
+Backtrace:
+
+File: D:\Trabajo\Sistema_Restaurant\sitio\ServicePHP\application\controllers\restaurant.php
+Line: 479
+Function: _error_handler
+
+File: D:\Trabajo\Sistema_Restaurant\sitio\ServicePHP\index.php
+Line: 315
+Function: require_once
+

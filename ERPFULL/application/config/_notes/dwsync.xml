@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="autoload.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="config.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="constants.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="database.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="doctypes.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="foreign_chars.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="hooks.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="memcached.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="migration.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="mimes.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="profiler.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="routes.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="smileys.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="user_agents.php" server="grupopignatta.com.ar/public_html/" local="131732847460000000" remote="131769318000000000" Dst="0" />
+<file name="autoload.php" server="c1481017.ferozo.com/public_html/" local="131938857505536556" remote="131967258000000000" Dst="0" />
+<file name="config.php" server="c1481017.ferozo.com/public_html/" local="131961382256965302" remote="131967258000000000" Dst="0" />
+<file name="constants.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="database.php" server="c1481017.ferozo.com/public_html/" local="131961382554836632" remote="131967258000000000" Dst="0" />
+<file name="doctypes.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="foreign_chars.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="hooks.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="memcached.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="migration.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="mimes.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="profiler.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="routes.php" server="c1481017.ferozo.com/public_html/" local="131769419234314112" remote="131967258000000000" Dst="0" />
+<file name="smileys.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="user_agents.php" server="c1481017.ferozo.com/public_html/" local="131732847460000000" remote="131967258000000000" Dst="0" />
+<file name="autoload.php" server="c1610606.ferozo.com/public_html/" local="131938857505536556" remote="132192949200000000" Dst="0" />
+<file name="config.php" server="c1610606.ferozo.com/public_html/" local="131994732451829085" remote="132192949200000000" Dst="0" />
+<file name="database.php" server="c1610606.ferozo.com/public_html/" local="131994732882281688" remote="132192949200000000" Dst="0" />
+<file name="doctypes.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="hooks.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="memcached.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="mimes.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="profiler.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="smileys.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="user_agents.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="foreign_chars.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="migration.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="constants.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
+<file name="routes.php" server="c1610606.ferozo.com/public_html/" local="131769419234314112" remote="132192949200000000" Dst="0" />
+</dwsync>

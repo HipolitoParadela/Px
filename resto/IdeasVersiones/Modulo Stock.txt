@@ -1,0 +1,41 @@
+Modulo stock
+
+que puedo hacer y que no
+
+Manualmente deben indicar que cantidad de cosas han salido
+
+Manualmente deben inidicar las compras de cada producto
+
+Tener en cuenta las unidades de medidas
+kg, litros
+
+
+Stock al momento, consumido, y segun lo consumido debería salir el stock actual, Si da correcto pone guardar
+
+Debería ser una tabla con inputs.
+
+Un boton que diga "dar de alta un producto", 
+Id, Nombre_producto, Marca, Unidad de Medida, Stock Critico, Stock Ideal, Stock actual, Observaciones.
+
+Una vez agregado esto apareceria en el listado.
+
+Este listado sería una tabla con filtro, estaria bueno que tenga categorías tambien, y que tenga un input
+en donde se cargue lo consumido en el momento., a su vez realizaría un calculo reactivo para dar con el stock real.
+Si coincide, lo guarda. 
+
+En la misma tabla puedo colorear los que estan en stock critico con algun fondo rojo o algo asi. 
+
+Podria tambien, armar una tabla para imprimir los productos con stock critico. 
+
+Quienes tendrían el poder de editar el stock: administrador y chef.
+
+
+Hay productos como las bebidas que deberian aditarse automaticamente en el stock. Pensarlo para que no se preste a confusión.
+
+
+SOLO PARA EL LOG
+Crear un log de stock, solo para poder ir mostrando lo consumido durante periodos de tiempos.
+Por ej consulto sobre los consumos e ingresos de queso, me debería largar una lista. 
+
+Pensar como hacer con el agregar cantidad, porque deberia poder ponerle el precio de costo al momento de ingresarlo al stock.
+Y tambíen un proveedor.

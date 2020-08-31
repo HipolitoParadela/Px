@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<loginTicketResponse version="1.0">
+    <header>
+        <source>CN=wsaahomo, O=AFIP, C=AR, SERIALNUMBER=CUIT 33693450239</source>
+        <destination>SERIALNUMBER=CUIT 20337522778, CN=pixel</destination>
+        <uniqueId>1159975264</uniqueId>
+        <generationTime>2020-08-26T14:40:30.032-03:00</generationTime>
+        <expirationTime>2020-08-27T02:40:30.032-03:00</expirationTime>
+    </header>
+    <credentials>
+        <token>PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8c3NvIHZlcnNpb249IjIuMCI+CiAgICA8aWQgc3JjPSJDTj13c2FhaG9tbywgTz1BRklQLCBDPUFSLCBTRVJJQUxOVU1CRVI9Q1VJVCAzMzY5MzQ1MDIzOSIgZHN0PSJDTj13c2ZlLCBPPUFGSVAsIEM9QVIiIHVuaXF1ZV9pZD0iMTY1MjM1NTg4MSIgZ2VuX3RpbWU9IjE1OTg0NjM1NzAiIGV4cF90aW1lPSIxNTk4NTA2ODMwIi8+CiAgICA8b3BlcmF0aW9uIHR5cGU9ImxvZ2luIiB2YWx1ZT0iZ3JhbnRlZCI+CiAgICAgICAgPGxvZ2luIGVudGl0eT0iMzM2OTM0NTAyMzkiIHNlcnZpY2U9IndzZmUiIHVpZD0iU0VSSUFMTlVNQkVSPUNVSVQgMjAzMzc1MjI3NzgsIENOPXBpeGVsIiBhdXRobWV0aG9kPSJjbXMiIHJlZ21ldGhvZD0iMjIiPgogICAgICAgICAgICA8cmVsYXRpb25zPgogICAgICAgICAgICAgICAgPHJlbGF0aW9uIGtleT0iMjAzMzc1MjI3NzgiIHJlbHR5cGU9IjQiLz4KICAgICAgICAgICAgPC9yZWxhdGlvbnM+CiAgICAgICAgPC9sb2dpbj4KICAgIDwvb3BlcmF0aW9uPgo8L3Nzbz4K</token>
+        <sign>ezkoGM9Ef40osBRUXQn/kLtsFMVX+AG/F5b4YFoZFXsTq4hDQoOfrW7WsphwotTePLV9i/fzEg/G19Tx60hIhpsjtMZ614JuM9Bwdw75tUJXWC3GGszMcyBbsPDKtE2bGjmrbFTrPc5yahlOriylhYkjgbRhq38sLOURulAC8hY=</sign>
+    </credentials>
+</loginTicketResponse>

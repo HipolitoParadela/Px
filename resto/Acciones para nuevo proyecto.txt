@@ -1,0 +1,7 @@
+1. Modificar base_url del archivo config.php de codeignither
+2. Duplicar base de datos, para nuevo proyecto
+ . Modificar archivo database.php de codeignither
+3. Modificar url del archivo app.js de VueJs
+4. Modificar el htaccess, modificando el nombre de la carpeta
+5. Modificar url en el archivo calendar-init.js
+

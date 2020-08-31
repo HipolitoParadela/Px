@@ -1,0 +1,70 @@
+
+///// arreglar eliminar item de delivery /////
+
+Armar formulario completo para cargar y editar usuarios
+
+Sueldos y academico. Cada uno deberia tener otra seccion para cada uno.
+
+En ambos deberia mostrar una tabla con los valores. Listando cada fila que encuentre.
+
+En sueldos debería filtrar por fechas. Usar la misma plantilla de resumenes de comandas
+
+Poner un sistema de estrellas para calificar desempeño de usuario mes a mes.
+Pun
+__________________________________________________________________________________________________
+Marcar cumpleaños, de hoy y los que son de mañana, y si hay lugar los que cumplen tal semana.
+AL HABILITAR ESTE MODULO, DEBERIA ENLAZAR A OTRA PAGINA DESDE CODEHIGNITER
+O sea en alguna parte yo configurar que tipo de sistema esta pagando.
+Y en base a ese datos traer tal o cual vista. Desde el controller con if.
+Lo manejaría con una variable global, como la base_url(), entender que son los helpers 
+
+Entonces el plan inicial seria 1, el medio sería 2, y asi para arriba, cosa de que si tiene el tres decimos que Planificaciones puede accederse si
+la variable Plan es mayor a 1. Y el de analisis se puede si la variable Plan es mayor a 2. Y si surge otro plan, serviria sin problemas.
+
+Si tiene el Plan Inicial y trata de acceder a Planificaciones lo enviaria a una pagina demo de planificaciones.
+
+/// LISTO ESTO
+ARMAR VISTAS DE COMPRA DE NUEVO PLAN, UNA GENERICA PERO QUE TENGA UN SLIDE QUE VALLA MOSTRANDO DE QUE SE TRATA EL MODULO.
+
+DATOS A CARGAR	
+	Nombre y apellido
+	Fecha de nacimiento
+	DNI
+	Domicilio
+	Teléfono
+	Nacionalidad
+	Genero
+	Obra social
+	Nro Obra social
+----------
+	Datos bancarios
+	Cobro Día semana quincena mes
+	Horario de trabajo - textarea
+-------------
+	Persona de contacto
+	Email
+	Hijos Cantidad, si no tiene es 0
+	Estado civil
+------------
+	Es lider - Si No
+	Persona a cargo
+----------
+	Fecha de ingreso
+	Fecha de egreso
+
+______________________________________________________
+
+Formacion academica y técnica
+	na tabla, para ir llenando items
+	La tabla debe tener Id, Titulo obtenido, Establecimiento, Año, Descripción del título, Imagen del titulo , foto o escaneo.
+
+______________________
+
+Sueldos
+	Neto
+	Bonus
+	Descuento
+	Fecha
+	Tipo_id --- quincenal, mensual, dia
+	Costes adicionales (impuestos, servicios)
+	Descripción
