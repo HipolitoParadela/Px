@@ -61,57 +61,10 @@ class finanzas extends CI_Controller
     }
 
 
-//// FINANZAS       | CARGAR O EDITAR
-	public function cargar_periodo()
-    {
-        $CI =& get_instance();
-		$CI->load->database();
-		
-		///Seguridad
-        $token = @$CI->db->token;
-        $this->datosObtenidos = json_decode(file_get_contents('php://input'));
-        if ($this->datosObtenidos->token != $token)
-        { 
-            exit("No coinciden los token");
-        }
 
-        $Id = null;
-        $fecha = date("Y-m-d");
-
-        if(isset($this->datosObtenidos->Datos->Id))
-        {
-            $Id =       $this->datosObtenidos->Datos->Id;
-            $fecha = date("Y-m-d");
-            //$fecha =    $this->datosObtenidos->Datos->Fecha_creado;
-		}
-
-        
-
-		$data = array(
-                        
-					'Identificador' => 			$this->datosObtenidos->Datos->Identificador,
-					'Fecha_inicio' => 			$this->datosObtenidos->Datos->Fecha_inicio,
-                    'Fecha_cierre' => 	        $this->datosObtenidos->Datos->Fecha_cierre,
-                    'Fecha_creado' => 	        $fecha,
-                    'Usuario_id' => 		    $this->session->userdata('Id'),
-                    'Observaciones_iniciales' => $this->datosObtenidos->Datos->Observaciones_iniciales,                    
-				);
-
-        $this->load->model('App_model');
-        $insert_id = $this->App_model->insertar($data, $Id, 'tbl_periodos');
-                
-		if ($insert_id >=0 ) 
-		{   
-            echo json_encode(array("Id" => $insert_id));         
-		} 
-		else 
-		{
-            echo json_encode(array("Id" => 0));
-        }
-    }
 
 //// MOVIMIENTOS       | CARGAR EFECTIVO
-    public function cargar_movimiento_efectivo()
+    public function cargar_movimiento()
     {
         $CI =& get_instance();
         $CI->load->database();
@@ -133,6 +86,8 @@ class finanzas extends CI_Controller
             $fecha =    $this->datosObtenidos->Datos->Fecha_creado;
         }
 
+        $Observaciones = NULL;  if(isset( $this->datosObtenidos->Datos->Observaciones )) { $Observaciones = $this->datosObtenidos->Datos->Observaciones; }
+
         /// ONTENER EL ID DE UNA JORNADA
 			$this->load->model('Restaurant_model');
 			$datos_jornada = $this->Restaurant_model->datos_jornada();
@@ -140,20 +95,21 @@ class finanzas extends CI_Controller
 
         $data = array(
                         
+                    'Tipo_movimiento' => 	$this->datosObtenidos->Datos->Tipo_movimiento,
                     'Origen_movimiento' => 	$this->datosObtenidos->Origen_movimiento,
                     'Fila_movimiento' =>    $this->datosObtenidos->Fila_movimiento,
-                    'Monto' => 	            $this->datosObtenidos->Datos->Monto,
+                    'Monto_bruto' => 	    $this->datosObtenidos->Datos->Monto_bruto,
                     'Op' =>                 $this->datosObtenidos->Op,
                     'Jornada_id' =>         $Jornada_id,
                     'Fecha_ejecutado' => 	$fecha,
                     'Fecha_cargado' => 	    $fecha,
                     'Usuario_id' => 		$this->session->userdata('Id'),
-                    'Observaciones' =>      $this->datosObtenidos->Datos->Observaciones,  
+                    'Observaciones' =>      $Observaciones,  
                     'Negocio_id' => $this->session->userdata('Negocio_id'),                  
                 );
 
         $this->load->model('App_model');
-        $insert_id = $this->App_model->insertar($data, $Id, 'tbl_dinero_efectivo');
+        $insert_id = $this->App_model->insertar($data, $Id, 'tbl_finanzas_movimientos');
                 
         if ($insert_id >=0 ) 
         {   
@@ -165,8 +121,8 @@ class finanzas extends CI_Controller
         }
     }
 
-//// MOVIMIENTOS       | OBTENER MOVIMIENTOS EFECTIVO
-	public function obtener_movimientos_efectivo()
+//// MOVIMIENTOS       | OBTENER MOVIMIENTOS
+	public function obtener_movimientos()
     {
         //Esto siempre va es para instanciar la base de datos
         $CI =& get_instance();
@@ -179,141 +135,34 @@ class finanzas extends CI_Controller
 
         //// Condicional para saber setear el origen del movimiento
         
-        $Jornada_id = 0; if(isset($this->datosObtenidos->Jornada_id)) { $Jornada_id = $this->datosObtenidos->Datos->Jornada_id;}
-
-        $Origen_movimiento  = $this->datosObtenidos->Origen_movimiento;
+        $Jornada_id = 0; if(isset($this->datosObtenidos->Jornada_id)) {     $Jornada_id = $this->datosObtenidos->Jornada_id;     }
+        $Origen_movimiento = 0; if(isset($this->datosObtenidos->Origen_movimiento)) {     $Origen_movimiento = $this->datosObtenidos->Origen_movimiento;     }
+        $Tipo_movimiento = 0; if(isset($this->datosObtenidos->Tipo_movimiento)) {     $Tipo_movimiento = $this->datosObtenidos->Tipo_movimiento;     }
         $Fila_movimiento    = $this->datosObtenidos->Fila_movimiento;
 
         $this->db->select('*');
 
-        $this->db->from('tbl_dinero_efectivo');
-        if($Jornada_id != 0) {
-            $this->db->where('Jornada_id', $Jornada_id);
-        }
-        $this->db->where('Origen_movimiento', $Origen_movimiento);
-        $this->db->where('Fila_movimiento', $Fila_movimiento);
-        $this->db->where('Visible', 1);
-        $this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->from('tbl_finanzas_movimientos');
+        
+        if($Jornada_id != 0)        {      $this->db->where('tbl_finanzas_movimientos.Jornada_id', $Jornada_id);        }
+        if($Origen_movimiento != 0) {      $this->db->where('tbl_finanzas_movimientos.Origen_movimiento', $Origen_movimiento);        }
+        if($Tipo_movimiento != 0)   {      $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', $Tipo_movimiento);        }
+
+        $this->db->where('tbl_finanzas_movimientos.Fila_movimiento', $Fila_movimiento);
+        $this->db->where('tbl_finanzas_movimientos.Visible', 1);
+        $this->db->where("tbl_finanzas_movimientos.Negocio_id", $this->session->userdata('Negocio_id'));
         
         $query = $this->db->get();
-		$result = $query->result_array();
+		$arrayMovimientos = $query->result_array();
         
         /////  SUMAR MONTOS
         $Total = 0;
-        foreach ($result as $cheque) 
-        {
-            $Total = $Total + $cheque["Monto"];
-        }
-        
-        $Datos = array("Datos"=> $result, "Total" => $Total);
-
-        echo json_encode($Datos);
-    }
-
-
-//// MOVIMIENTOS       | CARGAR TRANSFERENCIA  
-    public function cargar_movimiento_transferencia()
-    {
-        $CI =& get_instance();
-        $CI->load->database();
-        
-        ///Seguridad
-        $token = @$CI->db->token;
-        $this->datosObtenidos = json_decode(file_get_contents('php://input'));
-        if ($this->datosObtenidos->token != $token)
-        { 
-            exit("No coinciden los token");
-        }
-
-        $Id = null;
-        $fecha = date("Y-m-d");
-
-        if(isset($this->datosObtenidos->Datos->Id))
-        {
-            $Id =       $this->datosObtenidos->Datos->Id;
-            $fecha =    $this->datosObtenidos->Datos->Fecha_creado;
-        }
-
-        /// ESTO SOLO DEBE HACERLO SI LA TRANSFERENCIA ES DE ENTRADA
-            $Ret_ingresos_brutos = 0;
-            if($this->datosObtenidos->Op == 1){
-                $Ret_ingresos_brutos = $this->datosObtenidos->Datos->Monto_bruto * 0.03;
-            }
-        
-        /// ONTENER EL ID DE UNA JORNADA
-			$this->load->model('Restaurant_model');
-			$datos_jornada = $this->Restaurant_model->datos_jornada();
-			$Jornada_id = $datos_jornada["Id"];
-
-        $data = array(
-                        
-                    'Origen_movimiento' => 	$this->datosObtenidos->Origen_movimiento,
-                    'Jornada_id' =>         $Jornada_id,
-                    'Fila_movimiento' =>    $this->datosObtenidos->Fila_movimiento,
-                    'Op' =>                 $this->datosObtenidos->Op,
-                    'Monto_bruto' => 	    $this->datosObtenidos->Datos->Monto_bruto,
-                    'Retencion_ing_brutos' => $Ret_ingresos_brutos,
-                    'Fecha_ejecutado' => 	$fecha,
-                    'Fecha_cargado' => 	    $fecha,
-                    'Usuario_id' => 		$this->session->userdata('Id'),
-                    'Observaciones' =>      $this->datosObtenidos->Datos->Observaciones,   
-                    'Negocio_id' => $this->session->userdata('Negocio_id'),                 
-                );
-
-        $this->load->model('App_model');
-        $insert_id = $this->App_model->insertar($data, $Id, 'tbl_dinero_transferencias');
-                
-        if ($insert_id >=0 ) 
-        {   
-            echo json_encode(array("Id" => $insert_id));         
-        } 
-        else 
-        {
-            echo json_encode(array("Id" => 0));
-        }
-    }
-
-//// MOVIMIENTOS       | OBTENER MOVIMIENTOS TRANSFERENCIAS
-    public function obtener_movimientos_transferencia()
-    {
-        //Esto siempre va es para instanciar la base de datos
-        $CI =& get_instance();
-        $CI->load->database();
-        
-        ///Seguridad
-        $token = @$CI->db->token;
-        $this->datosObtenidos = json_decode(file_get_contents('php://input'));
-        if ($this->datosObtenidos->token != $token) { exit("No coinciden los token"); }
-
-        //// Condicional para saber setear el origen del movimiento
-        $Origen_movimiento  = $this->datosObtenidos->Origen_movimiento;
-        $Fila_movimiento    = $this->datosObtenidos->Fila_movimiento;
-        
-        $Jornada_id = 0; if(isset($this->datosObtenidos->Jornada_id)) { $Jornada_id = $this->datosObtenidos->Jornada_id;}
-
-        $this->db->select('*');
-
-        $this->db->from('tbl_dinero_transferencias');
-        if($Jornada_id != 0) {
-            $this->db->where('Jornada_id', $Jornada_id);
-        }
-        $this->db->where('Origen_movimiento', $Origen_movimiento);
-        $this->db->where('Fila_movimiento', $Fila_movimiento);
-        $this->db->where('Visible', 1);
-        $this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
-        
-        $query = $this->db->get();
-        $result = $query->result_array();
-        
-        /////  SUMAR MONTOS
-        $Total = 0;
-        foreach ($result as $movimiento) 
+        foreach ($arrayMovimientos as $movimiento) 
         {
             $Total = $Total + $movimiento["Monto_bruto"];
-            //$Total = $Total + $movimiento["Monto_bruto"] - $movimiento["Retencion_ing_brutos"];
         }
         
-        $Datos = array("Datos"=> $result, "Total" => $Total);
+        $Datos = array("Datos"=> $arrayMovimientos, "Total_pagado" => $Total);
 
         echo json_encode($Datos);
     }
@@ -332,15 +181,18 @@ class finanzas extends CI_Controller
             exit("No coinciden los token");
         }
 
+        //// REVISAR - porque fallar ahora la carga de cheques como funciona con nazareno, porque modifique la variable Cheque_id que viene desde app.js
+
         $Id = null;
         $fecha = date("Y-m-d");
+        $Cheque_id = $this->datosObtenidos->Datos->Id;
 
-        if(isset($this->datosObtenidos->Datos->Id))
+        /* if(isset($this->datosObtenidos->Datos->Id))
         {
             $Id =       $this->datosObtenidos->Datos->Id;
             $fecha = date("Y-m-d");
             //$fecha =    $this->datosObtenidos->Datos->Fecha_creado;
-        }
+        } */
 
         /// ONTENER EL ID DE UNA JORNADA
 			$this->load->model('Restaurant_model');
@@ -349,20 +201,22 @@ class finanzas extends CI_Controller
 
         $data = array(
                         
+                    'Tipo_movimiento' => 	3,
                     'Origen_movimiento' => 	$this->datosObtenidos->Origen_movimiento,
                     'Fila_movimiento' =>    $this->datosObtenidos->Fila_movimiento,
-                    'Cheque_id' => 	        $this->datosObtenidos->Datos->Cheque_id,
+                    'Cheque_id' => 	        $Cheque_id,
+                    'Monto_bruto' => 	    $this->datosObtenidos->Datos->Monto_bruto,
                     'Jornada_id' =>         $Jornada_id,
                     'Op' =>                 $this->datosObtenidos->Op,
                     'Fecha_ejecutado' => 	$fecha,
                     'Fecha_cargado' => 	    $fecha,
                     'Usuario_id' => 		$this->session->userdata('Id'),
                     'Observaciones' =>      $this->datosObtenidos->Datos->Observaciones,  
-                    'Negocio_id' => $this->session->userdata('Negocio_id'),                  
+                    'Negocio_id' =>         $this->session->userdata('Negocio_id'),             
                 );
 
         $this->load->model('App_model');
-        $insert_id = $this->App_model->insertar($data, $Id, 'tbl_dinero_cheques');
+        $insert_id = $this->App_model->insertar($data, $Id, 'tbl_finanzas_movimientos');
                 
         if ($insert_id >=0) 
         {   
@@ -383,7 +237,7 @@ class finanzas extends CI_Controller
             }
 
                 $this->load->model('App_model');
-                $insert_id2 = $this->App_model->insertar($data, $this->datosObtenidos->Datos->Cheque_id, 'tbl_cheques');
+                $insert_id2 = $this->App_model->insertar($data, $Cheque_id, 'tbl_cheques');
                         
                 if ($insert_id2 >=0 ) 
                 {   
@@ -415,22 +269,23 @@ class finanzas extends CI_Controller
         $Jornada_id = 0; if(isset($this->datosObtenidos->Jornada_id)) { $Jornada_id = $this->datosObtenidos->Datos->Jornada_id;}
 
 
-        $this->db->select(' tbl_dinero_cheques.*,
-                            tbl_dinero_cheques.Id as Movimiento_id,
+        $this->db->select(' tbl_finanzas_movimientos.*,
+                            tbl_finanzas_movimientos.Id as Movimiento_id,
                             tbl_cheques.*,
                             tbl_cheques.Id as Cheque_id');
 
-        $this->db->from('tbl_dinero_cheques');
-        $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_dinero_cheques.Cheque_id', 'left');
+        $this->db->from('tbl_finanzas_movimientos');
+        $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_finanzas_movimientos.Cheque_id', 'left');
 
         if($Jornada_id != 0) {
             $this->db->where('Jornada_id', $Jornada_id);
         }
         
-        $this->db->where('tbl_dinero_cheques.Origen_movimiento', $Origen_movimiento);
-        $this->db->where('tbl_dinero_cheques.Fila_movimiento', $Fila_movimiento);
-        $this->db->where('tbl_dinero_cheques.Visible', 1);
-        $this->db->where("tbl_dinero_cheques.Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->where('tbl_finanzas_movimientos.Origen_movimiento', $Origen_movimiento);
+        $this->db->where('tbl_finanzas_movimientos.Fila_movimiento', $Fila_movimiento);
+        $this->db->where('tbl_finanzas_movimientos.Visible', 1);
+        $this->db->where("tbl_finanzas_movimientos.Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', 3); // 1 efectivo, 2 trans/tarj, 3 cheques
         
         $query = $this->db->get();
         $result = $query->result_array();
@@ -439,7 +294,7 @@ class finanzas extends CI_Controller
         $Total_cheques = 0;
         foreach ($result as $cheque) 
         {
-            $Total_cheques = $Total_cheques + $cheque["Monto"];
+            $Total_cheques = $Total_cheques + $cheque["Monto_bruto"];
         }
         
         $Datos = array("Datos"=> $result, "Total_cheques" => $Total_cheques);
@@ -488,7 +343,9 @@ class finanzas extends CI_Controller
                 
         if ($insert_id >=0 ) 
         {   
-            echo json_encode(array("Id" => $insert_id));         
+            echo json_encode(array("Id" => $insert_id,
+                                    "Monto_bruto" => $this->datosObtenidos->Datos->Monto,
+                                    "Observaciones" => $this->datosObtenidos->Datos->Observaciones));         
         } 
         else 
         {
@@ -661,13 +518,14 @@ class finanzas extends CI_Controller
         $this->datosObtenidos = json_decode(file_get_contents('php://input'));
         if ($this->datosObtenidos->token != $token) { exit("No coinciden los token"); }
 
-        $this->db->select('tbl_dinero_efectivo.*, tbl_usuarios.Nombre');
+        $this->db->select('tbl_finanzas_movimientos.*, tbl_usuarios.Nombre');
 
-        $this->db->from('tbl_dinero_efectivo');
-        $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_dinero_efectivo.Usuario_id', 'left');
+        $this->db->from('tbl_finanzas_movimientos');
+        $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_finanzas_movimientos.Usuario_id', 'left');
 
-        $this->db->where('tbl_dinero_efectivo.Visible', 1);
+        $this->db->where('tbl_finanzas_movimientos.Visible', 1);
         $this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', 1); // 1 efectivo, 2 trans/tarj, 3 cheques
         
         if($this->datosObtenidos->Fecha_inicio != null)
         {
@@ -682,7 +540,7 @@ class finanzas extends CI_Controller
             $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
         }
             
-        $this->db->order_by("tbl_dinero_efectivo.Id", "desc");
+        $this->db->order_by("tbl_finanzas_movimientos.Id", "desc");
 
         $query = $this->db->get();
 		$result = $query->result_array();
@@ -694,10 +552,10 @@ class finanzas extends CI_Controller
         foreach ($result as $monto) 
         {
             if($monto["Op"] == true){
-                $Entrante = $Entrante + $monto["Monto"];
+                $Entrante = $Entrante + $monto["Monto_bruto"];
             }
             else {
-                $Saliente = $Saliente + $monto["Monto"];
+                $Saliente = $Saliente + $monto["Monto_bruto"];
             }
 
             $Total = $Entrante - $Saliente;
@@ -722,28 +580,29 @@ class finanzas extends CI_Controller
         if ($this->datosObtenidos->token != $token) { exit("No coinciden los token"); }
 
 
-        $this->db->select(' tbl_dinero_transferencias.*,
+        $this->db->select(' tbl_finanzas_movimientos.*,
                             tbl_usuarios.Nombre');
 
-        $this->db->from('tbl_dinero_transferencias');
-        $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_dinero_transferencias.Usuario_id', 'left');
+        $this->db->from('tbl_finanzas_movimientos');
+        $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_finanzas_movimientos.Usuario_id', 'left');
 
-        $this->db->where('tbl_dinero_transferencias.Visible', 1);
+        $this->db->where('tbl_finanzas_movimientos.Visible', 1);
         $this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', 2); // 1 efectivo, 2 trans/tarj, 3 cheques
 
         if($this->datosObtenidos->Fecha_inicio != null)
         {
-            $this->db->where("DATE_FORMAT(tbl_dinero_transferencias.Fecha_ejecutado,'%Y-%m-%d') >=", $this->datosObtenidos->Fecha_inicio);
+            $this->db->where("DATE_FORMAT(tbl_finanzas_movimientos.Fecha_ejecutado,'%Y-%m-%d') >=", $this->datosObtenidos->Fecha_inicio);
         }
         if($this->datosObtenidos->Fecha_fin != null)
         {
-            $this->db->where("DATE_FORMAT(tbl_dinero_transferencias.Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
+            $this->db->where("DATE_FORMAT(tbl_finanzas_movimientos.Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
         }
         if($this->datosObtenidos->Jornada_id != 0)
         {
             $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
         }
-        $this->db->order_by("tbl_dinero_transferencias.Id", "desc");
+        $this->db->order_by("tbl_finanzas_movimientos.Id", "desc");
         
         $query = $this->db->get();
         $result = $query->result_array();
@@ -757,20 +616,20 @@ class finanzas extends CI_Controller
         {
             if($monto["Op"] == true)
             {
-                $Montos_entrantes = $Montos_entrantes + $monto["Monto_bruto"];
+                $Montos_entrantes = $Montos_entrantes + $monto["Monto_bruto_bruto"];
                 $Ing_brutos = $Ing_brutos + $monto["Retencion_ing_brutos"];
             }
             else
             {
-                $Montos_salientes = $Montos_salientes + $monto["Monto_bruto"];
+                $Montos_salientes = $Montos_salientes + $monto["Monto_bruto_bruto"];
             }
 
             $Total = $Montos_entrantes - $Montos_salientes - $Ing_brutos;
             /* if($monto["Op"] == true){
-                $Total = $Total + $monto["Monto_bruto"] - $monto["Retencion_ing_brutos"];
+                $Total = $Total + $monto["Monto_bruto_bruto"] - $monto["Retencion_ing_brutos"];
             }
             else {
-                $Total = $Total - $monto["Monto_bruto"] - $monto["Retencion_ing_brutos"];
+                $Total = $Total - $monto["Monto_bruto_bruto"] - $monto["Retencion_ing_brutos"];
             } */
         }
         
@@ -798,33 +657,34 @@ class finanzas extends CI_Controller
                             tbl_cheques.Nombre_entrega,
                             tbl_cheques.Imagen,
                             tbl_cheques.Vencimiento,
-                            tbl_dinero_cheques.Op,
+                            tbl_finanzas_movimientos.Op,
                             tbl_cheques.Estado,
-                            tbl_dinero_cheques.Origen_movimiento,
-                            tbl_dinero_cheques.Fecha_ejecutado,
-                            tbl_dinero_cheques.Observaciones,
+                            tbl_finanzas_movimientos.Origen_movimiento,
+                            tbl_finanzas_movimientos.Fecha_ejecutado,
+                            tbl_finanzas_movimientos.Observaciones,
                             tbl_usuarios.Nombre');
 
-        $this->db->from('tbl_dinero_cheques');
-        $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_dinero_cheques.Cheque_id', 'left');
-        $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_dinero_cheques.Usuario_id', 'left');
+        $this->db->from('tbl_finanzas_movimientos');
+        $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_finanzas_movimientos.Cheque_id', 'left');
+        $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_finanzas_movimientos.Usuario_id', 'left');
 
-        $this->db->where('tbl_dinero_cheques.Visible', 1);
+        $this->db->where('tbl_finanzas_movimientos.Visible', 1);
+        $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', 3); // 1 efectivo, 2 trans/tarj, 3 cheques
         $this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
 
         if($this->datosObtenidos->Fecha_inicio != null)
         {
-            $this->db->where("DATE_FORMAT(tbl_dinero_cheques.Fecha_ejecutado,'%Y-%m-%d') >=", $this->datosObtenidos->Fecha_inicio);
+            $this->db->where("DATE_FORMAT(tbl_finanzas_movimientos.Fecha_ejecutado,'%Y-%m-%d') >=", $this->datosObtenidos->Fecha_inicio);
         }
         if($this->datosObtenidos->Fecha_fin != null)
         {
-            $this->db->where("DATE_FORMAT(tbl_dinero_cheques.Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
+            $this->db->where("DATE_FORMAT(tbl_finanzas_movimientos.Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
         }
         if($this->datosObtenidos->Jornada_id != 0)
         {
             $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
         }
-        $this->db->order_by("tbl_dinero_cheques.Id", "desc");
+        $this->db->order_by("tbl_finanzas_movimientos.Id", "desc");
         
         $query = $this->db->get();
         $result = $query->result_array();
@@ -836,10 +696,10 @@ class finanzas extends CI_Controller
         foreach ($result as $monto) 
         {
             if($monto["Op"] == 1){
-                $Entrante = $Entrante + $monto["Monto"];
+                $Entrante = $Entrante + $monto["Monto_bruto"];
             }
             elseif($monto["Op"] == 0) {
-                $Saliente = $Saliente + $monto["Monto"];
+                $Saliente = $Saliente + $monto["Monto_bruto"];
             }
             
             $Total = $Entrante - $Saliente;
