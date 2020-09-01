@@ -89,20 +89,23 @@ class Clientes extends CI_Controller
         $CI->load->database();
         
         $this->datosObtenidos = json_decode(file_get_contents('php://input'));
+        
+        $Id = NULL; if(isset($this->datosObtenidos->Datos->Id)) { $Id = $this->datosObtenidos->Datos->Id; }
 
-        $Id = NULL;
-        if(isset($this->datosObtenidos->Datos->Id))
-        {
-            $Id = $this->datosObtenidos->Datos->Id;
-        }
+        $Telefono = NULL;               if(isset( $this->datosObtenidos->Datos->Telefono )) { $Telefono = $this->datosObtenidos->Datos->Telefono; }
+        $Telefono_secundario = NULL;    if(isset( $this->datosObtenidos->Datos->Telefono_secundario )) { $Telefono_secundario = $this->datosObtenidos->Datos->Telefono_secundario; }
+        $Email = NULL;                  if(isset( $this->datosObtenidos->Datos->Email )) { $Email = $this->datosObtenidos->Datos->Email; }
+        $Direccion = NULL;              if(isset( $this->datosObtenidos->Datos->Direccion )) { $Direccion = $this->datosObtenidos->Datos->Direccion; }
+        $Observaciones = NULL;          if(isset( $this->datosObtenidos->Datos->Observaciones )) { $Observaciones = $this->datosObtenidos->Datos->Observaciones; }
         
         $data = array(
                         
                     'Nombre' => 	$this->datosObtenidos->Datos->Nombre,
-                    'Telefono' => 	$this->datosObtenidos->Datos->Telefono,
-                    'Telefono_secundario' => 	$this->datosObtenidos->Datos->Telefono_secundario,
-                    'Email' => 	$this->datosObtenidos->Datos->Email,
-                    'Direccion' => 	$this->datosObtenidos->Datos->Direccion,
+                    'Telefono' => 	$Telefono,
+                    'Telefono_secundario' => 	$Telefono_secundario,
+                    'Email' => 	$Email,
+                    'Direccion' => 	$Direccion,
+                    'Observaciones' => 	$Observaciones,
                     'Ult_usuario_id' => 	$this->session->userdata('Id'),
                     'Negocio_id' => $this->session->userdata('Negocio_id')
                 );

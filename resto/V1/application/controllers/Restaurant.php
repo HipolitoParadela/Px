@@ -917,6 +917,7 @@ class Restaurant extends CI_Controller {
 			//DATOS DE LA COMANDA
 				$this->db->select('	tbl_comandas.*,
 									tbl_mesas.Identificador,
+									tbl_clientes.Nombre as Nombre_cliente,
 									tbl_usuarios.Nombre as Nombre_moso');
 				
 				$this->db->from('tbl_comandas');
@@ -938,6 +939,7 @@ class Restaurant extends CI_Controller {
 				$this->db->from('tbl_items_comanda');
 				
 				$this->db->join('tbl_stock', 'tbl_stock.Id = tbl_items_comanda.Item_carga_id','left');
+				$this->db->join('tbl_clientes', 'tbl_clientes.Id = tbl_comandas.Cliente_id','left');
 				
 				$this->db->where('tbl_items_comanda.Comanda_id', $Id);
 				$this->db->where("tbl_items_comanda.Negocio_id", $this->session->userdata('Negocio_id'));
@@ -976,7 +978,31 @@ class Restaurant extends CI_Controller {
 
 		$Id = NULL; if(isset($this->datosObtenidos->comandaData->Id)) { $Id = $this->datosObtenidos->comandaData->Id; }
 		$Modo_pago = 1; if(isset($this->datosObtenidos->comandaData->Modo_pago)) { $Modo_pago = $this->datosObtenidos->comandaData->Modo_pago; }
-  
+		$Direccion = "No informada."; if(isset($this->datosObtenidos->comandaData->Direccion)) { $Direccion = $this->datosObtenidos->comandaData->Direccion; }
+		
+		
+		$Cliente_id = $this->datosObtenidos->comandaData->Cliente_id;
+
+		//// OBTENIENDO DATO DE CLIENTE | SI EL CLIENTE NO EXISTIA LO DEBE CARGAR
+			if($Cliente_id == 0)
+			{
+				$data = array(
+							
+					'Nombre' => 	$this->datosObtenidos->comandaData->Nombre_cliente,
+					'Telefono' => 	$this->datosObtenidos->comandaData->Telefono,
+					'Direccion' => 	$Direccion,
+					'Ult_usuario_id' => 	$this->session->userdata('Id'),
+					'Negocio_id' => $this->session->userdata('Negocio_id')
+				);
+
+			$this->load->model('Restaurant_model');
+			$insert_id_cliente = $this->Restaurant_model->insertar($data, NULL, 'tbl_clientes');
+					
+				if ($insert_id_cliente >=0 ) 
+				{   
+					$Cliente_id = $insert_id_cliente;
+				} 
+			}
 		
 		/// ONTENER EL ID DE UNA JORNADA
 			$this->load->model('Restaurant_model');
@@ -990,7 +1016,7 @@ class Restaurant extends CI_Controller {
                     'Jornada_id' =>		$Jornada_id,
 					'Mesa_id' => 		$this->datosObtenidos->comandaData->Mesa_id,
 					'Cant_personas' => 		$this->datosObtenidos->comandaData->Cant_personas,
-					'Cliente_referente' => 	$this->datosObtenidos->comandaData->Cliente_referente,
+					'Cliente_id' => 	$Cliente_id,
 					'Moso_id' => 	$this->session->userdata('Id'),
 					'Fecha' => $fecha,
 					'Hora_llegada' => $Hora,
@@ -1064,10 +1090,16 @@ class Restaurant extends CI_Controller {
 
 		$this->db->select('	tbl_comandas.*,
 							tbl_mesas.Identificador,
+							tbl_clientes.Nombre as Nombre_cliente,
+							tbl_clientes.Telefono,
+							tbl_clientes.Direccion,
 							tbl_usuarios.Nombre as Nombre_moso');
 		$this->db->from('tbl_comandas');
+
 		$this->db->join('tbl_mesas', 'tbl_mesas.Id = tbl_comandas.Mesa_id','left');
 		$this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_comandas.Moso_id','left');
+		$this->db->join('tbl_clientes', 'tbl_clientes.Id = tbl_comandas.Cliente_id','left');
+
 		$this->db->where('tbl_comandas.Estado', 0);
 		$this->db->where('tbl_comandas.Jornada_id', $Jornada_id);
 		$this->db->where("tbl_comandas.Negocio_id", $this->session->userdata('Negocio_id'));
@@ -1242,6 +1274,9 @@ class Restaurant extends CI_Controller {
 		$token = @$CI->db->token;
 
 		$this->db->select('	tbl_comandas.*,
+							tbl_clientes.Nombre as Nombre_cliente,
+							tbl_clientes.Telefono,
+							tbl_clientes.Direccion,
 							tbl_mesas.Identificador,
 							tbl_usuarios.Nombre as Nombre_moso');
 		
@@ -1249,6 +1284,7 @@ class Restaurant extends CI_Controller {
 
 		$this->db->join('tbl_mesas', 'tbl_mesas.Id = tbl_comandas.Mesa_id','left');
 		$this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_comandas.Moso_id','left');
+		$this->db->join('tbl_clientes', 'tbl_clientes.Id = tbl_comandas.Cliente_id','left');
 
 		$this->db->where("DATE_FORMAT(tbl_comandas.Fecha,'%Y-%m-%d') >=", $Desde);
 		$this->db->where("DATE_FORMAT(tbl_comandas.Fecha,'%Y-%m-%d') <=", $Hasta);
@@ -1289,11 +1325,17 @@ class Restaurant extends CI_Controller {
 		$Id = $_GET["Id"];
 
 		$this->db->select('	tbl_comandas.*,
+							tbl_clientes.Nombre as Nombre_cliente,
+							tbl_clientes.Telefono,
+							tbl_clientes.Direccion,
 							tbl_mesas.Identificador,
 							tbl_usuarios.Nombre as Nombre_moso');
+
 		$this->db->from('tbl_comandas');
 		$this->db->join('tbl_mesas', 'tbl_mesas.Id = tbl_comandas.Mesa_id','left');
 		$this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_comandas.Moso_id','left');
+		$this->db->join('tbl_clientes', 'tbl_clientes.Id = tbl_comandas.Cliente_id','left');
+
 		$this->db->where('tbl_comandas.Id', $Id);
 		$this->db->where("tbl_comandas.Negocio_id", $this->session->userdata('Negocio_id'));
 
@@ -1573,36 +1615,7 @@ class Restaurant extends CI_Controller {
         }
 	}
 
-//// COCINA 	| VISTA ADMIN COCINA
-	public function cocina()
-	{
-		if ( $this->session->userdata('Login') != true )
-		{
-			header("Location: ".base_url()."login"); /// enviar a pagina de error
-		}
-		else
-		{	
-			if ( $this->session->userdata('Rol_id') > 2)
-			{
-				$this->load->model('Restaurant_model');
-		   		$datos_jornada = $this->Restaurant_model->datos_jornada();
-				if ($datos_jornada["Estado"] == 0) 
-				{
-					$this->load->view('admin-cocina');	
-				}
 
-				else 
-				{
-					header("Location: ".base_url()."restaurant/iniciarjornada"); /// enviar a pagina de error
-				}
-				
-			}
-			else 
-			{
-				header("Location: ".base_url()."login"); /// enviar a pagina de error
-			}		
-		}
-	}
 
 	
 //// COMANDAS 	| VISTA RESUMEN COMANDAS
@@ -1615,6 +1628,40 @@ class Restaurant extends CI_Controller {
 		else
 		{	
 			$this->load->view('resumencomandas');	
+		}
+	}
+
+//// COMANDAS 	| ENTREGAR UN ITEM DE UNA COMANDA
+	public function cargarDescuento()
+	{
+		$CI =& get_instance();
+		$CI->load->database();
+		
+		$this->datosObtenidos = json_decode(file_get_contents('php://input'));
+
+		$Id = NULL;
+		if(isset($this->datosObtenidos->Comanda_id))
+		{
+			$Id = $this->datosObtenidos->Comanda_id;
+		}
+		
+		$data = array( 	
+						'Valor_descuento' => $this->datosObtenidos->Descuento,
+						'Negocio_id' => $this->session->userdata('Negocio_id') 
+					);
+
+		/// insert en la comanda
+		$this->load->model('Restaurant_model');
+		$insert_id = $this->Restaurant_model->insertar($data, $Id, 'tbl_comandas');
+		
+				
+		if ($insert_id >=0 ) 
+		{   
+			echo json_encode(array("Id" => $insert_id));         
+		} 
+		else 
+		{
+			echo json_encode(array("Id" => 0));
 		}
 	}
 
@@ -1801,6 +1848,38 @@ class Restaurant extends CI_Controller {
 		echo json_encode(array('status' => $status, 'Imagen' => $nombre_imagen));
 	}
 
+
+//// COCINA 	| VISTA ADMIN COCINA
+	public function cocina()
+	{
+		if ( $this->session->userdata('Login') != true )
+		{
+			header("Location: ".base_url()."login"); /// enviar a pagina de error
+		}
+		else
+		{	
+			if ( $this->session->userdata('Rol_id') > 2)
+			{
+				$this->load->model('Restaurant_model');
+				$datos_jornada = $this->Restaurant_model->datos_jornada();
+				if ($datos_jornada["Estado"] == 0) 
+				{
+					$this->load->view('admin-cocina');	
+				}
+
+				else 
+				{
+					header("Location: ".base_url()."restaurant/iniciarjornada"); /// enviar a pagina de error
+				}
+				
+			}
+			else 
+			{
+				header("Location: ".base_url()."login"); /// enviar a pagina de error
+			}		
+		}
+	}
+
 //// CARTA 		| SUBIR FOTO ITEMS CARTA
 	public function subirFotoItemCarta()
 	{
@@ -1857,39 +1936,7 @@ class Restaurant extends CI_Controller {
 		echo json_encode(array('status' => $status, 'Imagen' => $nombre_imagen));
 	}
 
-//// COMANDAS 	| ENTREGAR UN ITEM DE UNA COMANDA
-	public function cargarDescuento()
-    {
-        $CI =& get_instance();
-		$CI->load->database();
-		
-		$this->datosObtenidos = json_decode(file_get_contents('php://input'));
 
-		$Id = NULL;
-		if(isset($this->datosObtenidos->Comanda_id))
-        {
-            $Id = $this->datosObtenidos->Comanda_id;
-        }
-		
-		$data = array( 	
-						'Valor_descuento' => $this->datosObtenidos->Descuento,
-						'Negocio_id' => $this->session->userdata('Negocio_id') 
-					);
-
-		/// insert en la comanda
-        $this->load->model('Restaurant_model');
-		$insert_id = $this->Restaurant_model->insertar($data, $Id, 'tbl_comandas');
-		
-                
-		if ($insert_id >=0 ) 
-		{   
-			echo json_encode(array("Id" => $insert_id));         
-		} 
-		else 
-		{
-            echo json_encode(array("Id" => 0));
-        }
-	}
 
 
 //// DELIVERY	| VISTA LISTADO DE DELIVERYS ABIERTOS
@@ -2765,7 +2812,7 @@ class Restaurant extends CI_Controller {
 		echo json_encode(array("Id" => $insert_id));  
 	}
 
-//// DELIVERY 	| OBTENER DATOS DE UN CLIENTE POR ID
+//// CLIENTES 	| OBTENER DATOS DE UN CLIENTE POR ID
 	public function datoCliente()
 	{
 		//Esto siempre va es para instanciar la base de datos
@@ -2773,8 +2820,10 @@ class Restaurant extends CI_Controller {
 		$CI->load->database();
 		$token = @$CI->db->token;
 
+		
+		/* $array_id = explode("-", $_GET["Id"]);
+		$Id = $array_id[1]; */
 		$Id = $_GET["Id"];
-
 		$this->db->select('*');
 		$this->db->from('tbl_clientes');
 		$this->db->where('Id', $Id);

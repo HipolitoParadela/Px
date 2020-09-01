@@ -21,7 +21,7 @@ include "header-body.php";
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1>Comanda mesa {{datoComanda.Identificador}}, <span> {{ formatoFecha(datoComanda.Fecha) }}, {{datoComanda.Cliente_referente}}, atendidos por {{datoComanda.Nombre_moso}}</span></h1>
+                                <h1>Comanda mesa {{datoComanda.Identificador}}, <span> {{ formatoFecha(datoComanda.Fecha) }}, {{datoComanda.Nombre_cliente}}, atendidos por {{datoComanda.Nombre_moso}}</span></h1>
                             </div>
                         </div>
                     </div>
@@ -62,8 +62,8 @@ include "header-body.php";
                                         <i class="ti-user"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <div class="stat-digit">{{datoComanda.Cant_personas}}</div>
-                                        <div class="stat-text">Comensales</div>
+                                        <div class="stat-digit">{{datoComanda.Nombre_cliente}}</div>
+                                        <div class="stat-text">{{datoComanda.Cant_personas}} comensales</div>
                                     </div>
                                 </div>
                             </div>
@@ -255,10 +255,10 @@ include "header-body.php";
                                                     </tr>
                                                     <tr>
                                                         <td><b>Modo de pago</b></td>
-                                                        <td align="left">
+                                                        <!-- <td align="left">
                                                             Efectivo <input type="radio" value="1" v-model="datoComanda.Modo_pago" v-on:change="modoPago()"><br>
                                                             Tarjeta <input type="radio" value="2" v-model="datoComanda.Modo_pago" v-on:change="modoPago()">
-                                                        </td>
+                                                        </td> -->
                                                     </tr>
                                                     <tr>
                                                         <td>Total</td>
@@ -318,7 +318,196 @@ include "header-body.php";
                         <?php '';
                         } ?>
                     </div>
-                    <!-- -->
+                    <!-- DATOS DE PAGOS -->
+                    <?php if ($Rol_usuario > 3) {
+                        echo ''; ?>
+                        <div class="row" v-if="datoComanda.Estado == 1">
+
+                            <div class="col-lg-12">
+                                <!-- <pre>{{datoComanda}}</pre> -->
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="card p-0">
+                                            <div class="stat-widget-three">
+                                                <div class="stat-icon bg-warning">
+                                                    <i class="ti-money"></i>
+                                                </div>
+                                                <div class="stat-content">
+                                                    <div class="stat-digit">$ {{datoComanda.Valor_cuenta - datoComanda.Valor_descuento | Moneda}}</div>
+                                                    <div class="stat-text">Monto total</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="card p-0">
+                                            <div class="stat-widget-three">
+                                                <div class="stat-icon bg-success">
+                                                    <i class="ti-money"></i>
+                                                </div>
+                                                <div class="stat-content">
+                                                    <div class="stat-digit">$ {{Total_cheques + Total_efectivo + Total_transferencias | Moneda}}</div>
+                                                    <div class="stat-text">Monto Abonado</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="card p-0">
+                                            <div class="stat-widget-three">
+                                                <div class="stat-icon bg-info">
+                                                    <i class="ti-money"></i>
+                                                </div>
+                                                <div class="stat-content">
+                                                    <div class="stat-digit">$ {{ datoComanda.Valor_cuenta - datoComanda.Valor_descuento - Total_cheques - Total_efectivo - Total_transferencias | Moneda}}</div>
+                                                    <div class="stat-text">Saldo</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <strong>Pagos en efectivo</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table id="table2excel" class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    <button data-toggle="modal" data-target="#modalEfectivo" v-on:click="limpiarFormularioMovimiento()">
+                                                                        <i class="fa fa-plus-circle text-success"></i>
+                                                                    </button>
+                                                                </th>
+                                                                <th>Monto</th>
+                                                                <th>Fecha</th>
+                                                                <th></th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="mov_efectivo in listaMovimientosEfectivo">
+                                                                <td>
+                                                                    <button v-on:click="desactivarAlgo(mov_efectivo.Id, 'tbl_dinero_efectivo')" class="item" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                                                        <i class="zmdi zmdi-delete"></i>
+                                                                    </button>
+                                                                </td>
+                                                                <td>$ {{mov_efectivo.Monto | Moneda}}</td>
+                                                                <td>{{mov_efectivo.Fecha_ejecutado | Fecha}}</td>
+                                                                <td>
+                                                                    <button class="item" v-on:click="mov_efectivo(mov_cheques.Observaciones)" data-toggle="modal" data-target="#modalObservaciones" data-placement="top" title="Ver observaciones">
+                                                                        <i class="fa fa-exclamation-circle"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <strong>Pagos con transferencia</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table id="table2excel" class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    <button data-toggle="modal" data-target="#modalTransferencia" v-on:click="limpiarFormularioMovimiento()">
+                                                                        <i class="fa fa-plus-circle text-success"></i>
+                                                                    </button>
+                                                                </th>
+                                                                <th>Monto</th>
+                                                                <th>Fecha</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="mov_trans in listaMovimientosTransferencia">
+                                                                <td>
+                                                                    <button v-on:click="desactivarAlgo(mov_trans.Id, 'tbl_dinero_transferencias')" class="item" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                                                        <i class="zmdi zmdi-delete"></i>
+                                                                    </button>
+                                                                </td>
+                                                                <td>$ {{mov_trans.Monto_bruto | Moneda}}</td>
+                                                                <td>{{mov_trans.Fecha_ejecutado | Fecha}}</td>
+                                                                <td>
+                                                                    <button class="item" v-on:click="infoEtapa(mov_trans.Observaciones)" data-toggle="modal" data-target="#modalObservaciones" data-placement="top" title="Ver observaciones">
+                                                                        <i class="fa fa-exclamation-circle"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <strong>Pagos con cheque</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table id="table2excel" class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    <button data-toggle="modal" data-target="#modalCheque" v-on:click="limpiarFormularioMovimiento()">
+                                                                        <i class="fa fa-plus-circle text-success"></i>
+                                                                    </button>
+                                                                </th>
+                                                                <th>Monto</th>
+                                                                <th>Entregado</th>
+                                                                <th>Vencimiento</th>
+                                                                <th>Información cheque</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="mov_cheques in listaMovimientosCheques">
+                                                                <td>
+                                                                    <button v-on:click="desactivarAlgo(mov_cheques.Movimiento_id, 'tbl_dinero_cheques')" class="item" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                                                        <i class="zmdi zmdi-delete"></i>
+                                                                    </button>
+                                                                </td>
+                                                                <td>${{mov_cheques.Monto | Moneda}}</td>
+                                                                <td>{{mov_cheques.Fecha_ejecutado | Fecha}}</td>
+                                                                <td>{{mov_cheques.Vencimiento | Fecha}}</td>
+                                                                <td>
+                                                                    <a href="#" target="_blank">
+                                                                        <span v-if="mov_cheques.Tipo == 0"> Tercero</span> <span v-if="mov_cheques.Tipo == 1">Propio</span> |
+                                                                        {{mov_cheques.Nombre_entrega}} |
+                                                                        {{mov_cheques.Numero_cheque}}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <button class="item" v-on:click="infoEtapa(mov_cheques.Observaciones)" data-toggle="modal" data-target="#modalObservaciones" data-placement="top" title="Ver observaciones">
+                                                                        <i class="fa fa-exclamation-circle"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    <?php '';
+                    } ?>
 
                     <div class="row" v-if="datoComanda.Estado == 0">
                         <div class="col-lg-12">
@@ -453,9 +642,117 @@ include "header-body.php";
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- /.modal -->
 
-            <?php /// FOOTER
-            include "footer.php";
-            ?>
+                <!-- /.modal -->
+                <!-- Modal efectivo-->
+                <div class="modal fade" id="modalEfectivo" tabindex="-1" role="dialog" aria-labelledby="modalCategoriasCartaTitle" aria-hidden="true">
+                    <div class="modal-dialog  modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalItemsFoto">Ingresar pago en efectivo</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="horizontal-form">
+                                    <form class="form-horizontal" action="post" v-on:submit.prevent="crear_movimiento_efectivo()">
+                                        <div class="form-group">
+                                            <label class="control-label">Monto</label>
+                                            <input type="number" class="form-control" v-model="movimientoDatos.Monto" required>
+                                        </div>
+                                        <!-- <div class="form-group">
+                                            <label class="control-label">Fecha en que se realizó el pago</label>
+                                            <input type="date" class="form-control" v-model="movimientoDatos.Fecha_ejecutado" required>
+                                        </div> -->
+                                        <div class="form-group">
+                                            <label class=" form-control-label">Observaciones</label>
+                                            <textarea class="form-control" rows="5" v-model="movimientoDatos.Observaciones"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-12">
+                                                <button type="submit" class="btn btn-success">{{texto_boton}}</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal -->
+                <!-- Modal transferencias-->
+                <div class="modal fade" id="modalTransferencia" tabindex="-1" role="dialog" aria-labelledby="modalCategoriasCartaTitle" aria-hidden="true">
+                    <div class="modal-dialog  modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalItemsFoto">Ingresar pago por transferencia</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="horizontal-form">
+                                    <form class="form-horizontal" action="post" v-on:submit.prevent="crear_movimiento_transferencias()">
+                                        <div class="form-group">
+                                            <label class="control-label">Monto transferido</label>
+                                            <input type="number" class="form-control" v-model="movimientoDatos.Monto_bruto" required>
+                                        </div>
+                                        <!-- <div class="form-group">
+                                            <label class="control-label">Fecha en que se realizó el pago</label>
+                                            <input type="date" class="form-control" v-model="movimientoDatos.Fecha_ejecutado" required>
+                                        </div> -->
+                                        <div class="form-group">
+                                            <label class=" form-control-label">Observaciones</label>
+                                            <textarea class="form-control" rows="5" v-model="movimientoDatos.Observaciones"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-12">
+                                                <button type="submit" class="btn btn-success">{{texto_boton}}</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal -->
+                <!-- Modal cheques-->
+                <div class="modal fade" id="modalCheque" tabindex="-1" role="dialog" aria-labelledby="modalCategoriasCartaTitle" aria-hidden="true">
+
+
+
+                </div>
+                <!-- /.modal -->
+                <!-- Modal OBSERVACIONES DE LOS PAGOS-->
+                <div class="modal fade" id="modalObservaciones" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+                    <div class="modal-dialog  modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Observaciones</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <h4 v-if="infoModal.Observaciones != null">{{infoModal.Observaciones}}</h4>
+                                <h4 v-else><em>No se han registrado observaciones para este movimiento</em></h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.modal -->
+
+                <?php /// FOOTER
+                include "footer.php";
+                ?>

@@ -87,8 +87,8 @@ include "header-body.php";
                                                             </td> -->
                                                             <td valign="middle">
                                                                 <!-- <a v-bind:href="'datos/?Id='+cliente.Id" class="btn btn-dark btn-outline m-b-10 m-l-5"> -->
-                                                                    {{cliente.Nombre}}
-                                                               <!--  </a> -->
+                                                                {{cliente.Nombre}}
+                                                                <!--  </a> -->
                                                             </td>
                                                             <td>{{cliente.Telefono}}</td>
                                                             <td>{{cliente.Telefono_secundario}}</td>
@@ -138,18 +138,6 @@ include "header-body.php";
                                     <div class="col-sm-12">
                                         <label class="control-label">Nombre</label> <input type="text" class="form-control" placeholder="" v-model="clienteDato.Nombre">
                                     </div>
-
-                                   <!--  <div class="row">
-                                        <div class="col-sm-6">
-                                            <label class="control-label">DNI</label>
-                                            <input type="number" class="form-control" placeholder="" v-model="clienteDato.DNI">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label class="control-label">Password</label>
-                                            <input type="password" class="form-control" placeholder="" v-model="clienteDato.Pass">
-                                        </div> 
-                                    </div>-->
-
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <label class="control-label">Telefono</label>
@@ -168,19 +156,6 @@ include "header-body.php";
                                             <input type="text" class="form-control" placeholder="" v-model="clienteDato.Email">
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <!-- <div class="col-sm-6">
-                                            <label class="control-label">Rol</label>
-                                            <select class="form-control" v-model="clienteDato.Rol_id">
-                                                <option v-for="rol in listaRoles" v-bind:value="rol.Id">{{rol.Nombre_rol}}</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label class="control-label">Fecha ingreso a la empresa</label>
-                                            <input type="date" class="form-control" placeholder="" v-model="clienteDato.Fecha_alta">
-                                        </div>
-                                    </div> -->
-
                                     <div class="col-sm-12">
                                         <label class="control-label">Observaciones</label>
                                         <textarea class="form-control" rows="5" placeholder="" v-model="clienteDato.Observaciones"></textarea>

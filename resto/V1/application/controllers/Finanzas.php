@@ -60,43 +60,6 @@ class finanzas extends CI_Controller
         }
     }
 
-//// FINANZAS       | OBTENER listado todas
-	public function obtener_periodos()
-    {
-        //Esto siempre va es para instanciar la base de datos
-        $CI =& get_instance();
-        $CI->load->database();
-        
-        ///Seguridad
-        $token = @$CI->db->token;
-        $this->datosObtenidos = json_decode(file_get_contents('php://input'));
-        if ($this->datosObtenidos->token != $token)
-        { 
-            exit("No coinciden los token");
-        }
-
-        $this->db->select(' tbl_periodos.*,
-                            tbl_usuarios.Nombre');
-        $this->db->from('tbl_periodos');
-
-        $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_periodos.Usuario_id', 'left');
-
-        $this->db->where('tbl_periodos.Visible', 1);
-        $this->db->where("tbl_compras.Negocio_id", $this->session->userdata('Negocio_id'));
-		$this->db->order_by("tbl_periodos.Fecha_cierre", "desc");
-        
-        $query = $this->db->get();
-		$result = $query->result_array();
-
-        
-        /// tengo que hacer un scrip que me calcule los ingresos y egresos en este periodo, con un foreach
-            /// por ahora que muestre solamente los datos
-            $datos = array('Datos' => $result, 'Saldo' => 0);
-        
-        echo json_encode($datos);
-		
-    }
-
 
 //// FINANZAS       | CARGAR O EDITAR
 	public function cargar_periodo()
@@ -118,7 +81,8 @@ class finanzas extends CI_Controller
         if(isset($this->datosObtenidos->Datos->Id))
         {
             $Id =       $this->datosObtenidos->Datos->Id;
-            $fecha =    $this->datosObtenidos->Datos->Fecha_creado;
+            $fecha = date("Y-m-d");
+            //$fecha =    $this->datosObtenidos->Datos->Fecha_creado;
 		}
 
         
@@ -169,14 +133,19 @@ class finanzas extends CI_Controller
             $fecha =    $this->datosObtenidos->Datos->Fecha_creado;
         }
 
+        /// ONTENER EL ID DE UNA JORNADA
+			$this->load->model('Restaurant_model');
+			$datos_jornada = $this->Restaurant_model->datos_jornada();
+			$Jornada_id = $datos_jornada["Id"];
+
         $data = array(
                         
                     'Origen_movimiento' => 	$this->datosObtenidos->Origen_movimiento,
                     'Fila_movimiento' =>    $this->datosObtenidos->Fila_movimiento,
                     'Monto' => 	            $this->datosObtenidos->Datos->Monto,
                     'Op' =>                 $this->datosObtenidos->Op,
-                    'Periodo_id' =>         $this->datosObtenidos->Periodo_id,
-                    'Fecha_ejecutado' => 	$this->datosObtenidos->Datos->Fecha_ejecutado,
+                    'Jornada_id' =>         $Jornada_id,
+                    'Fecha_ejecutado' => 	$fecha,
                     'Fecha_cargado' => 	    $fecha,
                     'Usuario_id' => 		$this->session->userdata('Id'),
                     'Observaciones' =>      $this->datosObtenidos->Datos->Observaciones,  
@@ -209,15 +178,17 @@ class finanzas extends CI_Controller
         if ($this->datosObtenidos->token != $token) { exit("No coinciden los token"); }
 
         //// Condicional para saber setear el origen del movimiento
-        $Periodo_id         = $this->datosObtenidos->Periodo_id;
+        
+        $Jornada_id = 0; if(isset($this->datosObtenidos->Jornada_id)) { $Jornada_id = $this->datosObtenidos->Datos->Jornada_id;}
+
         $Origen_movimiento  = $this->datosObtenidos->Origen_movimiento;
         $Fila_movimiento    = $this->datosObtenidos->Fila_movimiento;
 
         $this->db->select('*');
 
         $this->db->from('tbl_dinero_efectivo');
-        if($Periodo_id != 0) {
-            $this->db->where('Periodo_id', $Periodo_id);
+        if($Jornada_id != 0) {
+            $this->db->where('Jornada_id', $Jornada_id);
         }
         $this->db->where('Origen_movimiento', $Origen_movimiento);
         $this->db->where('Fila_movimiento', $Fila_movimiento);
@@ -268,17 +239,21 @@ class finanzas extends CI_Controller
             if($this->datosObtenidos->Op == 1){
                 $Ret_ingresos_brutos = $this->datosObtenidos->Datos->Monto_bruto * 0.03;
             }
-            
+        
+        /// ONTENER EL ID DE UNA JORNADA
+			$this->load->model('Restaurant_model');
+			$datos_jornada = $this->Restaurant_model->datos_jornada();
+			$Jornada_id = $datos_jornada["Id"];
 
         $data = array(
                         
                     'Origen_movimiento' => 	$this->datosObtenidos->Origen_movimiento,
-                    'Periodo_id' =>         $this->datosObtenidos->Periodo_id,
+                    'Jornada_id' =>         $Jornada_id,
                     'Fila_movimiento' =>    $this->datosObtenidos->Fila_movimiento,
                     'Op' =>                 $this->datosObtenidos->Op,
                     'Monto_bruto' => 	    $this->datosObtenidos->Datos->Monto_bruto,
                     'Retencion_ing_brutos' => $Ret_ingresos_brutos,
-                    'Fecha_ejecutado' => 	$this->datosObtenidos->Datos->Fecha_ejecutado,
+                    'Fecha_ejecutado' => 	$fecha,
                     'Fecha_cargado' => 	    $fecha,
                     'Usuario_id' => 		$this->session->userdata('Id'),
                     'Observaciones' =>      $this->datosObtenidos->Datos->Observaciones,   
@@ -311,15 +286,16 @@ class finanzas extends CI_Controller
         if ($this->datosObtenidos->token != $token) { exit("No coinciden los token"); }
 
         //// Condicional para saber setear el origen del movimiento
-        $Periodo_id         = $this->datosObtenidos->Periodo_id;
         $Origen_movimiento  = $this->datosObtenidos->Origen_movimiento;
         $Fila_movimiento    = $this->datosObtenidos->Fila_movimiento;
+        
+        $Jornada_id = 0; if(isset($this->datosObtenidos->Jornada_id)) { $Jornada_id = $this->datosObtenidos->Jornada_id;}
 
         $this->db->select('*');
 
         $this->db->from('tbl_dinero_transferencias');
-        if($Periodo_id != 0) {
-            $this->db->where('Periodo_id', $Periodo_id);
+        if($Jornada_id != 0) {
+            $this->db->where('Jornada_id', $Jornada_id);
         }
         $this->db->where('Origen_movimiento', $Origen_movimiento);
         $this->db->where('Fila_movimiento', $Fila_movimiento);
@@ -362,17 +338,23 @@ class finanzas extends CI_Controller
         if(isset($this->datosObtenidos->Datos->Id))
         {
             $Id =       $this->datosObtenidos->Datos->Id;
-            $fecha =    $this->datosObtenidos->Datos->Fecha_creado;
+            $fecha = date("Y-m-d");
+            //$fecha =    $this->datosObtenidos->Datos->Fecha_creado;
         }
+
+        /// ONTENER EL ID DE UNA JORNADA
+			$this->load->model('Restaurant_model');
+			$datos_jornada = $this->Restaurant_model->datos_jornada();
+			$Jornada_id = $datos_jornada["Id"];
 
         $data = array(
                         
                     'Origen_movimiento' => 	$this->datosObtenidos->Origen_movimiento,
                     'Fila_movimiento' =>    $this->datosObtenidos->Fila_movimiento,
                     'Cheque_id' => 	        $this->datosObtenidos->Datos->Cheque_id,
-                    'Periodo_id' =>         $this->datosObtenidos->Periodo_id,
+                    'Jornada_id' =>         $Jornada_id,
                     'Op' =>                 $this->datosObtenidos->Op,
-                    'Fecha_ejecutado' => 	$this->datosObtenidos->Datos->Fecha_ejecutado,
+                    'Fecha_ejecutado' => 	$fecha,
                     'Fecha_cargado' => 	    $fecha,
                     'Usuario_id' => 		$this->session->userdata('Id'),
                     'Observaciones' =>      $this->datosObtenidos->Datos->Observaciones,  
@@ -427,9 +409,11 @@ class finanzas extends CI_Controller
         if ($this->datosObtenidos->token != $token) { exit("No coinciden los token"); }
 
         //// Condicional para saber setear el origen del movimiento
-        $Periodo_id         = $this->datosObtenidos->Periodo_id;
+
         $Origen_movimiento  = $this->datosObtenidos->Origen_movimiento;
         $Fila_movimiento    = $this->datosObtenidos->Fila_movimiento;
+        $Jornada_id = 0; if(isset($this->datosObtenidos->Jornada_id)) { $Jornada_id = $this->datosObtenidos->Datos->Jornada_id;}
+
 
         $this->db->select(' tbl_dinero_cheques.*,
                             tbl_dinero_cheques.Id as Movimiento_id,
@@ -439,8 +423,8 @@ class finanzas extends CI_Controller
         $this->db->from('tbl_dinero_cheques');
         $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_dinero_cheques.Cheque_id', 'left');
 
-        if($Periodo_id != 0) {
-            $this->db->where('Periodo_id', $Periodo_id);
+        if($Jornada_id != 0) {
+            $this->db->where('Jornada_id', $Jornada_id);
         }
         
         $this->db->where('tbl_dinero_cheques.Origen_movimiento', $Origen_movimiento);
@@ -693,9 +677,9 @@ class finanzas extends CI_Controller
         {
             $this->db->where("DATE_FORMAT(Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
         }
-        if($this->datosObtenidos->Periodo_id != 0)
+        if($this->datosObtenidos->Jornada_id != 0)
         {
-            $this->db->where("Periodo_id", $this->datosObtenidos->Periodo_id);
+            $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
         }
             
         $this->db->order_by("tbl_dinero_efectivo.Id", "desc");
@@ -755,9 +739,9 @@ class finanzas extends CI_Controller
         {
             $this->db->where("DATE_FORMAT(tbl_dinero_transferencias.Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
         }
-        if($this->datosObtenidos->Periodo_id != 0)
+        if($this->datosObtenidos->Jornada_id != 0)
         {
-            $this->db->where("Periodo_id", $this->datosObtenidos->Periodo_id);
+            $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
         }
         $this->db->order_by("tbl_dinero_transferencias.Id", "desc");
         
@@ -836,9 +820,9 @@ class finanzas extends CI_Controller
         {
             $this->db->where("DATE_FORMAT(tbl_dinero_cheques.Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
         }
-        if($this->datosObtenidos->Periodo_id != 0)
+        if($this->datosObtenidos->Jornada_id != 0)
         {
-            $this->db->where("Periodo_id", $this->datosObtenidos->Periodo_id);
+            $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
         }
         $this->db->order_by("tbl_dinero_cheques.Id", "desc");
         
