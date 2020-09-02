@@ -497,7 +497,7 @@ class Stock extends CI_Controller
             exit("No coinciden los token");
         }
 
-		$Id = $this->usuario_existe($this->datosObtenidos->usuarioData->DNI);
+		//$Id = $this->usuario_existe($this->datosObtenidos->usuarioData->DNI);
 
 		$fecha = date("Y-m-d");
 

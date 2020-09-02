@@ -1,51 +1,40 @@
 PX Resto
 
-----------------------------
-- como integrar el código de la facturación
-	- probar enviar con vuejs la petición y tomar el json que devuelve, no deberia ser complicado para nada.
-	- averiguar posibles escenarios en la facturación, 
-		- si son monotributistas o resp. inscriptos
-		- si facturan a consumidor final o a otro resp.
-		- como se manejan los ivas respecto a cada situacion
-	- en base a eso armar el codigo que se setee
-
-_______________________________
-
 
 - armar formulario con captcha para que una persona pueda registrarse y usar el software gratis
 
 _______________________________
 
-Si pagan con cheque, debe tambien abrir un modal para registrar el cheque. 
+Caja
 
-Despues hacerlo en delivery, transferencia/tarjeta. 
--..
-
-El efectivo en caja, se manejaria poniendo un monto inicial. Que no afecta a la cuenta general, es a modo informativo. 
+El efectivo en caja, se manejaria poniendo un monto inicial. Que no afecta a la cuenta general, es a modo informativo.
 Pero si afecta cuando uno toma de ahí, y se agrega o se quita de la caja con el modulito de efectivo.
 
 Al final me va a dar una cuenta de cuando deberia tener de efectivo fisico en la caja, como control.
 
------------------------------
+---------------
 
-clientes_datos 
-	mostrar compras que hizo
-	ver resumen de cuentas
-agregar campo para contabilizar la cantidad de compras que hace, para despues ordenarlos por clientes recurrentes.
-
-----------------------
+Módulo Finanzas
 
 ver que pasa con las cuentas de los resumenes si jode en algo
 	
 Meter módulo finanzas, deberia andar casi automaticamente.
+
+-----------------------------
+
+clientes - opcion de listarlos por nombre y por más compradores
+
+clientes_datos
+	mostrar compras que hizo
+	ver resumen de cuentas 
+		aca busco las compras que hizo. luego veo el monto final de la compra, veo cuando abono en total, y que saldo queda. 
+		mismo sistema que compras, no debería cambiar casi nada
+		y debería tener un campo para hacer pagos
 	
-ver la cuestion de clientes, ahora el registro debe ser mejor y se tiene que poder manejar la cuenta corriente, en base a las ventas a ellos
-		tambien deberian tener una analitica para ver que cliente es el más fiel
+	
+__________________________________________________________________________________
+__________________________________________________________________________________
 
-- clientes puede abonar con cuenta corriente
-	tienen métodos de pago, efectivo, tarjeta, cuenta corriente
-
-- el descuento del stock, se hace recien cuando se cierra la comanda o el delivery.
 
 - Estadisticas en página de cada producto
 
@@ -54,7 +43,10 @@ ver la cuestion de clientes, ahora el registro debe ser mejor y se tiene que pod
 - codigo qr con enlace a pagina de la comanda creada para que el propio cliente pueda realizar el pedido
 
 
---------------------------------------------------------------------
+__________________________________________________________________________________
+__________________________________________________________________________________
+
+
 en el formato gratis, no va a poder acceder a
 . manejo de stock
 . manejo de clientes
@@ -71,5 +63,16 @@ en analiticas, solo va a poder ir viendo 3 dias para atras, o sea lo q se ve por
 y en todo lo q no pueda ver, q le salga un msj o algo que diga "Desbloquea todas las funciones"
 
 Tengo q si o si ponerme a hacer los tutoriales
+
+
+_______________________________________________________
+
+- como integrar el código de la facturación
+	- probar enviar con vuejs la petición y tomar el json que devuelve, no deberia ser complicado para nada.
+	- averiguar posibles escenarios en la facturación, 
+		- si son monotributistas o resp. inscriptos
+		- si facturan a consumidor final o a otro resp.
+		- como se manejan los ivas respecto a cada situacion
+	- en base a eso armar el codigo que se setee
 
 		

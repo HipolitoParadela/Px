@@ -2113,6 +2113,16 @@ new Vue({
     methods:
     {
 
+        //// MOSTRAR DATOS COMANDA
+        getComandaId: function () {
+            var url = base_url + 'restaurant/datosComanda/?Id=' + Get_Id;  //averiguar como tomar el Id que viene por URL aca
+
+            axios.get(url).then(response => {
+                this.datoComanda = response.data[0]
+                console.log(this.datoComanda)
+            });
+        },
+        
         //// MOSTRAR LISTADO DE TODOS LOS ITEMS ITEMS  
         getListadoItems: function () {
             var url = base_url + 'restaurant/mostrarItemsActivos';
@@ -2138,16 +2148,6 @@ new Vue({
 
             axios.get(url).then(response => {
                 this.categoriasCarta = response.data
-            });
-        },
-
-        //// MOSTRAR DATOS COMANDA
-        getComandaId: function () {
-            var url = base_url + 'restaurant/datosComanda/?Id=' + Get_Id;  //averiguar como tomar el Id que viene por URL aca
-
-            axios.get(url).then(response => {
-                this.datoComanda = response.data[0]
-
             });
         },
 
@@ -2247,17 +2247,46 @@ new Vue({
         },
 
         //// COMANDA |  Hora de entregas en mesa
-        entregasEnMesa: function (Comanda_id, tipo, valorCuenta) {
+        entregasEnMesa: function (comanda_id, tipo, cantCompras, cliente_id, valorCuenta) {
             var url = base_url + 'restaurant/entrega_en_mesa'; // url donde voy a mandar los datos
 
             axios.post(url, {
-                Comanda_id: Comanda_id,
+                Comanda_id: comanda_id,
                 Tipo: tipo,
-                ValorCuenta: valorCuenta
+                ValorCuenta: valorCuenta,
+                CantCompras: cantCompras,
+                Cliente_id: cliente_id
             }).then(response => {
 
-                this.getComandaId();
+                
                 toastr.success('Proceso realizado correctamente', 'Comandas')
+                this.getComandaId();
+
+                /// Descontar insumos
+                    if(tipo == "cerrar") 
+                    {
+                        var url = base_url + 'stock/descontarInsumosStock'; // url donde voy a mandar los datos
+
+                            axios.post(url, {
+                                token: token,
+                                Movimiento_id: comanda_id,
+                                Tipo: "Comanda"
+
+                            }).then(response => {
+
+                                toastr.success('Proceso realizado correctamente', 'Stock')
+                                this.texto_boton = "Actualizar"
+                                
+                                this.getDatosventas();
+
+                                //console.log(response.data)
+
+
+                            }).catch(error => {
+                                console.log(error.response.data)
+                            });
+                        
+                    }
 
             }).catch(error => {
                 alert("mal");
@@ -2702,6 +2731,7 @@ new Vue({
 
             axios.post(url, {
                 Delivery_id: Get_Id,
+                Datos: this.datoDelivery
             }).then(response => {
 
                 this.getDeliveryId();
@@ -2739,11 +2769,33 @@ new Vue({
                 Datos: this.datoDelivery
             }).then(response => {
 
-                this.getDeliveryId();
+                
                 toastr.success('Proceso realizado correctamente', 'Delivery')
 
+                /// Descontar insumos
+                var url = base_url + 'stock/descontarInsumosStock'; // url donde voy a mandar los datos
+
+                        axios.post(url, {
+                            token: token,
+                            Movimiento_id: this.datoDelivery.Id,
+                            Tipo: "Delivery"
+
+                        }).then(response => {
+
+                            toastr.success('Proceso realizado correctamente', 'Stock')
+                            this.texto_boton = "Actualizar"
+                            
+                            this.getDeliveryId();
+
+                            //console.log(response.data)
+
+
+                        }).catch(error => {
+                            console.log(error.response.data)
+                        });
+                    
             }).catch(error => {
-                alert("mal");
+                console.log(error)
             });
         },
 
@@ -3992,8 +4044,8 @@ new Vue({
         
         this.getMovimientos();
 
-        //this.getListadoCheques(1);
-        //this.getListadoPeriodos();    Revisar - REEMPLAZAR CON JORNADAS O EN CIERRES MENSUALES
+        this.getCheques(1);
+        //this.getCheques();    Revisar - REEMPLAZAR CON JORNADAS O EN CIERRES MENSUALES
         this.getListadoSeguimiento();
 
     },
@@ -4024,7 +4076,8 @@ new Vue({
         listaMovimientos : [],
         Total_pagado: 0,
         infoModal: {'Observaciones':''},
-        listaCheques: []
+        listaCheques: [],
+        chequeSeleccionado: {}
 
         
     },
@@ -4363,15 +4416,40 @@ new Vue({
         },
 
         //// FINANZAS | LISTADO DE CHEQUES
-        getCheques: function () {
+        getCheques: function (Estado) {
             var url = base_url + 'finanzas/obtener_cheques'; // url donde voy a mandar los datos
 
             axios.post(url, {
                 token: token,
-                Estado: 1,
+                Estado: Estado,
 
             }).then(response => {
                 this.listaCheques = response.data;
+            }).catch(error => {
+                console.log(error.response.data)
+            });
+        },
+
+        //// FINANZAS | MOVIMIENTOS | CREAR O EDITAR EN EFECTIVO
+        pagoConCheque: function (datos) {
+            
+            var url = base_url + 'finanzas/cargar_movimiento_cheques'; // url donde voy a mandar los datos
+            axios.post(url, {
+                token: token,
+                Datos: datos,
+                Origen_movimiento: 'Compras',
+                Op: 0,
+                Fila_movimiento: Get_Id,
+
+            }).then(response => {
+
+                toastr.success('Proceso realizado correctamente', 'Compras')
+
+                
+                this.texto_boton = "Actualizar"
+                this.getMovimientos();
+                this.getCheques(1);
+
             }).catch(error => {
                 console.log(error.response.data)
             });
@@ -4433,7 +4511,7 @@ new Vue({
         filtro_suscripciones_: '0',
         filtro_estado: '0',
 
-        insumoDatos: { 'Stock_id': 0, 'Cantidad': 0, 'Observaciones': '', },
+        insumoDatos: { 'Stock_id': 0, 'Cantidad': 0.00, 'Observaciones': '', },
         listaInsumos: [],
         listaStock: [],
         listaEmpresas: [],
@@ -4682,7 +4760,28 @@ new Vue({
 
         ////  INSUMOS FABRICACIÓN  | LIMPIAR FORMULARIO 
         limpiarFormularioInsumo: function () {
-            this.insumoDatos = {}
+            this.insumoDatos = { 'Stock_id': 0, 'Cantidad': 0.00, 'Observaciones': '', };
+        },
+
+
+        //// QUITAR ALGO
+        eliminar: function (Id, tbl) {
+            var url = base_url + 'restaurant/eliminar'; // url donde voy a mandar los datos
+            var opcion = confirm("¿Esta seguro de eliminar a este producto?");
+            if (opcion == true) 
+            {
+                axios.post(url, {
+                    Id: Id,
+                    tabla: tbl
+                }).then(response => {
+
+                    this.getListadoInsumos();
+                    toastr.success('Item eliminado correctamente', 'Comandas')
+
+                }).catch(error => {
+                    alert("mal");
+                });
+            }
         },
 
 

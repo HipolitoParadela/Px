@@ -190,7 +190,7 @@ include "header-body.php";
                                         <div class="col-lg-12">
                                             <div class="card">
                                                 <div class="card-header">
-                                                    <strong>Listado de insumos requeridos para la fabricación de este producto</strong>
+                                                    <strong>Listado de insumos requeridos para la producción</strong>
                                                 </div>
                                                 <div class="card-body">
                                                     <div class="bootstrap-data-table-panel col-lg-12">
@@ -209,15 +209,18 @@ include "header-body.php";
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr v-for="insumo in listaInsumos">
-                                                                        <td><b>{{insumo.Nombre_item}}</b></td>
+                                                                        <td><h4>{{insumo.Nombre_item}}</h4></td>
                                                                         <td>
-                                                                            <h3>{{insumo.Cantidad}}</h3>
+                                                                            <h3>{{insumo.Cantidad}} {{insumo.Unidad_medida}}</h3>
                                                                         </td>
                                                                         <td>{{insumo.Observaciones}}</td>
                                                                         <td>{{formatoFecha_hora(insumo.Ultima_actualizacion)}}</td>
                                                                         <td>
                                                                             <a href="#modalInsumos" data-toggle="modal" v-on:click="editarFormularioInsumo(insumo)">
                                                                                 <i class="fa fa-edit"></i>
+                                                                            </a>
+                                                                            <a v-on:click="eliminar(insumo.Id, 'tbl_itemcarta_insumos_producto')">
+                                                                                <i class="fa fa-minus-square"></i>
                                                                             </a>
                                                                         </td>
                                                                     </tr>
@@ -306,12 +309,12 @@ include "header-body.php";
                                             <label class="control-label">Insumo del stock</label>
                                             <select class="form-control" v-model="insumoDatos.Stock_id">
                                                 <option value="0">Elegir un insumo</option>
-                                                <option v-for="stock in listaStock" v-bind:value="stock.Id">{{stock.Nombre_item}}</option>
+                                                <option v-for="stock in listaStock" v-bind:value="stock.Id">{{stock.Nombre_item}} | Medida en: {{stock.Unidad_medida}}</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Cantidad necesaria</label>
-                                            <input type="number" class="form-control" placeholder="" v-model="insumoDatos.Cantidad">
+                                            <input type="number" step=".01" class="form-control" placeholder="" v-model="insumoDatos.Cantidad">
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Observaciones</label>

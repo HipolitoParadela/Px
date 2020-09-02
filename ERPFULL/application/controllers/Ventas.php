@@ -1346,10 +1346,10 @@ class ventas extends CI_Controller
         
             $data = array(
 
-            'Venta_id' =>       $insert_id_venta,
-            'Descripcion' =>    $descripcion_seguimiento,
-            'Usuario_id' =>    $this->session->userdata('Id'),
-            'Visible' =>        1
+                'Venta_id' =>       $insert_id_venta,
+                'Descripcion' =>    $descripcion_seguimiento,
+                'Usuario_id' =>    $this->session->userdata('Id'),
+                'Visible' =>        1
             );
 
             $this->load->model('App_model');

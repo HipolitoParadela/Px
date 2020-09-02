@@ -572,10 +572,12 @@ class Stock extends CI_Controller
 
         //$Id = $this->usuario_existe($this->datosObtenidos->Data->DNI);
 
-		if(isset($this->datosObtenidos->Data->Id))
-        {
-            $Id = $this->datosObtenidos->Data->Id;
-		}
+        $Id = null; if(isset($this->datosObtenidos->Data->Id)) { $Id = $this->datosObtenidos->Data->Id; }
+        $Cant_actual = null; if(isset($this->datosObtenidos->Data->Cant_actual)) { $Cant_actual = $this->datosObtenidos->Data->Cant_actual; }
+        $Precio_costo = null; if(isset($this->datosObtenidos->Data->Precio_costo)) { $Precio_costo = $this->datosObtenidos->Data->Precio_costo; }
+        $Precio_venta = null; if(isset($this->datosObtenidos->Data->Precio_venta)) { $Precio_venta = $this->datosObtenidos->Data->Precio_venta; }
+        $Apto_delivery = null; if(isset($this->datosObtenidos->Data->Apto_delivery)) { $Apto_delivery = $this->datosObtenidos->Data->Apto_delivery; }
+        $Descripcion = null; if(isset($this->datosObtenidos->Data->Descripcion)) { $Descripcion = $this->datosObtenidos->Data->Descripcion; }
 	
 		$data = array(
                         
@@ -583,14 +585,15 @@ class Stock extends CI_Controller
                     'Cant_actual' => 		$this->datosObtenidos->Data->Cant_actual,
                     'Unidad_medida' => 		$this->datosObtenidos->Data->Unidad_medida,
 					'Categoria_id' => 		$this->datosObtenidos->Data->Categoria_id,
-					'Descripcion' => 		$this->datosObtenidos->Data->Descripcion,
+					'Descripcion' => 		$Descripcion,
                     'Cant_ideal' => 		$this->datosObtenidos->Data->Cant_ideal,
                     'Apto_stock' =>         1,
                     'Apto_carta' =>         $this->datosObtenidos->Data->Apto_carta,
-                    'Precio_venta'  =>       $this->datosObtenidos->Data->Precio_venta,
-                    'Apto_delivery' =>      $this->datosObtenidos->Data->Apto_delivery,
-                    'Negocio_id'    =>         $this->session->userdata('Negocio_id'),
-                    'Activo'        =>         1,
+                    'Precio_venta'  =>      $Precio_venta,
+                    'Precio_costo'  =>      $Precio_costo,
+                    'Apto_delivery' =>      $Apto_delivery,
+                    'Negocio_id'    =>      $this->session->userdata('Negocio_id'),
+                    'Activo'        =>      1,
                      
                 );
                 /// 'Ultimo_editor_id' => 		$this->session->userdata('Id')
@@ -664,6 +667,164 @@ class Stock extends CI_Controller
 			@unlink($_FILES[$file_element_name]);
 		}
 		echo json_encode(array('status' => $status, 'Imagen' => $nombre_imagen));
+    }
+
+
+//// STOCK  | DESCUENTO AUTOMÁTICO
+    public function descontarInsumosStock()
+    {
+        $CI = &get_instance();
+        $CI->load->database();
+
+        $token = @$CI->db->token;
+        $this->datosObtenidos = json_decode(file_get_contents('php://input'));
+        if ($this->datosObtenidos->token != $token)
+        { 
+            exit("No coinciden los token");
+        }
+
+        $this->load->model('Restaurant_model');
+					$datos_jornada = $this->Restaurant_model->datos_jornada();
+					$Jornada_id = $datos_jornada["Id"];
+
+        /// TRAIGO LA LISTA DE PRODUCTOS VENDIDOS
+
+            /// SI ES COMANDA
+            if($this->datosObtenidos->Tipo == "Comanda")
+            {
+                $this->db->select('Id, Item_carga_id as Item_id');
+                $this->db->from('tbl_items_comanda');
+                $this->db->where('Comanda_id', $this->datosObtenidos->Movimiento_id);
+                $this->db->where('Estado', 1);
+                $this->db->where('Stock', 0);
+
+                $query = $this->db->get();
+                $array_items = $query->result_array();
+
+                // marcar cada uno como ya dado de baja de stock
+                foreach ($array_items as $item) 
+                {
+                    $data = array(
+                        'Stock' => 1,
+                    );
+
+                    $this->load->model('App_model');
+                    $insert_id_2 = $this->App_model->insertar($data, $item["Id"], 'tbl_items_comanda');
+                }
+            }
+            /// SI ES DELIVERY
+            else if($this->datosObtenidos->Tipo == "Delivery")
+            {
+                $this->db->select('Id, Item_id');
+                $this->db->from('tbl_delibery_items');
+                $this->db->where('Delibery_id', $this->datosObtenidos->Movimiento_id);
+                $this->db->where('Stock', 0);
+                $query = $this->db->get();
+                $array_items = $query->result_array();
+
+                // marcar cada uno como ya dado de baja de stock
+                foreach ($array_items as $item) 
+                {
+                    $data = array(
+                        'Stock' => 1,
+                    );
+
+                    $this->load->model('App_model');
+                    $insert_id_2 = $this->App_model->insertar($data, $item["Id"], 'tbl_delibery_items');
+                }
+            }
+            
+
+        /// BUSCO LA LISTA DE INSUMOS DE CADA PRODUCTO
+            foreach ($array_items as $item) 
+            {
+                $this->db->select('*');
+                $this->db->from('tbl_itemcarta_insumos_producto');
+                $this->db->where('ItemCarta_id', $item["Item_id"]);
+                
+                $query = $this->db->get();
+                $array_insumos_item = $query->result_array();
+
+                
+
+                //// MEJORA A FUTURO
+                    // agrupar items, sumarlos y recien todos juntos generar el movimiento en stock. para no llenar de mas la tabla innecesariamente.
+                        $array_insumos_item_compilado = array();
+
+                /// COMIENZO A GENERAR EL DESCUENTO DE CADA INSUMO EN STOCK
+                    foreach ($array_insumos_item as $insumo) 
+                    {
+                        $Stock_id =         $insumo["Stock_id"];
+                        $Cantidad =         $insumo["Cantidad"];
+                        $Descripcion =      $this->datosObtenidos->Tipo." - Descuento automático por producción.";
+                        $Proceso_id =       $this->datosObtenidos->Movimiento_id;                // Se refiere al Id, de la orden de trabajo, o de la Compra
+                        $Tipo_movimiento =  2;      // Recibe un Número: 1 Equivale a ingreso, 2 a egreso
+        
+                        $data = array(
+        
+                            'Stock_id'              => $Stock_id,
+                            'Cantidad'              => $Cantidad,
+                            'Modulo'                => $this->datosObtenidos->Tipo,
+                            'Descripcion'           => $Descripcion,
+                            'Usuario_id'            => $this->session->userdata('Id'),
+                            'Proceso_id'            => $Proceso_id,
+                            'Tipo_movimiento'       => 2,
+                            'Jornada_id'            => $Jornada_id,
+                            'Negocio_id'            => $this->session->userdata('Negocio_id')
+                        );
+        
+                        $this->load->model('App_model');
+                        $insert_id = $this->App_model->insertar($data, Null, 'tbl_stock_movimientos');
+        
+                        if ($insert_id >= 0) // SI SE CARGO BIEN DEBE ACTUALIZAR LA TABLA tbl_stock, con el calculo de stock actual y el Id de la última actualización
+                        {
+                            /// consultar stock en cuestión y obtener la cantidad hasta ese momento
+                                $this->db->select('Cant_actual');
+                                $this->db->from('tbl_stock');
+                                $this->db->where('Id', $Stock_id);
+                                $query = $this->db->get();
+                                $result = $query->result_array();
+                                
+                                if ($query->num_rows() > 0) // si encontro alguna fila previa, hace el calculo
+                                {
+                                    /// SEGUN EL TIPO DE MOVIMIENTO VA A SUMAR O RESTAR LA CANTIDAD INDICADA
+                                    if      ($Tipo_movimiento == 1)    {$cant_actual = $result[0]["Cant_actual"] + $Cantidad;} // suma cantidad
+                                    else if ($Tipo_movimiento == null) {$cant_actual = $result[0]["Cant_actual"] + $Cantidad;} // SI VIENE NULO, TOMA EL SIGNO QUE TRAE LA VARIABLE
+                                    else                                { $cant_actual = $result[0]["Cant_actual"] - $Cantidad;} // resta cantidad
+                                }
+                                else // de lo contrario la cantidad actual será la primera reportada
+                                {
+                                    $cant_actual = $Cantidad;
+                                }
+        
+                            /// Actualizo tbl_stock con los datos nuevos
+                                $data = array(
+                                    'Ult_modificacion_id' => $insert_id,
+                                    'Cant_actual' => $cant_actual,
+                                );
+        
+                                $this->load->model('App_model');
+                                $insert_id_2 = $this->App_model->insertar($data, $Stock_id, 'tbl_stock');
+        
+                                if ($insert_id_2 >= 0) 
+                                {
+                                    echo json_encode(array(
+                                                            "Id" => $insert_id,
+                                                            "Estado" => "Proceso realizado con exito, items modificados:" + count($this->datosObtenidos->Datos_insumos)));
+                                } 
+                                else 
+                                {
+                                    echo json_encode(array("Id" => 0));
+                                }
+                        } 
+                        else 
+                        {
+                            echo json_encode(array("Id" => 0));
+                        }
+                    }
+                    
+            }
+        
     }
     
 

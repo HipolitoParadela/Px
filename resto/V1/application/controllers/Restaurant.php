@@ -394,6 +394,26 @@ class Restaurant extends CI_Controller {
 		}
 	}
 
+//// CARTA 		| VISTA DE ITEMS CARTA
+	public function datos()
+	{
+		if ( $this->session->userdata('Login') != true  )
+		{
+			header("Location: ".base_url()."login"); /// enviar a pagina de error
+		}
+		else{
+			
+			if ( $this->session->userdata('Rol_id') >= 4)
+			{
+				$this->load->view('itemcarta_datos');
+			}
+			else 
+			{
+				header("Location: ".base_url()."login"); /// enviar a pagina de error
+			}	
+		}
+	}
+
 	
 //// CARTA 		| MOSTRAR ITEMS CARTA
 	public function mostrarItems()
@@ -1328,6 +1348,7 @@ class Restaurant extends CI_Controller {
 							tbl_clientes.Nombre as Nombre_cliente,
 							tbl_clientes.Telefono,
 							tbl_clientes.Direccion,
+							tbl_clientes.Cant_compras,
 							tbl_mesas.Identificador,
 							tbl_usuarios.Nombre as Nombre_moso');
 
@@ -1444,7 +1465,7 @@ class Restaurant extends CI_Controller {
         }
 	}
 
-//// COMANDAS 	| ENTREGAR UN ITEM DE UNA COMANDA
+//// COMANDAS 	| ENTREGAS EN MESA
 	public function entrega_en_mesa()
     {
         $CI =& get_instance();
@@ -1452,21 +1473,14 @@ class Restaurant extends CI_Controller {
 		
 		$this->datosObtenidos = json_decode(file_get_contents('php://input'));
 
-		if(isset($this->datosObtenidos->Comanda_id))
-        {
-            $Id = $this->datosObtenidos->Comanda_id;
-        }
-        else
-        {
-            $Id = NULL;
-        }
+		$Comanda_id = $this->datosObtenidos->Comanda_id;
 		
 		$Hora = date("H:i");
 		
 		if($this->datosObtenidos->Tipo == "entrada"){
 			$data = array( 	'Hora_entrada_en_mesa' => $Hora );
 
-			$data_timeline = array( 	'Comanda_id' => $Id,
+			$data_timeline = array( 	'Comanda_id' => $Comanda_id,
 										'Accion' => 2,
 										'Negocio_id' => $this->session->userdata('Negocio_id'), );
 		}
@@ -1474,7 +1488,7 @@ class Restaurant extends CI_Controller {
 		elseif($this->datosObtenidos->Tipo == "menu"){
 			$data = array( 	'Hora_menu_en_mesa' => $Hora    );
 
-			$data_timeline = array( 	'Comanda_id' => $Id,
+			$data_timeline = array( 	'Comanda_id' => $Comanda_id,
 										'Accion' => 3,
 										'Negocio_id' => $this->session->userdata('Negocio_id'), );
 		}
@@ -1485,9 +1499,18 @@ class Restaurant extends CI_Controller {
 							'Estado' => 1,
 							'Negocio_id' => $this->session->userdata('Negocio_id'),  );
 
-			$data_timeline = array( 	'Comanda_id' => $Id,
+			$data_timeline = array( 	'Comanda_id' => $Comanda_id,
 										'Accion' => 4,
-										'Negocio_id' => $this->session->userdata('Negocio_id'),);
+										'Negocio_id' => $this->session->userdata('Negocio_id'));
+
+			// Actualizar compras clientes
+				$Cant_compras =  1 + $this->datosObtenidos->CantCompras;
+				$data_cliente = array( 	
+											'Cant_compras' => $Cant_compras,
+										);
+				//// insert del cliente
+				$this->load->model('Restaurant_model');
+				$insert_id_cliente = $this->Restaurant_model->insertar($data_cliente, $this->datosObtenidos->Cliente_id, '  tbl_clientes');
 		}
 
 		elseif($this->datosObtenidos->Tipo == "abrir")
@@ -1498,14 +1521,23 @@ class Restaurant extends CI_Controller {
 							'Negocio_id' => $this->session->userdata('Negocio_id'),  );
 
 			$data_timeline = array( 	
-									'Comanda_id' => $Id,
+									'Comanda_id' => $Comanda_id,
 									'Accion' => 5,
 									'Negocio_id' => $this->session->userdata('Negocio_id'), );
+
+			// Actualizar compras clientes
+			$Cant_compras =  $this->datosObtenidos->CantCompras - 1;
+			$data_cliente = array( 	
+										'Cant_compras' => $Cant_compras,
+									);
+			//// insert del cliente
+			$this->load->model('Restaurant_model');
+			$insert_id_cliente = $this->Restaurant_model->insertar($data_cliente, $this->datosObtenidos->Cliente_id, 'tbl_clientes');
 		}
 		
 		/// insert en la comanda
         $this->load->model('Restaurant_model');
-		$insert_id = $this->Restaurant_model->insertar($data, $Id, 'tbl_comandas');
+		$insert_id = $this->Restaurant_model->insertar($data, $Comanda_id, 'tbl_comandas');
 		
 		//// insert del timeline
 		$this->load->model('Restaurant_model');
@@ -1631,7 +1663,7 @@ class Restaurant extends CI_Controller {
 		}
 	}
 
-//// COMANDAS 	| ENTREGAR UN ITEM DE UNA COMANDA
+//// COMANDAS 	| CARGAR DESCUENTO
 	public function cargarDescuento()
 	{
 		$CI =& get_instance();
@@ -2251,13 +2283,24 @@ class Restaurant extends CI_Controller {
 		
 		if ($insert_id >=0 ) 
 		{   
-			$data_timeline = array( 	'Comanda_id' => $insert_id,
-										'Accion' => 7,
-										'Negocio_id' => $this->session->userdata('Negocio_id') 
-									);
-			//// insert del timeline
-			$this->load->model('Restaurant_model');
-			$insert_id_timeline = $this->Restaurant_model->insertar($data_timeline, NULL, '  tbl_comandas_timeline');
+			// Actualizar Timeline
+				$data_timeline = array( 	'Comanda_id' => $insert_id,
+											'Accion' => 7,
+											'Negocio_id' => $this->session->userdata('Negocio_id') 
+										);
+				//// insert del timeline
+				$this->load->model('Restaurant_model');
+				$insert_id_timeline = $this->Restaurant_model->insertar($data_timeline, NULL, '  tbl_comandas_timeline');
+
+			// Actualizar compras clientes
+				$Cant_compras =  1 + $this->datosObtenidos->Datos->Cant_compras;
+				$data_cliente = array( 	
+										'Cant_compras' => $Cant_compras,
+										);
+				//// insert del cliente
+				$this->load->model('Restaurant_model');
+				$insert_id_cliente = $this->Restaurant_model->insertar($data_cliente, $this->datosObtenidos->Datos->Cliente_id, 'tbl_clientes');
+			
 
             echo json_encode(array("Id" => $insert_id));         
 		} 
@@ -2299,6 +2342,15 @@ class Restaurant extends CI_Controller {
 			//// insert del timeline
 			$this->load->model('Restaurant_model');
 			$insert_id_timeline = $this->Restaurant_model->insertar($data_timeline, NULL, '  tbl_comandas_timeline');
+
+			// Actualizar compras clientes
+			$Cant_compras =  $this->datosObtenidos->Datos->Cant_compras - 1;
+			$data_cliente = array( 	
+									'Cant_compras' => $Cant_compras,
+									);
+			//// insert del cliente
+			$this->load->model('Restaurant_model');
+			$insert_id_cliente = $this->Restaurant_model->insertar($data_cliente, $this->datosObtenidos->Datos->Cliente_id, 'tbl_clientes');
 
 			echo json_encode(array("Id" => $insert_id));         
 		} 
@@ -2462,6 +2514,7 @@ class Restaurant extends CI_Controller {
 		$this->db->select('	tbl_delibery.*,
 							tbl_usuarios.Nombre as Nombre_repartidor,
 							tbl_clientes.Nombre as Nombre_cliente,
+							tbl_clientes.Cant_compras,
 							tbl_clientes.Telefono,
 							tbl_clientes.Direccion');
 		$this->db->from('tbl_delibery');
@@ -2812,28 +2865,7 @@ class Restaurant extends CI_Controller {
 		echo json_encode(array("Id" => $insert_id));  
 	}
 
-//// CLIENTES 	| OBTENER DATOS DE UN CLIENTE POR ID
-	public function datoCliente()
-	{
-		//Esto siempre va es para instanciar la base de datos
-		$CI =& get_instance();
-		$CI->load->database();
-		$token = @$CI->db->token;
 
-		
-		/* $array_id = explode("-", $_GET["Id"]);
-		$Id = $array_id[1]; */
-		$Id = $_GET["Id"];
-		$this->db->select('*');
-		$this->db->from('tbl_clientes');
-		$this->db->where('Id', $Id);
-		$this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
-
-		$query = $this->db->get();
-		$result = $query->result_array();
-
-		echo json_encode($result);
-	}
 
 //// DELIVERY REPARTOS	| VISTA LISTADO DE DELIVERYS ABIERTOS
 	public function repartos()
@@ -2874,7 +2906,7 @@ class Restaurant extends CI_Controller {
 		}		
 	}
 
-///// DELIVERY REPARTOS | Listado de repartos a realizar
+//// DELIVERY REPARTOS | Listado de repartos a realizar
 	public function obtener_repartos_abiertos()
 	{
 		//Esto siempre va es para instanciar la base de datos
@@ -2982,7 +3014,7 @@ class Restaurant extends CI_Controller {
 		
 	}
 
-///// DELIVERY REPARTOS | Listado de repartos realizados
+//// DELIVERY REPARTOS | Listado de repartos realizados
 	public function obtener_listado_repartos()
 	{
 		
@@ -3676,6 +3708,28 @@ class Restaurant extends CI_Controller {
 			
 			$this->load->view('clientes-listado');	
 		}	
+	}
+//// CLIENTES 	| OBTENER DATOS DE UN CLIENTE POR ID
+	public function datoCliente()
+	{
+		//Esto siempre va es para instanciar la base de datos
+		$CI =& get_instance();
+		$CI->load->database();
+		$token = @$CI->db->token;
+
+		
+		/* $array_id = explode("-", $_GET["Id"]);
+		$Id = $array_id[1]; */
+		$Id = $_GET["Id"];
+		$this->db->select('*');
+		$this->db->from('tbl_clientes');
+		$this->db->where('Id', $Id);
+		$this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
+
+		$query = $this->db->get();
+		$result = $query->result_array();
+
+		echo json_encode($result);
 	}
 	////
 	////

@@ -328,7 +328,7 @@ class finanzas extends CI_Controller
                         
                     'Tipo' => 	        $this->datosObtenidos->Datos->Tipo,
                     'Nombre_entrega' => $this->datosObtenidos->Datos->Nombre_entrega,
-                    'Monto' => 	        $this->datosObtenidos->Datos->Monto,
+                    'Monto_bruto' => 	        $this->datosObtenidos->Datos->Monto_bruto,
                     'Banco' => 	        $this->datosObtenidos->Datos->Banco,
                     'Numero_cheque' => 	$this->datosObtenidos->Datos->Numero_cheque,
                     'Vencimiento' => 	$this->datosObtenidos->Datos->Vencimiento,    

@@ -108,9 +108,9 @@ class proveedores extends CI_Controller
                 $Total_compras = $Total_compras + $compra["Neto"] + $compra["No_gravado"] + $compra["IVA"];
                 
                 
-                ///// MONTOS EFECTIVO
-                    $this->db->select('Monto');
-                    $this->db->from('tbl_dinero_efectivo');
+                ///// FINANZAS
+                    $this->db->select('Monto_bruto');
+                    $this->db->from('tbl_finanzas_movimientos');
                     $this->db->where('Origen_movimiento', 'Compras');
                     $this->db->where('Fila_movimiento', $compra["Id"]);
                     $this->db->where('Visible', 1);
@@ -124,51 +124,9 @@ class proveedores extends CI_Controller
                     {
                         foreach ($result_efectivo as $monto) 
                         {
-                            $Total_pagado = $Total_pagado + $monto["Monto"];
-                        }
-                    }
-
-                ///// MONTOS TRANSFERENCIAS
-                    $this->db->select('Monto_bruto');
-                    $this->db->from('tbl_dinero_transferencias');
-                    $this->db->where('Origen_movimiento', 'Compras');
-                    $this->db->where('Fila_movimiento', $compra["Id"]);
-                    $this->db->where('Visible', 1);
-
-                    $query = $this->db->get();
-                    $result_transferencias = $query->result_array();
-                    $cant_transferencias = $query->num_rows();
-
-                    if($cant_transferencias > 0)
-                    {
-                        foreach ($result_transferencias as $monto) 
-                        {
                             $Total_pagado = $Total_pagado + $monto["Monto_bruto"];
                         }
                     }
-
-                ///// MONTOS CHEQUES
-                    $this->db->select('tbl_cheques.Monto');
-
-                    $this->db->from('tbl_dinero_cheques');
-                    $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_dinero_cheques.Cheque_id', 'left');
-
-                    $this->db->where('tbl_dinero_cheques.Origen_movimiento', 'Compras');
-                    $this->db->where('tbl_dinero_cheques.Fila_movimiento', $compra["Id"]);
-                    $this->db->where('tbl_dinero_cheques.Visible', 1);
-
-                    $query = $this->db->get();
-                    $result_cheques = $query->result_array();
-                    $cant_cheques = $query->num_rows();
-
-                    if($cant_cheques > 0)
-                    {
-                        foreach ($result_cheques as $monto) 
-                        {
-                            $Total_pagado = $Total_pagado + $monto["Monto"];
-                        }
-                    }
-
             }
 
             $Saldo_proveedor = $Total_pagado - $Total_compras;

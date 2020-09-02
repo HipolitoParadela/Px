@@ -83,7 +83,12 @@ include "header-body.php";
                                                             <img v-else class="avatar" src="<?php echo base_url(); ?>uploads/imagenes/addimagen.jpg" alt="">
                                                         </a>
                                                     </td>
-                                                    <td>{{item.Nombre_item}}</td>
+                                                    <td>
+                                                       
+                                                        <a v-bind:href="'datos/?Id='+item.Id" class="btn btn-dark btn-outline m-b-10 m-l-5">
+                                                            {{item.Nombre_item}}
+                                                        </a>
+                                                    </td>
                                                     <td>
                                                         <h4 align="center">${{item.Precio_venta | Moneda}}</h4>
                                                     </td>

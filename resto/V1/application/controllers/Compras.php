@@ -151,60 +151,25 @@ class compras extends CI_Controller
                 
                 /////////// -------------------- OBTENER TOTAL DE DINERO PAGADO EN ESTAS COMPRAS-----
                     $total_abonado = 0;
-                /// CONSULTANDO MONTOS ABONADOS EN EFECTIVO
-                    $this->db->select('Monto');
-                    $this->db->from('tbl_dinero_efectivo');
-                    $this->db->where('Origen_movimiento', 'Compras');
-                    $this->db->where('Fila_movimiento', $compra["Id"]);
-                    $this->db->where('Visible', 1);
-                    
-                    $query = $this->db->get();
-                    $resultMontoEfectivo = $query->result_array();
-                    
-                    /////  SUMAR MONTOS
-                    foreach ($resultMontoEfectivo as $montos) 
-                    {
-                        $Total_dinero_pagado_vencidas = $Total_dinero_pagado_vencidas + $montos["Monto"];
-                        $total_abonado = $total_abonado + $montos["Monto"];
-                    }
-            
-                ///MONTO ABONADO EN TRANSFERENCIA
-                    $this->db->select('Monto_bruto, Retencion_ing_brutos');
-                    $this->db->from('tbl_dinero_transferencias');
-                    $this->db->where('Origen_movimiento', 'Compras');
-                    $this->db->where('Fila_movimiento', $compra["Id"]);
-                    $this->db->where('Visible', 1);
-                    
-                    $query = $this->db->get();
-                    $resultMontosTransferencia = $query->result_array();
+                ///// FINANZAS
+                $this->db->select('Monto_bruto');
+                $this->db->from('tbl_finanzas_movimientos');
+                $this->db->where('Origen_movimiento', 'Compras');
+                $this->db->where('Fila_movimiento', $compra["Id"]);
+                $this->db->where('Visible', 1);
+
+                $query = $this->db->get();
+                $result_efectivo = $query->result_array();
+                $cant_efectivo = $query->num_rows();
                 
-                    /////  SUMAR MONTOS
-                    foreach ($resultMontosTransferencia as $montos) 
+                //// BUSCANDO PAGOS
+                if($cant_efectivo > 0)
+                {
+                    foreach ($result_efectivo as $monto) 
                     {
-                        /* $Total_dinero_pagado_vencidas = $Total_dinero_pagado_vencidas + $montos["Monto_bruto"] - $montos["Retencion_ing_brutos"];
-                        $total_abonado = $total_abonado + $montos["Monto_bruto"] - $montos["Retencion_ing_brutos"]; */
-                        $Total_dinero_pagado_vencidas = $Total_dinero_pagado_vencidas + $montos["Monto_bruto"];
-                        $total_abonado = $total_abonado + $montos["Monto_bruto"];
+                        $total_abonado = $total_abonado + $monto["Monto_bruto"];
                     }
-
-                ///MONTO ABONADO CON CHEQUES
-                    $this->db->select('tbl_cheques.Monto');
-                    $this->db->from('tbl_dinero_cheques');
-                    $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_dinero_cheques.Cheque_id', 'left');
-                    $this->db->where('Origen_movimiento', 'Compras');
-                    $this->db->where('Fila_movimiento', $compra["Id"]);
-                    $this->db->where('tbl_dinero_cheques.Visible', 1);
-                    
-                    $query = $this->db->get();
-                    $result = $query->result_array();
-
-                    /////  SUMAR MONTOS
-                    
-                    foreach ($result as $monto) 
-                    {
-                        $Total_dinero_pagado_vencidas = $Total_dinero_pagado_vencidas + $monto["Monto"];
-                        $total_abonado = $total_abonado + $monto["Monto"];
-                    }
+                }
 
                     $info_esta_factura = array('Datos'=> $compra, 'Total_abonado' => $total_abonado, 'Valor_compra' => $valor_compra);
                     array_push($Datos_vencidas, $info_esta_factura);
@@ -265,64 +230,31 @@ class compras extends CI_Controller
                 
                 /////////// -------------------- OBTENER TOTAL DE DINERO PAGADO EN ESTAS COMPRAS-----
                     $total_abonado = 0;
-                /// CONSULTANDO MONTOS ABONADOS EN EFECTIVO
-                    $this->db->select('Monto');
-                    $this->db->from('tbl_dinero_efectivo');
-                    $this->db->where('Origen_movimiento', 'Compras');
-                    $this->db->where('Fila_movimiento', $compra["Id"]);
-                    $this->db->where('Visible', 1);
-                    
-                    $query = $this->db->get();
-                    $resultMontoEfectivo = $query->result_array();
-                    
-                    /////  SUMAR MONTOS
-                    foreach ($resultMontoEfectivo as $montos) 
-                    {
-                        $Total_dinero_pagado_no_vencidas = $Total_dinero_pagado_no_vencidas + $montos["Monto"];
-                        $total_abonado = $total_abonado + $montos["Monto"];
-                    }
-            
-                ///MONTO ABONADO EN TRANSFERENCIA
+
+                    ///// FINANZAS
                     $this->db->select('Monto_bruto');
-                    $this->db->from('tbl_dinero_transferencias');
+                    $this->db->from('tbl_finanzas_movimientos');
                     $this->db->where('Origen_movimiento', 'Compras');
                     $this->db->where('Fila_movimiento', $compra["Id"]);
                     $this->db->where('Visible', 1);
-                    
-                    $query = $this->db->get();
-                    $resultMontosTransferencia = $query->result_array();
-                
-                    /////  SUMAR MONTOS
-                    foreach ($resultMontosTransferencia as $montos) 
-                    {
-                        $Total_dinero_pagado_no_vencidas = $Total_dinero_pagado_no_vencidas+ $montos["Monto_bruto"];
-                        $total_abonado = $total_abonado+ $montos["Monto_bruto"];
-                        
-                    }
 
-                ///MONTO ABONADO CON CHEQUES
-                    $this->db->select('  tbl_cheques.Monto');
-                    $this->db->from('tbl_dinero_cheques');
-                    $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_dinero_cheques.Cheque_id', 'left');
-                    $this->db->where('tbl_dinero_cheques.Origen_movimiento', 'Compras');
-                    $this->db->where('tbl_dinero_cheques.Fila_movimiento', $compra["Id"]);
-                    $this->db->where('tbl_dinero_cheques.Visible', 1);
-                    
                     $query = $this->db->get();
-                    $result = $query->result_array();
-
-                    /////  SUMAR MONTOS
+                    $result_efectivo = $query->result_array();
+                    $cant_efectivo = $query->num_rows();
                     
-                    foreach ($result as $monto) 
+                    //// BUSCANDO PAGOS
+                    if($cant_efectivo > 0)
                     {
-                        $Total_dinero_pagado_no_vencidas = $Total_dinero_pagado_no_vencidas + $monto["Monto"];
-                        $total_abonado = $total_abonado + $monto["Monto"];
+                        foreach ($result_efectivo as $monto) 
+                        {
+                            $total_abonado = $total_abonado + $monto["Monto_bruto"];
+                        }
                     }
 
                     $info_esta_factura = array('Datos'=> $compra, 'Total_abonado' => $total_abonado, 'Valor_compra' => $valor_compra);
                     array_push($Datos_no_vencidas, $info_esta_factura);
-                
-            }
+                    
+                }
 
         //// --------------
         $Datos = array(
@@ -340,7 +272,7 @@ class compras extends CI_Controller
     }
 
 
-//// COMPRAS 	   | OBTENER listado proveedor
+//// COMPRAS 	   | PROVEEDOR OBTENER listado
 	public function obtener_compras_proveedor()
     {
         //Esto siempre va es para instanciar la base de datos
@@ -380,63 +312,23 @@ class compras extends CI_Controller
         {
             $Total_pagado = 0;
 
-            ///// MONTOS EFECTIVO
-            $this->db->select('Monto');
-            $this->db->from('tbl_dinero_efectivo');
+            ///// FINANZAS
+            $this->db->select('Monto_bruto');
+            $this->db->from('tbl_finanzas_movimientos');
             $this->db->where('Origen_movimiento', 'Compras');
             $this->db->where('Fila_movimiento', $compra["Id"]);
             $this->db->where('Visible', 1);
-            
+
             $query = $this->db->get();
             $result_efectivo = $query->result_array();
             $cant_efectivo = $query->num_rows();
             
+            //// BUSCANDO PAGOS
             if($cant_efectivo > 0)
             {
                 foreach ($result_efectivo as $monto) 
                 {
-                    $Total_pagado = $Total_pagado + $monto["Monto"];
-                }
-            }
-            
-            ///// MONTOS TRANSFERENCIAS
-            $this->db->select('Monto_bruto');
-            $this->db->from('tbl_dinero_transferencias');
-            $this->db->where('Origen_movimiento', 'Compras');
-            $this->db->where('Fila_movimiento', $compra["Id"]);
-            $this->db->where('Visible', 1);
-            
-            $query = $this->db->get();
-            $result_transferencias = $query->result_array();
-            $cant_transferencias = $query->num_rows();
-            
-            if($cant_transferencias > 0)
-            {
-                foreach ($result_transferencias as $monto) 
-                {
                     $Total_pagado = $Total_pagado + $monto["Monto_bruto"];
-                }
-            }
-
-            ///// MONTOS CHEQUES
-            $this->db->select('tbl_cheques.Monto');
-
-            $this->db->from('tbl_dinero_cheques');
-            $this->db->join('tbl_cheques', 'tbl_cheques.Id = tbl_dinero_cheques.Cheque_id', 'left');
-
-            $this->db->where('tbl_dinero_cheques.Origen_movimiento', 'Compras');
-            $this->db->where('tbl_dinero_cheques.Fila_movimiento', $compra["Id"]);
-            $this->db->where('tbl_dinero_cheques.Visible', 1);
-            
-            $query = $this->db->get();
-            $result_cheques = $query->result_array();
-            $cant_cheques = $query->num_rows();
-            
-            if($cant_cheques > 0)
-            {
-                foreach ($result_cheques as $monto) 
-                {
-                    $Total_pagado = $Total_pagado + $monto["Monto"];
                 }
             }
             

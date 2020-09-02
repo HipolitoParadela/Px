@@ -94,7 +94,6 @@ include "header-body.php";
                                                     <th>Precio Costo</th>
                                                     <th>Valor total</th>
                                                     <th>Cant. Ideal</th>
-                                                    <th>Medida</th>
                                                     <!--<th width="200">Ingreso/Egreso stock</th>-->
                                                     <th>Movimiento</th>
                                                     <th>Última Modificación</th>
@@ -126,13 +125,12 @@ include "header-body.php";
                                                     <td>{{stock.Nombre_categoria}}</td>
 
                                                     <td>
-                                                        <h2 v-bind:class="classAlertaStock(stock.Cant_actual, stock.Cant_ideal)" align="center">{{stock.Cant_actual}}</h2>
+                                                        <h2 v-bind:class="classAlertaStock(stock.Cant_actual, stock.Cant_ideal)" align="center">{{stock.Cant_actual}} {{stock.Unidad_medida}}</h2>
                                                     </td>
                                                     <td align="center">${{stock.Precio_costo | Moneda}} </td>
                                                     <td align="center">${{stock.Cant_actual * stock.Precio_costo  | Moneda}} </td>
 
                                                     <td align="center">{{stock.Cant_ideal}} </td>
-                                                    <td align="center">{{stock.Unidad_medida}} </td>
                                                     <!--<td width= "500" bgcolor="#F2F2F2">
                                                     <div class="input-group">
                                                         <input size="6" type="number" class="form-control" v-model="cantMovimientoStock[index]">
@@ -207,25 +205,25 @@ include "header-body.php";
                                             <label class=" form-control-label">Unidades de Medida</label>
                                             <select class="form-control" v-model="stockDato.Unidad_medida" required>
                                                 <option value="kg">Kg</option>
-                                                <option value="g">Gramo</option>
-                                                <option value="Litro">Litro</option>
-                                                <option value="Un">Unidad</option>
+                                                <option value="gr">Gramo</option>
+                                                <option value="ltrs">Litro</option>
+                                                <option value="Un.">Unidad</option>
                                                 <option value="Caja/Pack">Caja/Pack</option>
-                                                <option value="Sin Definir">Sin definir</option>
+                                                <option value="S/D">Sin definir</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Cantidad inicial</em></label>
-                                            <input type="number" class="form-control" placeholder="" v-model="stockDato.Cant_actual" required> <!-- :disabled="stockDato.Id" -->
+                                            <input type="number" step=".01" class="form-control" placeholder="" v-model="stockDato.Cant_actual" required> <!-- :disabled="stockDato.Id" -->
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Cantidad ideal</label>
                                             <input type="number" class="form-control" placeholder="" v-model="stockDato.Cant_ideal" required>
                                         </div>
                                         <div class="form-group">
-                                            <label class="col-sm-2 control-label">Precio Costo</label>
+                                            <label class="col-sm-2 control-label">Precio Costo x {{stockDato.Unidad_medida}}</label>
                                             <div class="col-sm-10">
-                                                <input type="number" class="form-control" placeholder="" v-model="stockDato.Precio_costo" required>
+                                                <input type="number" class="form-control" placeholder="" v-model="stockDato.Precio_costo" required :disabled="stockDato.Unidad_medida == null">
                                             </div>
                                         </div>
 
@@ -390,7 +388,7 @@ include "header-body.php";
                                     <div class="horizontal-form">
                                         <div class="form-group">
                                             <label class=" form-control-label">Cantidad retirada</label>
-                                            <input type="number" min="1" class="form-control" v-model="egresoDato.Cantidad" required>
+                                            <input type="number" step="any" min="1" class="form-control" v-model="egresoDato.Cantidad" required>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Descripción del egreso</label>
@@ -430,7 +428,7 @@ include "header-body.php";
                                     <div class="horizontal-form">
                                         <div class="form-group">
                                             <label class=" form-control-label">Cantidad ingresada</label>
-                                            <input type="number" min="1" class="form-control" v-model="egresoDato.Cantidad" required>
+                                            <input type="number" step="any" min="1" class="form-control" v-model="egresoDato.Cantidad" required>
                                         </div>
                                         <div class="form-group">
                                             <label class=" form-control-label">Descripción del ingreso</label>

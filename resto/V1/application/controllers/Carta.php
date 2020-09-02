@@ -571,7 +571,8 @@ class Carta extends CI_Controller
         $ItemCarta_id = $_GET["ItemCarta_id"];
 
         $this->db->select('	tbl_itemcarta_insumos_producto.*,
-                            tbl_stock.Nombre_item');
+                            tbl_stock.Nombre_item,
+                            tbl_stock.Unidad_medida');
 
         $this->db->from('tbl_itemcarta_insumos_producto');
 

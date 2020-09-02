@@ -300,22 +300,6 @@ include "header-body.php";
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="col-lg-3"> 
-                                <div class="card p-0">
-                                    <div class="stat-widget-three">
-                                        <div class="stat-icon bg-danger">
-                                        <i class="ti-back-right"></i>
-                                        </div>
-                                        <div class="stat-content">
-                                            <div class="stat-digit">
-                                                <button class="btn btn-danger" v-on:click="entregasEnMesa(datoDelivery.Id, 'abrir', sumarCuenta(itemsComanda))" >
-                                                    Reabrir comanda
-                                                </button>  
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>      -->
                         </div>
                     </div>
 
@@ -368,10 +352,9 @@ include "header-body.php";
                                         <table id="table2excel" class="table table-striped">
                                             <thead>
                                                 <tr>
-
                                                     <th>Método</th>
                                                     <th>Monto</th>
-                                                    <th>Fecha</th>
+                                                    <th>Fecha</th>  
                                                     <th>
                                                         <button data-toggle="modal" data-target="#modalEfectivo" v-on:click="limpiarFormularioMovimiento()">
                                                             <i class="fa fa-plus-circle text-success"></i> Cobrar
@@ -380,7 +363,6 @@ include "header-body.php";
                                                             <i class="fa fa-plus-circle text-success"></i> Cobrar con cheque
                                                         </button>
                                                     </th>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -618,7 +600,7 @@ include "header-body.php";
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Monto</label>
-                                    <input type="number" class="form-control" v-model="chequeData.Monto" required>
+                                    <input type="number" class="form-control" v-model="chequeData.Monto_bruto" required>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Número de cheque</label>

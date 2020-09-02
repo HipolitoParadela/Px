@@ -255,7 +255,7 @@ include "header-body.php";
                                                                                 </button>
                                                                                 <button data-toggle="modal" data-target="#modalCheque" v-on:click="limpiarFormularioMovimiento()">
                                                                                     <i class="fa fa-plus-circle text-success"></i> Pagar con cheque
-                                                                                </button> Modificar esto para mostrar listado de cheques. 
+                                                                                </button>
                                                                             </th>
 
                                                                         </tr>
@@ -352,7 +352,7 @@ include "header-body.php";
                                                                 <tbody>
                                                                     <tr v-for="(producto, index) in buscarProducto">
                                                                         <td>{{producto.Nombre_item}}</td>
-                                                                        <td><input size="6" type="number" class="form-control" v-model="cantMovimientoStock[index]"></td>
+                                                                        <td><input size="6" type="number" step=".01" class="form-control" v-model="cantMovimientoStock[index]"></td>
                                                                         <td><input size="6" type="number" class="form-control" v-model="producto.Precio_costo"></td>
                                                                         <td>
                                                                             <div class="input-group">
@@ -488,49 +488,20 @@ include "header-body.php";
                             </div>
                             <div class="modal-body">
                                 <div class="horizontal-form">
-                                    <form class="form-horizontal" enctype="multipart/form-data" action="post" v-on:submit.prevent="crearCheque()">
-                                        <input type="hidden" v-model="chequeData.Tipo" v-value="1">
+                                    <form class="form-horizontal" enctype="multipart/form-data" action="post" v-on:submit.prevent="pagoConCheque(chequeSeleccionado)">
+                                        <label class="col-sm-12 control-label">Seleccionar Cheque </label>
                                         <div class="form-group">
-                                            <label class="control-label">Cheque a nombre de</label>
-                                            <input type="text" class="form-control" v-model="chequeData.Nombre_entrega" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label">Monto</label>
-                                            <input type="number" class="form-control" v-model="chequeData.Monto" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label">Número de cheque</label>
-                                            <input type="number" class="form-control" v-model="chequeData.Numero_cheque" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label">Banco</label>
-                                            <input type="text" class="form-control" v-model="chequeData.Banco" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class=" form-control-label">Vencimiento</label>
-                                            <input type="date" class="form-control" v-model="chequeData.Vencimiento">
+                                            <select class="form-control" v-model="chequeSeleccionado">
+                                                <option v-for="cheque in listaCheques" v-bind:value="cheque">
+                                                    ${{cheque.Monto_bruto}} | De {{cheque.Nombre_entrega}}, banco {{cheque.Banco}} |  Vencimiento: {{cheque.Vencimiento | Fecha}}
+                                                </option>
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Observaciones</label>
-                                            <textarea class="form-control" rows="5" v-model="chequeData.Observaciones"></textarea>
+                                            <textarea class="form-control" rows="5" v-model="chequeData.Observaciones_cheque"></textarea>
                                         </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input @change="archivoSeleccionado" type="file" class="form-control" name="Imagen">
-                                            </div>
-                                            <div class="col-sm-12" v-if="chequeData.Imagen != null">
-                                                Archivo previamente cargado
-                                                <a target="_blank" v-bind:href="'<?php echo base_url(); ?>uploads/imagenes/'+chequeData.Imagen"> Ver archivo</a>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" v-show="preloader == 1">
-                                            <p align="center">
-                                                EL ARCHIVO SE ESTA CARGANDO. <br> No cerrar la ventana hasta finalizada la carga, dependiendo del peso del archivo puede demorar algunos minutos.
-                                            </p>
-                                            <p align="center">
-                                                <img src="http://grupopignatta.com.ar/images/preloader.gif" alt="">
-                                            </p>
-                                        </DIV>
+
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-success" :disabled="preloader == 1">{{texto_boton}}</button>
                                         </div>

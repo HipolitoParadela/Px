@@ -117,7 +117,7 @@ include "header-body.php";
                                     <div class="stat-icon dib"><i class="ti-timer color-pink border-pink"></i></div>
                                     <div class="stat-content dib">
                                         <div class="stat-text">Entrada en mesa</div>
-                                        <div v-if="datoComanda.Hora_entrada_en_mesa == null" class="stat-digit"><button v-on:click="entregasEnMesa(datoComanda.Id, 'entrada')" type="submit" class="btn btn-warning">Entregado</button></div>
+                                        <div v-if="datoComanda.Hora_entrada_en_mesa == null" class="stat-digit"><button v-on:click="entregasEnMesa(datoComanda.Id, 'entrada', null, null, null)" type="submit" class="btn btn-warning">Entregado</button></div>
                                         <div v-if="datoComanda.Hora_entrada_en_mesa != null" class="stat-digit">{{formatoHora(datoComanda.Hora_entrada_en_mesa)}}</div>
                                     </div>
                                 </div>
@@ -129,7 +129,7 @@ include "header-body.php";
                                     <div class="stat-icon dib"><i class="ti-timer color-primary border-primary"></i></div>
                                     <div class="stat-content dib">
                                         <div class="stat-text">Menú en mesa</div>
-                                        <div v-if="datoComanda.Hora_menu_en_mesa == null" class="stat-digit"><button v-on:click="entregasEnMesa(datoComanda.Id, 'menu')" type="submit" class="btn btn-warning">Entregado</button></div>
+                                        <div v-if="datoComanda.Hora_menu_en_mesa == null" class="stat-digit"><button v-on:click="entregasEnMesa(datoComanda.Id, 'menu', null, null, null)" type="submit" class="btn btn-warning">Entregado</button></div>
                                         <div v-if="datoComanda.Hora_menu_en_mesa != null" class="stat-digit">{{formatoHora(datoComanda.Hora_menu_en_mesa)}}</div>
                                     </div>
                                 </div>
@@ -145,7 +145,7 @@ include "header-body.php";
                                             echo ''; /// inicio condicional para Roles PHP 
                                         ?>
                                             <div v-if="datoComanda.Hora_cierre_comanda == null" class="stat-digit">
-                                                <button v-on:click="entregasEnMesa(datoComanda.Id, 'cerrar', sumarCuenta(itemsComanda))" type="submit" class="btn btn-danger">Cerrar comanda</button>
+                                                <button v-on:click="entregasEnMesa(datoComanda.Id, 'cerrar', datoComanda.Cant_compras, datoComanda.Cliente_id, sumarCuenta(itemsComanda))" type="submit" class="btn btn-danger">Cerrar comanda</button>
                                             </div>
                                         <?php '';
                                         } /// fin condicional para Roles PHP
@@ -306,7 +306,7 @@ include "header-body.php";
                                             </div>
                                             <div class="stat-content">
                                                 <div class="stat-digit">
-                                                    <button class="btn btn-danger" v-on:click="entregasEnMesa(datoComanda.Id, 'abrir', sumarCuenta(itemsComanda))">
+                                                    <button class="btn btn-danger" v-on:click="entregasEnMesa(datoComanda.Id, 'abrir', datoComanda.Cant_compras, datoComanda.Cliente_id, sumarCuenta(itemsComanda))">
                                                         Reabrir comanda
                                                     </button>
                                                 </div>
@@ -612,7 +612,7 @@ include "header-body.php";
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Monto</label>
-                                            <input type="number" class="form-control" v-model="chequeData.Monto" required>
+                                            <input type="number" class="form-control" v-model="chequeData.Monto_bruto" required>
                                         </div>
                                         <div class="form-group">
                                             <label class="control-label">Número de cheque</label>
