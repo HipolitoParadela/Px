@@ -7,15 +7,18 @@ class finanzas extends CI_Controller
 //// FINANZAS       | VISTA | LISTADO
     public function index()
     {
-        if ($this->session->userdata('Login') != true) {
+        if ($this->session->userdata('Login') != true) 
+        {
             header("Location: " . base_url() . "login"); /// enviar a pagina de error
-        } else {
-
-            if ($this->session->userdata('Rol_acceso') > 3) {
-                $this->load->view('periodos_listado');
+        } 
+        else 
+        {
+            $this->load->view('finanzas_fondo');
+            /* if ($this->session->userdata('Rol_acceso') > 3) {
+                $this->load->view('finanzas_fondo');
             } else {
                 header("Location: " . base_url() . "login"); /// enviar a pagina de error
-            }
+            } */
 
         }
     }
@@ -524,20 +527,20 @@ class finanzas extends CI_Controller
         $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_finanzas_movimientos.Usuario_id', 'left');
 
         $this->db->where('tbl_finanzas_movimientos.Visible', 1);
-        $this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->where("tbl_finanzas_movimientos.Negocio_id", $this->session->userdata('Negocio_id'));
         $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', 1); // 1 efectivo, 2 trans/tarj, 3 cheques
         
         if($this->datosObtenidos->Fecha_inicio != null)
         {
-            $this->db->where("DATE_FORMAT(Fecha_ejecutado,'%Y-%m-%d') >=", $this->datosObtenidos->Fecha_inicio);
+            $this->db->where("DATE_FORMAT(tbl_finanzas_movimientos.Fecha_ejecutado,'%Y-%m-%d') >=", $this->datosObtenidos->Fecha_inicio);
         }
         if($this->datosObtenidos->Fecha_fin != null)
         {
-            $this->db->where("DATE_FORMAT(Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
+            $this->db->where("DATE_FORMAT(tbl_finanzas_movimientos.Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
         }
         if($this->datosObtenidos->Jornada_id != 0)
         {
-            $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
+            $this->db->where("tbl_finanzas_movimientos.Jornada_id", $this->datosObtenidos->Jornada_id);
         }
             
         $this->db->order_by("tbl_finanzas_movimientos.Id", "desc");
@@ -587,7 +590,7 @@ class finanzas extends CI_Controller
         $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_finanzas_movimientos.Usuario_id', 'left');
 
         $this->db->where('tbl_finanzas_movimientos.Visible', 1);
-        $this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->where("tbl_finanzas_movimientos.Negocio_id", $this->session->userdata('Negocio_id'));
         $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', 2); // 1 efectivo, 2 trans/tarj, 3 cheques
 
         if($this->datosObtenidos->Fecha_inicio != null)
@@ -600,7 +603,7 @@ class finanzas extends CI_Controller
         }
         if($this->datosObtenidos->Jornada_id != 0)
         {
-            $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
+            $this->db->where("tbl_finanzas_movimientos.Jornada_id", $this->datosObtenidos->Jornada_id);
         }
         $this->db->order_by("tbl_finanzas_movimientos.Id", "desc");
         
@@ -616,20 +619,20 @@ class finanzas extends CI_Controller
         {
             if($monto["Op"] == true)
             {
-                $Montos_entrantes = $Montos_entrantes + $monto["Monto_bruto_bruto"];
+                $Montos_entrantes = $Montos_entrantes + $monto["Monto_bruto"];
                 $Ing_brutos = $Ing_brutos + $monto["Retencion_ing_brutos"];
             }
             else
             {
-                $Montos_salientes = $Montos_salientes + $monto["Monto_bruto_bruto"];
+                $Montos_salientes = $Montos_salientes + $monto["Monto_bruto"];
             }
 
             $Total = $Montos_entrantes - $Montos_salientes - $Ing_brutos;
             /* if($monto["Op"] == true){
-                $Total = $Total + $monto["Monto_bruto_bruto"] - $monto["Retencion_ing_brutos"];
+                $Total = $Total + $monto["Monto_bruto"] - $monto["Retencion_ing_brutos"];
             }
             else {
-                $Total = $Total - $monto["Monto_bruto_bruto"] - $monto["Retencion_ing_brutos"];
+                $Total = $Total - $monto["Monto_bruto"] - $monto["Retencion_ing_brutos"];
             } */
         }
         
@@ -651,7 +654,7 @@ class finanzas extends CI_Controller
         if ($this->datosObtenidos->token != $token) { exit("No coinciden los token"); }
 
         $this->db->select(' tbl_cheques.Banco,
-                            tbl_cheques.Monto,
+                            tbl_cheques.Monto_bruto,
                             tbl_cheques.Tipo,
                             tbl_cheques.Numero_cheque,
                             tbl_cheques.Nombre_entrega,
@@ -670,7 +673,7 @@ class finanzas extends CI_Controller
 
         $this->db->where('tbl_finanzas_movimientos.Visible', 1);
         $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', 3); // 1 efectivo, 2 trans/tarj, 3 cheques
-        $this->db->where("Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->where("tbl_finanzas_movimientos.Negocio_id", $this->session->userdata('Negocio_id'));
 
         if($this->datosObtenidos->Fecha_inicio != null)
         {
@@ -682,7 +685,7 @@ class finanzas extends CI_Controller
         }
         if($this->datosObtenidos->Jornada_id != 0)
         {
-            $this->db->where("Jornada_id", $this->datosObtenidos->Jornada_id);
+            $this->db->where("tbl_finanzas_movimientos.Jornada_id", $this->datosObtenidos->Jornada_id);
         }
         $this->db->order_by("tbl_finanzas_movimientos.Id", "desc");
         
@@ -709,6 +712,9 @@ class finanzas extends CI_Controller
 
         echo json_encode($Datos);
     }
+
+
+
 
 ///// fin documento
 }

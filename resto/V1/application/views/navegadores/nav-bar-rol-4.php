@@ -21,9 +21,8 @@
                 <li><a href="<?php echo base_url(); ?>restaurant/repartos"><i class="ti-car"></i> Repartos</a></li>
                 <li><a href="<?php echo base_url(); ?>restaurant/comandas"><i class="ti-receipt"></i> Comandas</a></li>
 
-                <li><a href="<?php echo base_url(); ?>restaurant/caja"><i class="ti-harddrive"></i> Caja</a></li>
+               <!--  <li><a href="<?php echo base_url(); ?>restaurant/caja"><i class="ti-harddrive"></i> Caja</a></li> -->
                 <li><a href="<?php echo base_url(); ?>restaurant/cocina"><i class="ti-widget"></i> Cocina</a></li>
-                <li><a href="<?php echo base_url(); ?>restaurant/controlpresencia"><i class="ti-user"></i> Personal</a></li>
                 <li><a href="<?php echo base_url(); ?>stock"><i class="ti-package"></i> Stock</a></li>
                 <li><a href="<?php echo base_url(); ?>planificaciones"><i class="ti-calendar"></i> Calendario </a></li>
 
@@ -32,6 +31,7 @@
                         <i class="ti-bar-chart-alt"></i>Analíticas <span class="sidebar-collapse-icon ti-angle-down"></span>
                     </a>
                     <ul>
+                        <li><a href="<?php echo base_url(); ?>finanzas"><i class="ti-harddrive"></i> Finanzas</a></li>
                         <li><a href="<?php echo base_url(); ?>restaurant/resumendelivery"><i class="ti-layers-alt"></i> Deliverys</a></li>
                         <li><a href="<?php echo base_url(); ?>restaurant/resumenjornadas"><i class="ti-layers-alt"></i> Jornadas</a></li>
                         <li><a href="<?php echo base_url(); ?>restaurant/resumencomandas"><i class="ti-layers-alt"></i> Comandas</a></li>

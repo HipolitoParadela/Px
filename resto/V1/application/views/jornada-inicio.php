@@ -89,49 +89,11 @@ include "header-body.php";
                             </div>
                         </div>
                     <?php  } else {
-                        echo ''; ?>
+                    echo ''; ?>
 
                         <div class="row">
                             <!--  ESTE SE MOSTRARÍA CUANDO LA JORNADA ESTE INACTIVA. ESCONDER Y MOSTRAR CON PHP -->
-                            <div class="col-lg-2">
-                                <div>
-                                    <div class="col-lg-12">
-                                        <div class="card p-0">
-                                            <div class="stat-widget-three">
-                                                <div class="stat-icon bg-info">
-                                                    <i class="ti-user"></i>
-                                                </div>
-                                                <div class="stat-content">
-                                                    <div class="stat-digit">
-                                                        <a href="controlpresencia" class="btn">
-                                                            Personal
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="col-lg-12">
-                                        <div class="card p-0">
-                                            <div class="stat-widget-three">
-                                                <div class="stat-icon bg-warning">
-                                                    <i class="ti-harddrive"></i>
-                                                </div>
-                                                <div class="stat-content">
-                                                    <div class="stat-digit">
-                                                        <a href="caja" class="btn">
-                                                            Caja
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-10">
+                            <div class="col-lg-12">
                                 <div class="card">
                                     <h3>{{result_jornada.Datos_jornada.Descripcion}} - Contabilidad</h3>
                                     <p>Iniciada el {{result_jornada.Datos_jornada.Fecha_inicio | FechaTimestampBaseDatos}}.</p>
@@ -280,6 +242,95 @@ include "header-body.php";
                                 </div>
                             </div>
 
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <!-- /# card -->
+                                <div class="card">
+                                    <div class="bootstrap-data-table-panel">
+                                        <h4>En jornada laboral</h4>
+                                        <p>Los usuarios de esta lista tienen permiso para acceder al sistema.</p>
+                                        <div class="table-responsive">
+                                            <div class="modal-body">
+                                                <div class="horizontal-form">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>Nombre</th>
+                                                                <th>Rol</th>
+                                                                <!-- <th>Hora Ingreso</th> -->
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="usuario in listaControlPresencia.Presentes">
+                                                                <td>
+                                                                    <div class="round-img">
+                                                                        <img v-if="usuario.Imagen != null" v-bind:src="'<?php echo base_url(); ?>/pxresto/uploads/imagenes/'+usuario.Imagen" alt="">
+                                                                        <!-- <img v-else  src="http://c1260237.ferozo.com/pxresto/uploads/imagenes/addimagen.jpg" alt=""> -->
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{usuario.Nombre}}</td>
+                                                                <td>{{usuario.Nombre_rol}}</td>
+                                                                <!-- <td>{{usuario.Fecha_hora}}</td> -->
+                                                                <td>
+                                                                    <a href="#" v-on:click="jornada(usuario.Id, 0)" tittle="Habilitar"><span class="badge badge-warning">Finalizar acceso al sistema para esta jornada</span></a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /# card -->
+                            </div>
+                            <!-- /# column -->
+                            <div class="col-lg-6">
+                                <!-- /# card -->
+                                <div class="card">
+                                    <div class="bootstrap-data-table-panel">
+                                        <h4>Fuera de jornada laboral</h4>
+                                        <p>Los usuarios de esta lista, no tienen permiso para acceder al sistema.</p>
+                                        <div class="table-responsive">
+                                            <div class="modal-body">
+                                                <div class="horizontal-form">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th>Nombre</th>
+                                                                <th>Rol</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="usuario in listaControlPresencia.NoPresentes">
+                                                                <td>
+                                                                    <a href="#" v-on:click="jornada(usuario.Id, 1)" tittle="Desabilitar"><span class="badge badge-success">Permitir acceso al sistema para esta jornada</span></a>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="round-img">
+                                                                        <img v-if="usuario.Imagen != null" v-bind:src="'<?php echo base_url(); ?>/pxresto/uploads/imagenes/'+usuario.Imagen" alt="">
+                                                                        <!-- <img v-else  src="http://c1260237.ferozo.com/pxresto/uploads/imagenes/addimagen.jpg" alt=""> -->
+                                                                    </div>
+                                                                </td>
+                                                                <td>{{usuario.Nombre}}</td>
+                                                                <td>{{usuario.Nombre_rol}}</td>
+
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /# card -->
+                            </div>
+                            <!-- /# column -->
                         </div>
                     <?php  } ?>
                     </section>
