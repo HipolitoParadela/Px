@@ -8,25 +8,22 @@ PX Resto
 
 _______________________________
 
-
-Finanzas
-
-	terminar pudiendo agregar pagos genericos con los medios de pago, agregar mercado pago.
-	
-	aclarar que banco tambien es tarjeta
-
------------------------
-
-clientes - opcion de listarlos por nombre y por más compradores
-
 clientes_datos
-	mostrar compras que hizo
-	ver resumen de cuentas 
-		aca busco las compras que hizo. luego veo el monto final de la compra, veo cuando abono en total, y que saldo queda. 
-		mismo sistema que compras, no debería cambiar casi nada
-		y debería tener un campo para hacer pagos
-	
-	
+	ver el tema de la imagen, algunas pueden ser empresas
+
+proveedores_datos, 
+		agregar para generarle pagos
+
+listado de proveedores. poner el resumen de cuenta como en clientes
+
+
+	¿como vinculo un pago de cliente o proveedor a la tabla de finanzas movimientos?
+	1- usar una tabla nueva? y de ahi busco movimientos que tengan que ver con el cliente.
+
+
+----
+El dia de mañana la tabla clientes y proveedores deberia ser la misma. con un campo que los diferencie.
+Incluso deberia ser una sola tabla para todo lo que sea persona.
 __________________________________________________________________________________
 __________________________________________________________________________________
 
@@ -37,7 +34,6 @@ ________________________________________________________________________________
 - ver si puedo poner ckeditor en algunos campos
 
 - codigo qr con enlace a pagina de la comanda creada para que el propio cliente pueda realizar el pedido
-
 
 __________________________________________________________________________________
 __________________________________________________________________________________

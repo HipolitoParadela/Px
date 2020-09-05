@@ -231,9 +231,9 @@ new Vue({
         }
 
         /////// CLIENTES -------------------- /////////////////
-        if (pathname == carpeta + 'restaurant/clientes') {
+        if (pathname == carpeta + 'clientes') {
 
-            this.getListadoClientes();
+            this.getListadoClientesAvanzado();
         }
 
         /////// PROVEEDORES -------------------- /////////////////
@@ -253,11 +253,10 @@ new Vue({
          /////// FINANZAS -------------------- /////////////////
          if (pathname == carpeta + 'finanzas') {
             this.getListadoCheques(1);
-            this.getMovimientosEfectivo(null, null, 0);
-            this.getMovimientosTransferencias(null, null, 0);
-            this.getMovimientosCheques(null, null, 0);
-            this.getJornadas();
+            this.consultarMovimientos(null, null, 0);
             this.getListadoChequesDiferenciados();
+            this.getJornadas();
+            
         }
     },
 
@@ -406,8 +405,11 @@ new Vue({
         listaMovimientosEfectivo: [],
         listaMovimientosTransferencias: [],
         listaMovimientosCheques: [],
+        listaMovimientosMPago: [],
         listaCheques: [],
         listaChequesDiferenciados: [],
+        chequeSeleccionado: {},
+        chequeData: {}
 
     },
 
@@ -1680,12 +1682,33 @@ new Vue({
 
         //// CLIENTES |  MOSTRAR LISTADO DE CATEGORIAS
         getListadoClientes: function () {
-            var url = base_url + 'restaurant/obtener_listado_de_clientes'; // url donde voy a mandar los datos
+            var url = base_url + 'clientes/obtener_listado_de_clientes'; // url donde voy a mandar los datos
 
             axios.post(url, {
                 token: token
             }).then(response => {
                 this.listaClientes = response.data
+                console.log(response.data)
+            }).catch(error => {
+                //alert("mal");
+                console.log(error.response.data)
+
+            });
+        },
+
+        //// CLIENTES |  LISTADO COMPLETO AVANZADO
+        getListadoClientesAvanzado: function () {
+            var url = base_url + 'clientes/obtener_listado_de_clientes_avanzado'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token
+            }).then(response => {
+                this.listaClientes = response.data
+                console.log(response.data)
+            }).catch(error => {
+                //alert("mal");
+                console.log(error.response.data)
+
             });
         },
 
@@ -1734,7 +1757,7 @@ new Vue({
             }).then(response => {
                 this.listaProveedores = response.data
 
-                //console.log(this.listaProveedores)
+                console.log(this.listaProveedores)
             });
         },
 
@@ -1888,7 +1911,6 @@ new Vue({
                 toastr.success('Proceso realizado correctamente', 'Proveedores')
             });
         },
-
 
 
         //// COMPRAS  | MOSTRAR LISTADO
@@ -2160,6 +2182,7 @@ new Vue({
             this.getMovimientosEfectivo(inicio, final, jornada_id);
             this.getMovimientosCheques(inicio, final, jornada_id);
             this.getMovimientosTransferencias(inicio, final, jornada_id);
+            this.getMovimientosMPago(inicio, final, jornada_id);
         },
 
         //// FONDO  | MOSTRAR LISTADO MOVIMIENTOS
@@ -2191,6 +2214,20 @@ new Vue({
         },
 
         //// FONDO  | MOSTRAR LISTADO MOVIMIENTOS
+        getMovimientosMPago: function (inicio, final, jornada_id) {
+            var url = base_url + 'finanzas/obtener_movimientos_mercadopago_fondo'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Fecha_inicio: inicio,
+                Fecha_fin: final,
+                Jornada_id: jornada_id
+            }).then(response => {
+                this.listaMovimientosMPago = response.data
+            });
+        },
+
+        //// FONDO  | MOSTRAR LISTADO MOVIMIENTOS
         getMovimientosCheques: function (inicio, final, jornada_id) {
             var url = base_url + 'finanzas/obtener_movimientos_cheques_fondo'; // url donde voy a mandar los datos
 
@@ -2208,88 +2245,193 @@ new Vue({
             this.movimientoDatos = {};
         },
 
-        //// MOVIMIENTOS | CREAR O EDITAR EN EFECTIVO
-        crear_movimiento_efectivo: function () {
-            var url = base_url + 'finanzas/cargar_movimiento_efectivo'; // url donde voy a mandar los datos
+        
+
+        //// FINANZAS | LISTADO DE CHEQUES
+        getCheques: function (Estado) {
+            var url = base_url + 'finanzas/obtener_cheques'; // url donde voy a mandar los datos
 
             axios.post(url, {
                 token: token,
-                Datos: this.movimientoDatos,
-                Origen_movimiento: 'Varios',
-                Op: this.movimientoDatos.Op,
-                Jornada_id: this.movimientoDatos.Jornada_id,
-                Fila_movimiento: 0,
+                Estado: Estado,
 
             }).then(response => {
-
-                toastr.success('Proceso realizado correctamente', 'Fondo')
-
-                this.periodoDatos.Id = response.data.Id;
-                this.texto_boton = "Actualizar"
-                this.getMovimientosEfectivo(null, null, 0);
-
-
+                this.listaCheques = response.data;
             }).catch(error => {
-                alert("mal");
                 console.log(error.response.data)
             });
         },
 
-        //// MOVIMIENTOS | CREAR O EDITAR EN EFECTIVO
-        crear_movimiento_transferencias: function () {
-            var url = base_url + 'finanzas/cargar_movimiento_transferencia'; // url donde voy a mandar los datos
-
-            axios.post(url, {
-                token: token,
-                Datos: this.movimientoDatos,
-                Origen_movimiento: 'Varios',
-                Op: this.movimientoDatos.Op,
-                Jornada_id: this.movimientoDatos.Jornada_id,
-                Fila_movimiento: 0,
-
-            }).then(response => {
-
-                toastr.success('Proceso realizado correctamente', 'Fondo')
-
-                this.periodoDatos.Id = response.data.Id;
-                this.texto_boton = "Actualizar"
-                this.getMovimientosEfectivo(null, null, 0);
-
-            }).catch(error => {
-                alert("mal");
-                console.log(error.response.data)
-            });
-        },
-
-        //// MOVIMIENTOS | CREAR O EDITAR EN TRANSFERENCIAS
-        crear_movimiento_cheques: function () {
+        //// FINANZAS | MOVIMIENTOS | CREAR O EDITAR EN EFECTIVO
+        pagoConCheque: function (datos) {
+            
             var url = base_url + 'finanzas/cargar_movimiento_cheques'; // url donde voy a mandar los datos
-
             axios.post(url, {
                 token: token,
-                Datos: this.movimientoDatos,
-                Origen_movimiento: 'Varios',
-                Op: this.movimientoDatos.Op,
-                Jornada_id: this.movimientoDatos.Jornada_id,
-                Fila_movimiento: 0,
+                Datos: datos,
+                Origen_movimiento: 'Caja',
+                Op: 0,
+                Fila_movimiento: Get_Id,
 
             }).then(response => {
 
-                toastr.success('Proceso realizado correctamente', 'Fondo')
+                toastr.success('Proceso realizado correctamente', 'Compras')
 
-                this.compraDatos.Id = response.data.Id;
+                
                 this.texto_boton = "Actualizar"
-                this.getMovimientosCheques(null, null, 0)
-
+                this.consultarMovimientos(this.Filtro_fecha_inicial, this.Filtro_fecha_final, this.filtro_jornada);
+                this.getCheques(1);
 
             }).catch(error => {
-                alert("mal");
                 console.log(error.response.data)
             });
         },
 
+        //// FINANZAS | CHEQUES  | LIMPIAR EL FORMULARIO DE CREAR
+        limpiarFormularioCheques() {
+            this.chequeData = { 'Tipo': 1, 'Observaciones': '', };
+            this.texto_boton = "Cargar";
+        },
 
-        //// VENTAS  | CANTIDAD DE DIAS ENTRE DOS FECHAS
+        //// FINANZAS | CHEQUES  | Carga el formulario  para editar
+        editarFormularioCheque(chequeData) {
+            //this.usuario = {};
+            this.chequeData = chequeData;
+            this.texto_boton = "Actualizar";
+        },
+
+        //// FINANZAS | CHEQUES  | Carga el formulario  para editar
+        archivoSeleccionado(event) {
+            this.Archivo = event.target.files[0]
+            //this.texto_boton = "Actualizar"
+        },
+
+        //// FINANZAS | MOVIMIENTOS | LIMPIAR FORMULARIO SEGUIMIENTO
+        limpiarFormularioMovimiento: function () {
+            this.movimientoDatos =  {'Monto_bruto': 0, "Observaciones":""}
+        },
+
+        //// FINANZAS | CHEQUES  |  CREAR O EDITAR una SEGUIMIENTO
+        crearCheque: function () {
+            var url = base_url + 'finanzas/cargar_cheques'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Datos: this.chequeData
+            
+            }).then(response => {
+
+                this.chequeData.Id = response.data.Id;
+
+                /// si eso se ralizó bien, debe comprobar si hay un archivo a cargar.
+                if (this.Archivo != null) 
+                {
+                    var url = base_url + 'finanzas/subirImagen/?Id=' + this.chequeData.Id;
+                    this.preloader = 1;
+
+                    //const formData = event.target.files[0];
+                    const formData = new FormData();
+                    formData.append("Archivo", this.Archivo);
+
+                    formData.append('_method', 'PUT');
+
+                    //Enviamos la petición
+                    axios.post(url, formData)
+                        .then(response => {
+
+                            this.chequeData.Imagen = response.data.Imagen;
+
+                            toastr.success('El archivo se cargo correctamente', 'Finanzas')
+                            this.preloader = 0;
+
+                        }).catch(error => {
+                            this.preloader = 0;
+                            console.log(error.response.data)
+                        });
+                }
+
+                //// FINANZAS | CARGANDO MOVIMIENTO
+                var url = base_url + 'finanzas/cargar_movimiento_cheques'; // url donde voy a mandar los datos
+
+                axios.post(url, {
+                    token: token,
+                    Datos: response.data,
+                    Origen_movimiento: 'Caja',
+                    Tipo_movimiento : this.movimientoDatos.Tipo_movimiento,
+                    Fila_movimiento: Get_Id,
+                    Op: 1,
+
+                }).then(response => {
+
+                    toastr.success('Proceso realizado correctamente', 'Comandas')
+
+                    this.texto_boton = "Actualizar"
+                    this.consultarMovimientos(this.Filtro_fecha_inicial, this.Filtro_fecha_final, this.filtro_jornada);
+                    this.getCheques(1)
+
+                }).catch(error => {
+                    alert("mal");
+                    console.log(error.response.data)
+                });
+
+                // si lo hay lo carga, si no lo hay no hace nada
+                this.Archivo = null
+                this.texto_boton = "Actualizar"
+                toastr.success('Datos actualizados correctamente', 'Finanzas')
+
+            }).catch(error => {
+                alert("MAL LA CARGA EN FUNCIÓN DE CARGAR DATOS");
+            });
+        },
+
+        //// FINANZAS | MOVIMIENTOS | CREAR O EDITAR EN EFECTIVO
+        crear_movimiento: function () {
+            
+            var url = base_url + 'finanzas/cargar_movimiento'; // url donde voy a mandar los datos
+            axios.post(url, {
+                token: token,
+                Datos: this.movimientoDatos,
+                Origen_movimiento: 'Caja',
+                Op: this.movimientoDatos.Op,
+                Fila_movimiento: Get_Id,
+
+            }).then(response => {
+
+                toastr.success('Proceso realizado correctamente', 'Comandas')
+
+                
+                this.texto_boton = "Actualizar"
+                this.consultarMovimientos(this.Filtro_fecha_inicial, this.Filtro_fecha_final, this.filtro_jornada);
+                this.getCheques(1);
+
+            }).catch(error => {
+                console.log(error.response.data)
+            });
+        },
+
+        //// FINANZAS | MOVIMIENTOS |  MOVIMIENTOS EN EFECTIVO
+        getMovimientos: function () {
+            var url = base_url + 'finanzas/obtener_movimientos'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Origen_movimiento: 'Comandas',
+                Fila_movimiento: Get_Id,
+
+            }).then(response => {
+                this.listaMovimientos = response.data.Datos;
+                this.Total_pagado = response.data.Total_pagado;
+            }).catch(error => {
+                console.log(error.response.data)
+            });
+        },
+
+        /// INFO PARA MODAL 
+        infoEtapa: function (observaciones) {
+            this.infoModal = observaciones;
+        },
+
+        //// COMUNES  | CANTIDAD DE DIAS ENTRE DOS FECHAS
         diferenciasEntre_fechas: function (fechaInicio, fechaFin) {
 
             if (fechaFin == null) { fechaFin = hoy_php }
@@ -3269,14 +3411,14 @@ new Vue({
                 axios.post(url, {
                     token: token,
                     Datos: response.data,
-                    Origen_movimiento: 'Comandas',
+                    Origen_movimiento: 'Delivery',
                     Tipo_movimiento : this.movimientoDatos.Tipo_movimiento,
                     Fila_movimiento: Get_Id,
                     Op: 1,
 
                 }).then(response => {
 
-                    toastr.success('Proceso realizado correctamente', 'Comandas')
+                    toastr.success('Proceso realizado correctamente', 'Delivery')
 
                     this.texto_boton = "Actualizar"
                     this.getMovimientos()
@@ -3289,7 +3431,7 @@ new Vue({
                 // si lo hay lo carga, si no lo hay no hace nada
                 this.Archivo = null
                 this.texto_boton = "Actualizar"
-                toastr.success('Datos actualizados correctamente', 'Finanzas')
+                toastr.success('Datos actualizados correctamente', 'Delivery')
 
             }).catch(error => {
                 alert("MAL LA CARGA EN FUNCIÓN DE CARGAR DATOS");
@@ -3303,13 +3445,13 @@ new Vue({
             axios.post(url, {
                 token: token,
                 Datos: this.movimientoDatos,
-                Origen_movimiento: 'Comandas',
+                Origen_movimiento: 'Delivery',
                 Op: 1,
                 Fila_movimiento: Get_Id,
 
             }).then(response => {
 
-                toastr.success('Proceso realizado correctamente', 'Comandas')
+                toastr.success('Proceso realizado correctamente', 'Delivery')
 
                 
                 this.texto_boton = "Actualizar"
@@ -3326,7 +3468,7 @@ new Vue({
 
             axios.post(url, {
                 token: token,
-                Origen_movimiento: 'Comandas',
+                Origen_movimiento: 'Delivery',
                 Fila_movimiento: Get_Id,
 
             }).then(response => {
@@ -3341,6 +3483,8 @@ new Vue({
         infoEtapa: function (observaciones) {
             this.infoModal = observaciones;
         },
+
+        
     },
 
     ////// ACCIONES COMPUTADAS     
@@ -4034,10 +4178,13 @@ new Vue({
     el: '#proveedores',
 
     created: function () {
-        this.getDatosProveedores();
+        this.getDatosProveedor();
         this.getListadoSeguimiento();
         this.obtener_listado_de_categorias_asignadas();
         this.obtener_listado_de_compras();
+        this.getMovimientos();
+        this.getCheques(1);
+        this.getMovimientos();
     },
 
     data: {
@@ -4056,11 +4203,38 @@ new Vue({
 
         listaComprasProveedor: [],
 
-        infoModal: ''
+        infoModal: '',
+
+        // FINANZAS
+        chequeData: { 'Tipo': 1, 'Observaciones': '', },
+        descripcionMovimiento: [],
+        movimientoDatos: {'Monto_bruto': 0, "Observaciones":""},
+        listaMovimientos : [],
+        Total_pagado: 0,
+        infoModal: {'Observaciones':''},
+        listaCheques: [],
+        chequeSeleccionado: {},
+        Total_mov_generico: 0
     },
 
     methods:
     {
+        //// OBTENER DATOS DE UN CLIENTE
+        getDatosProveedor: function () {
+            var url = base_url + 'proveedores/obtener_datos_proveedor/?Id=' + Get_Id;  //// averiguar como tomar el Id que viene por URL aca
+
+            axios.post(url, {
+                token: token
+            }).then(response => {
+                this.proveedoresDatos = response.data
+
+                //console.log(this.proveedoresDatos)
+            }).catch(error => {
+                //alert("MAL LA CARGA EN FUNCIÓN DE CARGAR DATOS");
+                console.log(error.response.data)
+            });
+        },
+        
         //// COMPRAS | SUMA PARA DAR TOTAL DE UNA COMPRA
         sumarComrpra: function (n1, n2, n3) {
 
@@ -4071,16 +4245,6 @@ new Vue({
             return N1 + N2 + N3;
         },
 
-        //// MOSTRAR LISTADO
-        getListadoSeguimiento: function () {
-            var url = base_url + 'proveedores/obtener_seguimientos/?Id=' + Get_Id; // url donde voy a mandar los datos
-
-            axios.post(url, {
-                token: token
-            }).then(response => {
-                this.listaSeguimiento = response.data
-            });
-        },
 
         //// MOSTRAR LISTADO
         obtener_listado_de_compras: function () {
@@ -4095,24 +4259,24 @@ new Vue({
             });
         },
 
-        //// OBTENER DATOS DE UN CLIENTE
-        getDatosProveedores: function () {
-            var url = base_url + 'proveedores/obtener_datos_proveedor/?Id=' + Get_Id;  //// averiguar como tomar el Id que viene por URL aca
-
-            axios.post(url, {
-                token: token
-            }).then(response => {
-                this.proveedoresDatos = response.data[0]
-            });
-        },
-
         //// DATOS SOBRE EL ARCHIVO SELECCIONADO EN CASO QUE QUIERA CARGAR ALGUNA ARCHIVO
         archivoSeleccionado(event) {
             this.Archivo = event.target.files[0]
             //this.texto_boton = "Actualizar"
         },
 
-        //// CREAR O EDITAR una SEGUIMIENTO
+        //// SEGUIMIENTO | MOSTRAR LISTADO
+        getListadoSeguimiento: function () {
+            var url = base_url + 'proveedores/obtener_seguimientos/?Id=' + Get_Id; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token
+            }).then(response => {
+                this.listaSeguimiento = response.data
+            });
+        },
+
+        //// SEGUIMIENTO | CREAR O EDITAR una SEGUIMIENTO
         crearSeguimiento: function () {
             var url = base_url + 'proveedores/cargar_seguimiento'; // url donde voy a mandar los datos
 
@@ -4162,12 +4326,12 @@ new Vue({
             });
         },
 
-        /// EDITAR UN SEGUIMIENTO
+        //// SEGUIMIENTO | EDITAR UN SEGUIMIENTO
         editarFormularioSeguimiento: function (dato) {
             this.seguimientoData = dato;
         },
 
-        //// LIMPIAR FORMULARIO SEGUIMIENTO
+        //// SEGUIMIENTO | LIMPIAR FORMULARIO SEGUIMIENTO
         limpiarFormularioSeguimiento: function () {
             this.seguimientoData = {}
         },
@@ -4312,6 +4476,453 @@ new Vue({
         infoEtapa: function (observaciones) {
             this.infoModal = observaciones;
         },
+
+        //// FINANZAS | CHEQUES  | LIMPIAR EL FORMULARIO DE CREAR
+        limpiarFormularioCheques() {
+            this.chequeData = { 'Tipo': 1, 'Observaciones': '', };
+            this.texto_boton = "Cargar";
+        },
+
+        //// FINANZAS | CHEQUES  | Carga el formulario  para editar
+        editarFormularioCheque(chequeData) {
+            //this.usuario = {};
+            this.chequeData = chequeData;
+            this.texto_boton = "Actualizar";
+        },
+
+        //// FINANZAS | CHEQUES  | Carga el formulario  para editar
+        archivoSeleccionado(event) {
+            this.Archivo = event.target.files[0]
+            //this.texto_boton = "Actualizar"
+        },
+
+        //// FINANZAS | MOVIMIENTOS | LIMPIAR FORMULARIO SEGUIMIENTO
+        limpiarFormularioMovimiento: function () {
+            this.movimientoDatos =  {'Monto_bruto': 0, "Observaciones":""}
+        },
+
+        //// FINANZAS | MOVIMIENTOS | CREAR O EDITAR EN EFECTIVO
+        crear_movimiento: function () {
+                var url = base_url + 'finanzas/cargar_movimiento'; // url donde voy a mandar los datos
+                axios.post(url, {
+                    token: token,
+                    Datos: this.movimientoDatos,
+                    Origen_movimiento: 'Proveedor',
+                    Op: this.movimientoDatos.Op,
+                    Fila_movimiento: Get_Id,
+    
+                }).then(response => {
+    
+                    toastr.success('Proceso realizado correctamente', 'Proveedores')
+    
+                    this.texto_boton = "Actualizar"
+                    this.getMovimientos();
+    
+                }).catch(error => {
+                    console.log(error.response.data)
+                });
+    
+        },
+
+        //// FINANZAS | MOVIMIENTOS |  MOVIMIENTOS EN EFECTIVO
+        getMovimientos: function () {
+            var url = base_url + 'finanzas/obtener_movimientos'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Origen_movimiento: "Proveedor",
+                Fila_movimiento: Get_Id,
+
+            }).then(response => {
+                this.listaMovimientos = response.data.Datos;
+                this.Total_mov_generico = response.data.Total_pagado;
+
+                //console.log(response.data)
+            }).catch(error => {
+                console.log(error.response.data)
+            });
+        },
+
+        //// FINANZAS | LISTADO DE CHEQUES
+        getCheques: function (Estado) {
+            var url = base_url + 'finanzas/obtener_cheques'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Estado: Estado,
+
+            }).then(response => {
+                this.listaCheques = response.data;
+            }).catch(error => {
+                console.log(error.response.data)
+            });
+        },
+
+        //// FINANZAS | MOVIMIENTOS | CREAR O EDITAR EN EFECTIVO
+        pagoConCheque: function (datos) {
+            
+            var url = base_url + 'finanzas/cargar_movimiento_cheques'; // url donde voy a mandar los datos
+            axios.post(url, {
+                token: token,
+                Datos: datos,
+                Origen_movimiento: 'Proveedor',
+                Op: 0,
+                Fila_movimiento: Get_Id,
+
+            }).then(response => {
+
+                toastr.success('Proceso realizado correctamente', 'Proveedor')
+
+                
+                this.texto_boton = "Actualizar"
+                this.getMovimientos();
+                this.getCheques(1);
+
+            }).catch(error => {
+                console.log(error.response.data)
+            });
+        },
+
+
+    },
+
+
+
+    ////// ACCIONES COMPUTADAS     
+    computed:
+    {
+
+    }
+});
+
+
+///         --------------------------------------------------------------------   ////
+//// Elemento para el manejo de CLIENTES por Id
+new Vue({
+    el: '#clientes',
+
+    created: function () {
+        this.getDatosCliente();
+        this.getListadoSeguimiento();
+        this.getMovimientos();
+        //this.obtener_listado_de_compras();
+    },
+
+    data: {
+        mostrar: "3",
+        clienteDatos: {},
+        listaSeguimiento: [],
+        texto_boton: "Cargar",
+        seguimientoData: {},
+        listaCompras: [],
+        Archivo: null,
+        preloader: '0',
+        comentarioDatos: {},
+        
+        listaComandas: [],
+        listaDeliverys: [],
+    
+        infoModal: '',
+
+        // FINANZAS
+        chequeData: { 'Tipo': 1, 'Observaciones': '', },
+        descripcionMovimiento: [],
+        movimientoDatos: {'Monto_bruto': 0, "Observaciones":""},
+        listaMovimientos : [],
+        Total_mov_generico: 0,
+        infoModal: {'Observaciones':''},
+    },
+
+    methods:
+    {
+
+        //// OBTENER DATOS DE UN CLIENTE
+        getDatosCliente: function () {
+            var url = base_url + 'clientes/obtener_datos/?Id=' + Get_Id;  //// averiguar como tomar el Id que viene por URL aca
+
+            axios.post(url, {
+                token: token
+            }).then(response => {
+                this.clienteDatos = response.data
+
+                //console.log(response.data)
+
+            }).catch(error => {
+                //alert("mal");
+                console.log(error.response.data)
+
+            });
+        },
+
+        //// CLIENTES | CREAR O EDITAR
+        crearCliente: function () {
+            var url = base_url + 'clientes/crear_cliente'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Datos: this.clienteDato.Datos
+            }).then(response => {
+
+                toastr.success('Proceso realizado correctamente', 'Clientes')
+
+                this.clienteDato.Id = response.data.Id;
+                //this.texto_boton = "Actualizar"
+                this.clienteDato = {}
+
+                this.getListadoClientes();
+
+            }).catch(error => {
+                //alert("mal");
+                console.log(error.response.data)
+
+            });
+        },
+
+        //// COMPRAS | SUMA PARA DAR TOTAL DE UNA COMPRA
+        montoDelivery: function (n1, n2, n3) {
+
+            var N1 = parseInt(n1);
+            var N2 = parseInt(n2);
+            var N3 = parseInt(n3);
+
+            return N1 + N2 - N3;
+        },
+
+        //// MOSTRAR LISTADO
+        getListadoSeguimiento: function () {
+            var url = base_url + 'clientes/obtener_seguimientos/?Id=' + Get_Id; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token
+            }).then(response => {
+                this.listaSeguimiento = response.data
+            });
+        },
+
+        //// MOSTRAR LISTADO
+        obtener_listado_de_compras: function () {
+            var url = base_url + 'compras/obtener_compras_proveedor/?Id=' + Get_Id; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token
+            }).then(response => {
+                this.listaComprasProveedor = response.data
+
+                //console.log(this.listaComprasProveedor)
+            });
+        },        
+
+        //// DATOS SOBRE EL ARCHIVO SELECCIONADO EN CASO QUE QUIERA CARGAR ALGUNA ARCHIVO
+        archivoSeleccionado(event) {
+            this.Archivo = event.target.files[0]
+            //this.texto_boton = "Actualizar"
+        },
+
+        //// CREAR O EDITAR una SEGUIMIENTO
+        crearSeguimiento: function () {
+            var url = base_url + 'clientes/cargar_seguimiento'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Datos: this.seguimientoData, Cliente_id: Get_Id
+            }).then(response => {
+
+                this.seguimientoData.Id = response.data.Id;
+
+                /// si eso se ralizó bien, debe comprobar si hay un archivo a cargar.
+                if (this.Archivo != null) {
+                    var url = base_url + 'proveedores/subirFotoSeguimiento/?Id=' + this.seguimientoData.Id;
+                    this.preloader = 1;
+
+                    //const formData = event.target.files[0];
+                    const formData = new FormData();
+                    formData.append("Archivo", this.Archivo);
+
+                    formData.append('_method', 'PUT');
+
+                    //Enviamos la petición
+                    axios.post(url, formData)
+                        .then(response => {
+
+                            this.seguimientoData.Url_archivo = response.data.Url_archivo;
+
+                            toastr.success('El archivo se cargo correctamente', 'Clientes')
+                            this.preloader = 0;
+                            this.getListadoSeguimiento();
+
+                        }).catch(error => {
+                            alert("MAL LA CARGA EN FUNCIÓN DE CARGAR ARCHIVO");
+                            this.preloader = 0;
+                            //this.seguimientoData.Url_archivo = response.data.Url_archivo;
+                        });
+                }
+                // si lo hay lo carga, si no lo hay no hace nada
+
+                this.getListadoSeguimiento();
+                this.Archivo = null
+                this.texto_boton = "Actualizar"
+                toastr.success('Datos actualizados correctamente', 'Clientes')
+
+            }).catch(error => {
+                alert("MAL LA CARGA EN FUNCIÓN DE CARGAR DATOS");
+            });
+        },
+
+        /// EDITAR UN SEGUIMIENTO
+        editarFormularioSeguimiento: function (dato) {
+            this.seguimientoData = dato;
+        },
+
+        //// LIMPIAR FORMULARIO SEGUIMIENTO
+        limpiarFormularioSeguimiento: function () {
+            this.seguimientoData = {}
+        },
+
+        /// INFO PARA MODAL 
+        infoEtapa: function (observaciones) {
+            this.infoModal = observaciones;
+        },
+
+        //// FINANZAS | CHEQUES  | LIMPIAR EL FORMULARIO DE CREAR
+        limpiarFormularioCheques() {
+            this.chequeData = { 'Tipo': 1, 'Observaciones': '', };
+            this.texto_boton = "Cargar";
+        },
+
+        //// FINANZAS | CHEQUES  | Carga el formulario  para editar
+        editarFormularioCheque(chequeData) {
+            //this.usuario = {};
+            this.chequeData = chequeData;
+            this.texto_boton = "Actualizar";
+        },
+
+        //// FINANZAS | CHEQUES  | Carga el formulario  para editar
+        archivoSeleccionado(event) {
+            this.Archivo = event.target.files[0]
+            //this.texto_boton = "Actualizar"
+        },
+
+        ///// FINANZAS | MOVIMIENTOS | LIMPIAR FORMULARIO SEGUIMIENTO
+        limpiarFormularioMovimiento: function () {
+            this.movimientoDatos =  {'Monto_bruto': 0, "Observaciones":""}
+        },
+
+        //// FINANZAS | CHEQUES  |  CREAR O EDITAR una SEGUIMIENTO
+        crearCheque: function () {
+            var url = base_url + 'finanzas/cargar_cheques'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Datos: this.chequeData
+            
+            }).then(response => {
+
+                this.chequeData.Id = response.data.Id;
+
+                /// si eso se ralizó bien, debe comprobar si hay un archivo a cargar.
+                if (this.Archivo != null) 
+                {
+                    var url = base_url + 'finanzas/subirImagen/?Id=' + this.chequeData.Id;
+                    this.preloader = 1;
+
+                    //const formData = event.target.files[0];
+                    const formData = new FormData();
+                    formData.append("Archivo", this.Archivo);
+
+                    formData.append('_method', 'PUT');
+
+                    //Enviamos la petición
+                    axios.post(url, formData)
+                        .then(response => {
+
+                            this.chequeData.Imagen = response.data.Imagen;
+
+                            toastr.success('El archivo se cargo correctamente', 'Finanzas')
+                            this.preloader = 0;
+
+                        }).catch(error => {
+                            this.preloader = 0;
+                            console.log(error.response.data)
+                        });
+                }
+
+                //// FINANZAS | CARGANDO MOVIMIENTO
+                var url = base_url + 'finanzas/cargar_movimiento_cheques'; // url donde voy a mandar los datos
+
+                axios.post(url, {
+                    token: token,
+                    Datos: response.data,
+                    Origen_movimiento: 'Clientes',
+                    Tipo_movimiento : 3,
+                    Fila_movimiento: Get_Id,
+                    Op: 1,
+
+                }).then(response => {
+
+                    toastr.success('Proceso realizado correctamente', 'Clientes')
+
+                    this.texto_boton = "Actualizar"
+                    this.getMovimientos()
+
+                }).catch(error => {
+                    alert("mal");
+                    console.log(error.response.data)
+                });
+
+                // si lo hay lo carga, si no lo hay no hace nada
+                this.Archivo = null
+                this.texto_boton = "Actualizar"
+                toastr.success('Datos actualizados correctamente', 'Clientes')
+
+            }).catch(error => {
+                alert("MAL LA CARGA EN FUNCIÓN DE CARGAR DATOS");
+            });
+        },
+
+        //// FINANZAS | MOVIMIENTOS | CREAR O EDITAR EN EFECTIVO
+        crear_movimiento: function () {
+            
+            var url = base_url + 'finanzas/cargar_movimiento'; // url donde voy a mandar los datos
+            axios.post(url, {
+                token: token,
+                Datos: this.movimientoDatos,
+                Origen_movimiento: 'Clientes',
+                Op: this.movimientoDatos.Op,
+                Fila_movimiento: Get_Id,
+
+            }).then(response => {
+
+                toastr.success('Proceso realizado correctamente', 'Clientes')
+
+                
+                this.texto_boton = "Actualizar"
+                this.getMovimientos();
+
+            }).catch(error => {
+                console.log(error.response.data)
+            });
+        },
+
+        //// FINANZAS | MOVIMIENTOS |  MOVIMIENTOS EN EFECTIVO
+        getMovimientos: function () {
+            var url = base_url + 'finanzas/obtener_movimientos'; // url donde voy a mandar los datos
+
+            axios.post(url, {
+                token: token,
+                Origen_movimiento: "Clientes",
+                Fila_movimiento: Get_Id,
+
+            }).then(response => {
+                this.listaMovimientos = response.data.Datos;
+                this.Total_mov_generico = response.data.Total_pagado;
+
+                //console.log(response.data)
+            }).catch(error => {
+                console.log(error.response.data)
+            });
+        },
+
+        //
     },
 
 

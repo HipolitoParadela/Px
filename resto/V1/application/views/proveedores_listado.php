@@ -106,7 +106,7 @@ include "header-body.php";
                                                         </a>
                                                     </td>
                                                     <td>
-                                                        <h4 align="center" v-bind:class="[{ 'text-danger' : proveedor.Saldo < 0}]"> ${{ proveedor.Saldo | Moneda }} </h4>
+                                                        <h2 v-bind:class="[{ 'text-danger' : proveedor.Saldo < 0}, { 'text-success' : proveedor.Saldo > 0}]"> ${{ proveedor.Saldo | Moneda }} </h2>
                                                     </td>
                                                     <td>{{proveedor.Datos_proveedor.Nombre_rubro}}</td>
                                                     <td>{{proveedor.Datos_proveedor.CUIT_CUIL}}</td>
@@ -114,6 +114,7 @@ include "header-body.php";
                                                     <td><span class="block-email">{{proveedor.Datos_proveedor.Email}}</span></td>
                                                     <td><a v-bind:href="'http://'+proveedor.Datos_proveedor.Web" target="_blank">{{proveedor.Datos_proveedor.Web}}</a></td>
                                                     <td>{{proveedor.Datos_proveedor.Nombre_persona_contacto}}</td>
+                                                    
                                                     <td>
                                                         <div class="table-data-feature">
                                                             <button class="item" v-on:click="editarFormularioProveedor(proveedor)" data-toggle="modal" data-target="#proveedormodal" data-placement="top" title="Edición rápida">

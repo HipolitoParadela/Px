@@ -515,7 +515,6 @@ include "header-body.php";
                     </div>
                 </div>
                 <!-- /.modal -->
-                <!-- /.modal -->
                 <!-- Modal OBSERVACIONES DE LOS PAGOS-->
                 <div class="modal fade" id="modalObservaciones" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
                     <div class="modal-dialog  modal-lg" role="document">

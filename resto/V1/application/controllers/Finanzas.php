@@ -138,17 +138,17 @@ class finanzas extends CI_Controller
 
         //// Condicional para saber setear el origen del movimiento
         
-        $Jornada_id = 0; if(isset($this->datosObtenidos->Jornada_id)) {     $Jornada_id = $this->datosObtenidos->Jornada_id;     }
-        $Origen_movimiento = 0; if(isset($this->datosObtenidos->Origen_movimiento)) {     $Origen_movimiento = $this->datosObtenidos->Origen_movimiento;     }
-        $Tipo_movimiento = 0; if(isset($this->datosObtenidos->Tipo_movimiento)) {     $Tipo_movimiento = $this->datosObtenidos->Tipo_movimiento;     }
-        $Fila_movimiento    = $this->datosObtenidos->Fila_movimiento;
+        $Jornada_id = 0;        if(isset($this->datosObtenidos->Jornada_id)) {     $Jornada_id = $this->datosObtenidos->Jornada_id;     }
+        $Origen_movimiento = null; if(isset($this->datosObtenidos->Origen_movimiento)) {     $Origen_movimiento = $this->datosObtenidos->Origen_movimiento;     }
+        $Tipo_movimiento = 0;   if(isset($this->datosObtenidos->Tipo_movimiento)) {     $Tipo_movimiento = $this->datosObtenidos->Tipo_movimiento;     }
+        $Fila_movimiento = $this->datosObtenidos->Fila_movimiento;
 
         $this->db->select('*');
 
         $this->db->from('tbl_finanzas_movimientos');
         
         if($Jornada_id != 0)        {      $this->db->where('tbl_finanzas_movimientos.Jornada_id', $Jornada_id);        }
-        if($Origen_movimiento != 0) {      $this->db->where('tbl_finanzas_movimientos.Origen_movimiento', $Origen_movimiento);        }
+        if($Origen_movimiento != null) {      $this->db->where('tbl_finanzas_movimientos.Origen_movimiento', $Origen_movimiento);        }
         if($Tipo_movimiento != 0)   {      $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', $Tipo_movimiento);        }
 
         $this->db->where('tbl_finanzas_movimientos.Fila_movimiento', $Fila_movimiento);
@@ -165,7 +165,7 @@ class finanzas extends CI_Controller
             $Total = $Total + $movimiento["Monto_bruto"];
         }
         
-        $Datos = array("Datos"=> $arrayMovimientos, "Total_pagado" => $Total);
+        $Datos = array("Datos"=> $arrayMovimientos, "Total_pagado" => $Total, "Origen" => $Origen_movimiento);
 
         echo json_encode($Datos);
     }
@@ -347,7 +347,7 @@ class finanzas extends CI_Controller
         if ($insert_id >=0 ) 
         {   
             echo json_encode(array("Id" => $insert_id,
-                                    "Monto_bruto" => $this->datosObtenidos->Datos->Monto,
+                                    "Monto_bruto" => $this->datosObtenidos->Datos->Monto_bruto,
                                     "Observaciones" => $this->datosObtenidos->Datos->Observaciones));         
         } 
         else 
@@ -637,6 +637,70 @@ class finanzas extends CI_Controller
         }
         
         $Datos = array("Datos"=> $result, "Total" => $Total, "Montos_entrantes" => $Montos_entrantes, "Montos_salientes" => $Montos_salientes, "Ing_brutos" => $Ing_brutos);
+
+        echo json_encode($Datos);
+    }
+
+//// FONDO       | OBTENER MOVIMIENTOS TRANSFERENCIAS
+    public function obtener_movimientos_mercadopago_fondo()
+    {
+        //Esto siempre va es para instanciar la base de datos
+        $CI =& get_instance();
+        $CI->load->database();
+        
+        ///Seguridad
+        $token = @$CI->db->token;
+        $this->datosObtenidos = json_decode(file_get_contents('php://input'));
+        if ($this->datosObtenidos->token != $token) { exit("No coinciden los token"); }
+
+
+        $this->db->select(' tbl_finanzas_movimientos.*,
+                            tbl_usuarios.Nombre');
+
+        $this->db->from('tbl_finanzas_movimientos');
+        $this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_finanzas_movimientos.Usuario_id', 'left');
+
+        $this->db->where('tbl_finanzas_movimientos.Visible', 1);
+        $this->db->where("tbl_finanzas_movimientos.Negocio_id", $this->session->userdata('Negocio_id'));
+        $this->db->where('tbl_finanzas_movimientos.Tipo_movimiento', 4); // 1 efectivo, 2 trans/tarj, 3 cheques, 4 mecardopago
+
+        if($this->datosObtenidos->Fecha_inicio != null)
+        {
+            $this->db->where("DATE_FORMAT(tbl_finanzas_movimientos.Fecha_ejecutado,'%Y-%m-%d') >=", $this->datosObtenidos->Fecha_inicio);
+        }
+        if($this->datosObtenidos->Fecha_fin != null)
+        {
+            $this->db->where("DATE_FORMAT(tbl_finanzas_movimientos.Fecha_ejecutado,'%Y-%m-%d') <=", $this->datosObtenidos->Fecha_fin);
+        }
+        if($this->datosObtenidos->Jornada_id != 0)
+        {
+            $this->db->where("tbl_finanzas_movimientos.Jornada_id", $this->datosObtenidos->Jornada_id);
+        }
+        $this->db->order_by("tbl_finanzas_movimientos.Id", "desc");
+        
+        $query = $this->db->get();
+        $result = $query->result_array();
+        
+        /////  SUMAR MONTOS --------- Necesito 3 variables, las que sumas, las que restas y las de ingresos brutos. 
+        $Total = 0;
+        $Montos_entrantes = 0;
+        $Montos_salientes = 0;
+
+        foreach ($result as $monto) 
+        {
+            if($monto["Op"] == true)
+            {
+                $Montos_entrantes = $Montos_entrantes + $monto["Monto_bruto"];
+            }
+            else
+            {
+                $Montos_salientes = $Montos_salientes + $monto["Monto_bruto"];
+            }
+
+            $Total = $Montos_entrantes - $Montos_salientes;
+        }
+        
+        $Datos = array("Datos"=> $result, "Total" => $Total, "Montos_entrantes" => $Montos_entrantes, "Montos_salientes" => $Montos_salientes);
 
         echo json_encode($Datos);
     }

@@ -129,8 +129,8 @@ include "header-body.php";
                                                 <th>Rubro</th>
                                                 <th>F. Compra</th>
                                                 <th>F. Venc.</th>
-                                                <th style="background-color:lightpink">Monto</th>
-                                                <th style="background-color:darkseagreen">Pagado</th>
+                                                <th style="background-color:#F7F2E0">Monto</th>
+                                                <th style="background-color:D0F5A9">Pagado</th>
                                                 <th style="background-color:wheat">Saldo</th>
                                                 <th>Descripción</th>
                                                 <th></th>
@@ -155,10 +155,10 @@ include "header-body.php";
                                                 <td>{{compraVenc.Datos.Nombre_rubro}}</td>
                                                 <td>{{compraVenc.Datos.Fecha_compra | Fecha}}</td>
                                                 <td>{{compraVenc.Datos.Fecha_vencimiento_pago | Fecha}}</td>
-                                                <td align="right" style="background-color:lightpink">
+                                                <td align="right" style="background-color:#F7F2E0">
                                                     <h4>{{compraVenc.Valor_compra | Moneda}}</h4>
                                                 </td>
-                                                <td align="right" style="background-color:darkseagreen">
+                                                <td align="right" style="background-color:D0F5A9">
                                                     <h4>{{compraVenc.Total_abonado | Moneda}}</h4>
                                                 </td>
                                                 <td align="right" style="background-color:wheat">
@@ -193,10 +193,10 @@ include "header-body.php";
                                             <th></th>
                                             <th></th>
                                             <th></th>
-                                            <th style="background-color:lightpink">
+                                            <th style="background-color:#F7F2E0">
                                                 <h3 align="right">{{ listaCompras.Total_valor_compras_vencidas | Moneda}}</h3>
                                             </th>
-                                            <th style="background-color:darkseagreen">
+                                            <th style="background-color:D0F5A9">
                                                 <h3 align="right">{{ listaCompras.Total_dinero_pagado_vencidas | Moneda}}</h3>
                                             </th>
                                             <th style="background-color:wheat">
@@ -226,8 +226,8 @@ include "header-body.php";
                                                 <th>Rubro</th>
                                                 <th>F. Compra</th>
                                                 <th>F. Venc.</th>
-                                                <th style="background-color:lightpink">Monto</th>
-                                                <th style="background-color:darkseagreen">Pagado</th>
+                                                <th style="background-color:#F7F2E0">Monto</th>
+                                                <th style="background-color:D0F5A9">Pagado</th>
                                                 <th style="background-color:wheat">Saldo</th>
                                                 <th>Descripción</th>
                                                 <th></th>
@@ -252,10 +252,10 @@ include "header-body.php";
                                                 <td>{{compra.Datos.Nombre_rubro}}</td>
                                                 <td>{{compra.Datos.Fecha_compra | Fecha}}</td>
                                                 <td>{{compra.Datos.Fecha_vencimiento_pago | Fecha}}</td>
-                                                <td align="right" style="background-color:lightpink">
+                                                <td align="right" style="background-color:#F7F2E0">
                                                     <h4>{{compra.Valor_compra | Moneda}}</h4>
                                                 </td>
-                                                <td align="right" style="background-color:darkseagreen">
+                                                <td align="right" style="background-color:D0F5A9">
                                                     <h4>{{compra.Total_abonado | Moneda}}</h4>
                                                 </td>
                                                 <td align="right" style="background-color:wheat">
@@ -290,10 +290,10 @@ include "header-body.php";
                                             <th></th>
                                             <th></th>
                                             <th></th>
-                                            <th style="background-color:lightpink">
+                                            <th style="background-color:#F7F2E0">
                                                 <h3 align="right">{{ listaCompras.Total_valor_compras_no_vencidas | Moneda}}</h3>
                                             </th>
-                                            <th style="background-color:darkseagreen">
+                                            <th style="background-color:D0F5A9">
                                                 <h3 align="right">{{ listaCompras.Total_dinero_pagado_no_vencidas | Moneda}}</h3>
                                             </th>
                                             <th style="background-color:wheat">

@@ -47,7 +47,7 @@
                         <li><a href="<?php echo base_url(); ?>restaurant/itemscarta"><i class="ti-layout"></i>Carta</a></li>
                         <li><a href="<?php echo base_url(); ?>compras"><i class="ti-layout"></i>Compras</a></li>
                         <li><a href="<?php echo base_url(); ?>usuarios/"><i class="ti-id-badge"></i>Personal</a></li>
-                        <li><a href="<?php echo base_url(); ?>restaurant/clientes"><i class="ti-layout"></i>Clientes</a></li>
+                        <li><a href="<?php echo base_url(); ?>clientes"><i class="ti-layout"></i>Clientes</a></li>
                         <li><a href="<?php echo base_url(); ?>proveedores"><i class="ti-layout"></i>Proveedores</a></li>
                         <li><a href="<?php echo base_url(); ?>restaurant/mesas"><i class="ti-direction"></i>Mesas </a></li>
                     </ul>

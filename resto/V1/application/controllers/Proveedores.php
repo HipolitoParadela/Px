@@ -47,7 +47,7 @@ class proveedores extends CI_Controller
         }
     }
 
-//// PROVEEDORES 	| OBTENER 
+//// PROVEEDORES 	| OBTENER LISTADO PROVEEDORES
 	public function obtener_proveedores()
     {
 			
@@ -129,7 +129,29 @@ class proveedores extends CI_Controller
                     }
             }
 
-            $Saldo_proveedor = $Total_pagado - $Total_compras;
+
+            /// BUSCANDO PAGOS GENERICOS DE ESTE CLIENTE
+            $this->db->select('*');
+
+            $this->db->from('tbl_finanzas_movimientos');
+            
+            $this->db->where('tbl_finanzas_movimientos.Origen_movimiento', "Proveedor");
+            $this->db->where('tbl_finanzas_movimientos.Fila_movimiento', $proveedor["Id"]);
+            $this->db->where('tbl_finanzas_movimientos.Visible', 1);
+            $this->db->where("tbl_finanzas_movimientos.Negocio_id", $this->session->userdata('Negocio_id'));
+            
+            $query = $this->db->get();
+            $arrayMovimientos = $query->result_array();
+            
+            /////  SUMAR MONTOS
+            $Total_mov_genericos = 0;
+            foreach ($arrayMovimientos as $movimiento) 
+            {
+                $Total_mov_genericos = $Total_mov_genericos + $movimiento["Monto_bruto"];
+            }
+
+
+            $Saldo_proveedor = $Total_pagado  + $Total_mov_genericos - $Total_compras;
             
             $datos_proveedor = array('Datos_proveedor' => $proveedor, 'Saldo' => $Saldo_proveedor, 'Total_compras' => $Total_compras, 'Total_pagos' => $Total_pagado);
             
@@ -168,7 +190,7 @@ class proveedores extends CI_Controller
 		
     }
     
-//// PROVEEDORES 	| OBTENER 
+//// PROVEEDORES 	| OBTENER dATOS DE UN PROVEEDOR
     public function obtener_datos_proveedor()
     {
 
@@ -192,9 +214,62 @@ class proveedores extends CI_Controller
         $this->db->order_by("Nombre_proveedor", "asc");
         $query = $this->db->get();
         $result = $query->result_array();
+        
+        //// BUSCANDO COMPRAS Y PAGOS DE ESTE CLIENTE
 
-        echo json_encode($result);
+            $Total_pagado = 0;
+            $Total_compras = 0;
 
+            /// BUSCANDO COMPRAS
+            $this->db->select(' Id,
+                                IVA,
+                                No_gravado, 
+                                Neto');
+
+            $this->db->from(' tbl_compras');
+            //$this->db->where('Visible',1);
+            $this->db->where('Proveedor_id', $result[0]["Id"]);
+            $this->db->order_by("Fecha_compra", "desc");
+            
+            $query = $this->db->get();
+            $array_compras = $query->result_array();
+
+            foreach ($array_compras as $compra)
+            {
+                //// CALCULANDO comanda TOTALES
+                $Total_compras = $Total_compras + $compra["Neto"] + $compra["No_gravado"] + $compra["IVA"];
+                
+                ///// FINANZAS
+                    $this->db->select('Monto_bruto');
+                    $this->db->from('tbl_finanzas_movimientos');
+                    $this->db->where('Origen_movimiento', 'Compras');
+                    $this->db->where('Fila_movimiento', $compra["Id"]);
+                    $this->db->where('Visible', 1);
+
+                    $query = $this->db->get();
+                    $result_movimientos = $query->result_array();
+                    $cant_movimientos = $query->num_rows();
+                    
+                    //// BUSCANDO PAGOS
+                    if($cant_movimientos > 0)
+                    {
+                        foreach ($result_movimientos as $monto) 
+                        {
+                            $Total_pagado = $Total_pagado + $monto["Monto_bruto"];
+                        }
+                    }
+            }
+
+
+            /// GENERANDO CUENTAS
+            $Saldo_cliente = $Total_pagado - $Total_compras;
+            
+            $Datos = array( 'Datos' => $result[0], 
+                            'Saldo' => $Saldo_cliente, 
+                            'Total_compras' => $Total_compras, 
+                            'Total_pagos' => $Total_pagado);
+
+            echo json_encode($Datos);
     }
 
 //// PROVEEDORES 	| SUBIR FOTO 

@@ -32,7 +32,7 @@ include "header-body.php";
                             <div class="page-title">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#">Sistema restaurant</a></li>
-                                    <li class="breadcrumb-item active">Clientes frecuentes</li>
+                                    <li class="breadcrumb-item active">Clientes</li>
                                 </ol>
                             </div>
                         </div>
@@ -43,9 +43,6 @@ include "header-body.php";
 
                 <section id="main-content">
                     <div class="row">
-                        <div class="col-lg-12">
-                            <a href="#modalclientes" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-flat btn-addon m-b-10 m-l-5" v-on:click="limpiarFormCliente()"><i class="ti-plus"></i> Nuevo Cliente</a>
-                        </div>
                         <!-- <div class="col-lg-2">
                             <div class="card">
                                  <div class="list-group">
@@ -66,13 +63,16 @@ include "header-body.php";
                                                     <thead>
                                                         <tr>
                                                             <!-- <th></th> -->
+                                                            <th>Compras</th>
                                                             <th>Nombre</th>
                                                             <th>Teléfono</th>
-                                                            <th>Teléfono 2</th>
                                                             <th>Dirección</th>
                                                             <th>Email</th>
+                                                            <th style="background-color:#F7F2E0">Compras</th>
+                                                            <th style="background-color:#F7F2E0">Pagos</th>
+                                                            <th style="background-color:lightgrey">Saldo</th>
                                                             <th>Observaciones</th>
-                                                            <th></th>
+                                                            <th><a href="#modalclientes" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-flat btn-addon m-b-10 m-l-5" v-on:click="limpiarFormCliente()"><i class="ti-plus"></i> Nuevo Cliente</a></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -85,18 +85,29 @@ include "header-body.php";
                                                                     </a>
                                                                 </div>
                                                             </td> -->
+                                                            <th align="center">
+                                                                <h1>{{cliente.Datos_cliente.Cant_compras}}</h1>
+                                                            </th>
                                                             <td valign="middle">
-                                                                <!-- <a v-bind:href="'datos/?Id='+cliente.Id" class="btn btn-dark btn-outline m-b-10 m-l-5"> -->
-                                                                {{cliente.Nombre}}
-                                                                <!--  </a> -->
+                                                                <a v-bind:href="'clientes/datos/?Id='+cliente.Datos_cliente.Id" class="btn btn-dark btn-outline m-b-10 m-l-5">
+                                                                    {{cliente.Datos_cliente.Nombre}}
+                                                                </a>
                                                             </td>
-                                                            <td>{{cliente.Telefono}}</td>
-                                                            <td>{{cliente.Telefono_secundario}}</td>
-                                                            <td>{{cliente.Direccion}}</td>
-                                                            <td>{{cliente.Email}}</td>
-                                                            <td>{{cliente.Observaciones}}</td>
+                                                            <td>{{cliente.Datos_cliente.Telefono}}</td>
+                                                            <td>{{cliente.Datos_cliente.Direccion}}</td>
+                                                            <td>{{cliente.Datos_cliente.Email}}</td>
+                                                            <td align="right" style="background-color:#F7F2E0">
+                                                                <h5> {{cliente.Total_compras | Moneda}} </h5>
+                                                            </td>
+                                                            <td align="right" style="background-color:#F7F2E0">
+                                                                <h5> {{cliente.Total_pagos | Moneda}} </h5>
+                                                            </td>
+                                                            <td align="right" style="background-color:lightgrey">
+                                                                <h4 v-bind:class="[{ 'text-danger' : cliente.Saldo < 0}, { 'text-success' : cliente.Saldo > 0}]"> <b>{{cliente.Saldo | Moneda}} </b></h4>
+                                                            </td>
+                                                            <td>{{cliente.Datos_cliente.Observaciones}}</td>
                                                             <td valign="middle">
-                                                                <a href="#modalclientes" data-toggle="modal" v-on:click="editarCliente(cliente)">
+                                                                <a href="#modalclientes" data-toggle="modal" v-on:click="editarCliente(cliente.Datos)">
                                                                     <i class="ti-pencil-alt"></i></a>
                                                             </td>
                                                             <!-- <td>
