@@ -5,6 +5,7 @@
  */
 class User extends CI_Model
 {
+    /// CONSULTANDO SI USUARIO EXISTE
     public function getUser($dni = '')
     {
         $result = $this->db->query("SELECT * FROM tbl_usuarios WHERE DNI = '".$dni."' LIMIT 1");

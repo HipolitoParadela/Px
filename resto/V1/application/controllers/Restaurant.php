@@ -2962,8 +2962,8 @@ class Restaurant extends CI_Controller {
 				
 				$this->db->join('tbl_stock', 'tbl_stock.Id = tbl_delibery_items.Item_id','left');
 				
-				$this->db->where('tbl_delibery_items.Delibery_id', $Id);
-				$this->db->where("tbl_delibery.Negocio_id", $this->session->userdata('Negocio_id'));
+				$this->db->where('tbl_delibery_items.Delibery_id', $delivery["Id"]);
+				//$this->db->where("tbl_stock.Negocio_id", $this->session->userdata('Negocio_id'));
 
 				$query = $this->db->get();
 				$result = $query->result_array();

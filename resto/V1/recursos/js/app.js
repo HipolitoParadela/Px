@@ -7,22 +7,18 @@ var Get_Id = URLactual.slice(4); ///ID QUE VIENE POR URL
 var token = "a8B6c4D4e8F2";
 
 //// FUNCIONES  | Fecha actual
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth() + 1; //January is 0!
-var yyyy = today.getFullYear();
-var hora = today.getHours()
-var minutos = today.getMinutes()
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    var hora = today.getHours()
+    var minutos = today.getMinutes()
 
-if (dd < 10) {
-    dd = '0' + dd;
-}
-if (mm < 10) {
-    mm = '0' + mm;
-}
-var hoy = dd + '/' + mm + '/' + yyyy;
-var hoy_php = yyyy + '-' + mm + '-' + dd;
-var horaHoy_php = hora + ':' + minutos;
+    if (dd < 10) { dd = '0' + dd; }
+    if (mm < 10) { mm = '0' + mm; }
+    var hoy = dd + '/' + mm + '/' + yyyy;
+    var hoy_php = yyyy + '-' + mm + '-' + dd;
+    var horaHoy_php = hora + ':' + minutos;
 
 /// FECHA TIME STAMP
 Vue.filter('FechaTimestamp', function (fecha) {
@@ -1139,6 +1135,9 @@ new Vue({
             axios.get(url).then(response => {
                 this.listaRepartos = response.data
 
+            }).catch(error => {
+                console.log(error.response.data)
+                
             });
         },
 

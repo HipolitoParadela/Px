@@ -1,8 +1,9 @@
 <?php
 // CABECERA
 include "header.php"; ?>
+<script src="https://www.google.com/recaptcha/api.js"></script>
 
-<body class="bg-primary" style="background-image: url('<?php echo base_url(); ?>uploads/fondo.jpg');">
+<body class="bg-primary" style="background-size: 100%; background-image: url('<?php echo base_url(); ?>uploads/fondo.jpg');">
 
     <div class="unix-login">
         <div class="container-fluid">
@@ -22,7 +23,7 @@ include "header.php"; ?>
                         </p>
                         <div class="login-form">
                             <!--<p align="center"><!-- <img src="<?php echo base_url(); ?>uploads/logo.jpeg" width="250">  DEMO</p>-->
-                             <h4>Inicio de sesión</h4> 
+                            <h4>Inicio de sesión</h4>
                             <p align="center" class="text-danger">
                                 <?php
                                 if (isset($_GET["Error"])) {
@@ -37,9 +38,9 @@ include "header.php"; ?>
 
                                 ?>
                             </p>
-                            <form action="login/iniciar_session" method="post" role="form">
+                            <form action="login/iniciar_session" method="post" role="form" id="login">
                                 <div class="form-group">
-                                    <label>DNI    </label>
+                                    <label>DNI </label>
                                     <input id="dni" name="dni" type="number" class="form-control" placeholder="" required><br>
 
                                 </div>
@@ -67,12 +68,27 @@ include "header.php"; ?>
                                 <div class="register-link m-t-15 text-center">
                                     <p>Don't have account ? <a href="#"> Sign Up Here</a></p>
                                 </div>-->
+                                <div id='recaptcha' class="g-recaptcha" data-sitekey="6LfYusgZAAAAAMryqRouLLBIREvqqM9S0ILRHZzs" data-callback="onCompleted" data-size="invisible"></div>
+
+                                <script>
+                                    $('#myForm').submit(function(event) {
+                                        console.log('validation completed.');
+
+                                        event.preventDefault(); //prevent form submit before captcha is completed
+                                        grecaptcha.execute();
+                                    });
+
+                                    onCompleted = function() {
+                                        document.getElementById("myForm").submit();
+                                        console.log('captcha completed.');
+                                    }
+                                </script>
                             </form>
 
                         </div>
-                        
+
                     </div>
-                    
+
                 </div>
             </div>
         </div>

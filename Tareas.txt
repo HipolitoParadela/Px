@@ -6,38 +6,13 @@ PX Resto
 
 	abierto como para seguir puliendolo con el tiempo, al punto de poderle integrar mercado pago como en los cursos del instituto
 
-_______________________________
-
-clientes_datos
-	ver el tema de la imagen, algunas pueden ser empresas
-
-proveedores_datos, 
-		agregar para generarle pagos
-
-listado de proveedores. poner el resumen de cuenta como en clientes
-
-
-	¿como vinculo un pago de cliente o proveedor a la tabla de finanzas movimientos?
-	1- usar una tabla nueva? y de ahi busco movimientos que tengan que ver con el cliente.
-
-
-----
-El dia de mañana la tabla clientes y proveedores deberia ser la misma. con un campo que los diferencie.
-Incluso deberia ser una sola tabla para todo lo que sea persona.
 __________________________________________________________________________________
 __________________________________________________________________________________
 
-- Hacer un control de que no queden comandas o deliverys abiertos en el momento de cerrar la jornada
-
-- Estadisticas en página de cada producto
-
-- ver si puedo poner ckeditor en algunos campos
-
-- codigo qr con enlace a pagina de la comanda creada para que el propio cliente pueda realizar el pedido
-
-__________________________________________________________________________________
-__________________________________________________________________________________
-
+¿Como hago que esto sea tentador?
+- podria entrar a la sección y no ver nada y un msj o video que muestre como operar esas funciones
+- o ver sus datos reales pero no poder utilizar los botones. 
+- o directamente no poder entrar a la sección.. (mas odiosa y no convendria más que para salir del paso rapido)
 
 en el formato gratis, no va a poder acceder a
 . manejo de stock
@@ -48,6 +23,52 @@ en el formato gratis, no va a poder acceder a
 . manejo individual de la carta
 . manejo individual del personal
 
+
+--------
+
+Gestion Comercial
+
+- Delivery
+	todo, pero quitar botones en resumen... que vea solo ultimos 7 días
+	. puede gestionar cobros
+- Comandas
+	idem a delivery
+- Repartos
+	solo ver una imagen, o video, o explicación sobre que se ve en ese lugar
+- Cocina
+	probar que la use sin drama, pero por ahi podria no verse
+- Stock
+	solo ver una imagen, o video, o explicación sobre que se ve en ese lugar
+- Calendario
+	solo ver una imagen, o video, o explicación sobre que se ve en ese lugar
+
+ANALITICAS
+
+- no pueden usar los botones y filtros
+- no puede ver analitica de items mas vendidos
+
+ADMINISTRACION
+- items carta, uso normal
+- compras, bloquear el boton nueva compra
+- personal, uso normal
+- clientes, poder agregar clientes, pero no podria ver datos del cliente
+- proveedores, idem clientes
+- mesas, uso normal
+
+
+Contabilizar 6 meses o un año de uso, luego obligar a pasar a la versión paga. Si no le gusta que se cague.
+
+Para que todo funcione, tengo que integrar el config.js en un PHP... ver en cual sistema estaba esto andando.
+
+
+Buscar una manera de controlar la fecha de registro, fecha de ultimo pago, para automáticamente volver el sistema a gratuito. O sea si no paga, vuelve a la opción gratis.
+
+Campo, inicio tiempo gratis, desde ahi cuenta 6 meses.
+
+Con el ultimo pago también va mostrando alertas y emails avisando que debe abonar. El abonamiento se hace con mercado pago, el mismo boton para todos.
+
+--------
+
 es decir va a poder entrar a todo, pero no se le van a mostrar los botones. 
 
 en analiticas, solo va a poder ir viendo 3 dias para atras, o sea lo q se ve por defecto
@@ -56,6 +77,24 @@ y en todo lo q no pueda ver, q le salga un msj o algo que diga "Desbloquea todas
 
 Tengo q si o si ponerme a hacer los tutoriales
 
+__________________________________________________________________________________
+__________________________________________________________________________________
+
+- En login, poner enlace a registro, y armar olvide contraseña para que se envíe la ultima contraseña de la persona.
+
+- Hacer un control de que no queden comandas o deliverys abiertos en el momento de cerrar la jornada
+
+- Estadisticas en página de cada producto
+
+- ver si puedo poner ckeditor en algunos campos
+
+- codigo qr con enlace a pagina de la comanda creada para que el propio cliente pueda realizar el pedido
+
+- El dia de mañana la tabla clientes y proveedores deberia ser la misma. con un campo que los diferencie.
+Incluso deberia ser una sola tabla para todo lo que sea persona.
+
+- clientes_datos
+	ver el tema de la imagen, algunas pueden ser empresas
 
 _______________________________________________________
 
