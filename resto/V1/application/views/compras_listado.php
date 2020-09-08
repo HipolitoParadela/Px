@@ -98,7 +98,7 @@ include "header-body.php";
 
                                         </div>
                                         <div class="col-lg-2 d-print-none">
-                                            <button class="btn btn-success btn-block" data-toggle="modal" data-target="#compramodal" v-on:click="limpiarFormularioCompras()">
+                                            <button class="btn btn-success btn-block" data-toggle="modal" data-target="#compramodal" v-on:click="limpiarFormularioCompras()" :disabled="Tipo_suscripcion == 1">
                                                 <i class="zmdi zmdi-plus"></i> Nueva compra
                                             </button>
                                         </div>
@@ -110,7 +110,12 @@ include "header-body.php";
 
 
                     </div>
-
+                    <div class="card" v-show="Tipo_suscripcion == 1">
+                        <h5 class="text-success">
+                            <b>Adquiera PX Resto PRO</b> para utilizar todas las funciones del Módulo Compras. </h5>
+                            Control completo de compras con un detalle de sus productos, proveedor y actualización automática del stock. Además gestione pagos y cuenta corriente con proveedores.
+                            <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <!-- COMPRAS ADEUDADAS VENCIDAS -->

@@ -31,7 +31,8 @@
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
 </div>
-
+<!--config -->
+<script src="<?php echo base_url(); ?>elementoscomunes/config"></script>
 <!-- Vue -->
 <script src="<?php echo base_url(); ?>recursos/js/vue.min.js"></script>
 <script src="<?php echo base_url(); ?>recursos/js/axios.js"></script>

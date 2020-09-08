@@ -65,13 +65,13 @@ include "header-body.php";
                                             <!--<button class="au-btn-filter"><i class="zmdi zmdi-filter-list"></i>Filtros</button>-->
                                         </div>
                                         <div class="col-md-4">
-                                            <button class="btn btn-success btn-flat m-b-10 m-l-5" data-toggle="modal" data-target="#stockmodal" v-on:click="limpiarFormularioStock()">
+                                            <button class="btn btn-success btn-flat m-b-10 m-l-5" data-toggle="modal" data-target="#stockmodal" v-on:click="limpiarFormularioStock()" :disabled="Tipo_suscripcion == 1">
                                                 Nuevo item</button>
 
                                             <button class="btn btn-info btn-flat m-b-10 m-l-5" data-toggle="modal" data-target="#categoriaModal" v-on:click="limpiarFormularioCategoria()">
                                                 <!--<i class="zmdi zmdi-plus"></i>-->Gestionar Categorias</button>
 
-                                            <button class="btn btn-danger btn-flat m-b-10 m-l-5" data-toggle="modal" data-target="#enfaltaModal" v-on:click="getProductosFalta(filtro_categoria)">
+                                            <button class="btn btn-danger btn-flat m-b-10 m-l-5" data-toggle="modal" data-target="#enfaltaModal" v-on:click="getProductosFalta(filtro_categoria)" :disabled="Tipo_suscripcion == 1">
                                                 <!--<i class="zmdi zmdi-plus"></i>-->Productos en falta</button>
                                             <!--<div class="rs-select2--dark rs-select2--sm rs-select2--dark2">
                                             <select class="js-select2" name="type">
@@ -173,6 +173,14 @@ include "header-body.php";
                                     </div>
                                     <!-- END DATA TABLE -->
                                 </div>
+
+                                <div class="card" v-show="Tipo_suscripcion == 1">
+                                    <h5 class="text-success">
+                                        <b>Adquiera PX Resto PRO</b> para comenzar a gestionar el stock. </h5>
+                                        Tenga el stock actualizado de una manera cómoda, integrado con el Módulo Compras y también con el descuento automático de cada producto saliente en comandas y deliverys.
+                                        <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -258,7 +266,7 @@ include "header-body.php";
                                     <button type="submit" class="btn btn-primary">{{texto_boton}}</button>
                                 </div>
                             </form>
-                            
+
                         </div>
                     </div>
                 </div>

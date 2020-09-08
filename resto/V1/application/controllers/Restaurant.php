@@ -271,7 +271,7 @@ class Restaurant extends CI_Controller {
 		if($Desde == NULL) 
 		{ 
 			$fecha = date('Y-m-d');
-			$Desde = strtotime ( '-60 day' , strtotime ( $fecha ) ) ;
+			$Desde = strtotime ( '-28 day' , strtotime ( $fecha ) ) ;
 			$Desde = date ( 'Y-m-d' , $Desde );
 		}
 		if($Hasta == NULL) 
@@ -1280,7 +1280,7 @@ class Restaurant extends CI_Controller {
 		if($Desde == NULL) 
 		{ 
 			$fecha = date('Y-m-d');
-			$Desde = strtotime ( '-30 day' , strtotime ( $fecha ) ) ;
+			$Desde = strtotime ( '-7 day' , strtotime ( $fecha ) ) ;
 			$Desde = date ( 'Y-m-d' , $Desde );
 		}
 		if($Hasta == NULL) 

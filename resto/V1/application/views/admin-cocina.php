@@ -1,18 +1,18 @@
-<?php
-// CABECERA
-include "header.php";
-/// NAVEGADOR SIDEBAR
-if ($this->session->userdata('Rol_id') == 4) {
-    include "navegadores/nav-bar-rol-4.php";
-} elseif ($this->session->userdata('Rol_id') == 3) {
-    include "navegadores/nav-bar-rol-3.php";
-} elseif ($this->session->userdata('Rol_id') == 2) {
-    include "navegadores/nav-bar-rol-2.php";
-}
+++6<?php
+    // CABECERA
+    include "header.php";
+    /// NAVEGADOR SIDEBAR
+    if ($this->session->userdata('Rol_id') == 4) {
+        include "navegadores/nav-bar-rol-4.php";
+    } elseif ($this->session->userdata('Rol_id') == 3) {
+        include "navegadores/nav-bar-rol-3.php";
+    } elseif ($this->session->userdata('Rol_id') == 2) {
+        include "navegadores/nav-bar-rol-2.php";
+    }
 
-/// CABECERA BODY
-include "header-body.php";
-?>
+    /// CABECERA BODY
+    include "header-body.php";
+    ?>
 
 <body>
     <div class="content-wrap" id="app">
@@ -61,7 +61,7 @@ include "header-body.php";
                                         <div class="card-title">
                                             <h4>Mesa {{comanda.Info_comanda.Identificador}}</h4>
                                             <p style="font-size:12px"> Pedido realizado: {{ formatoHora(comanda.Info_comanda.Hora_llegada) }}</p>
-                                           
+
                                         </div>
                                         <div class="todo-list">
                                             <div class="tdl-holder">
@@ -93,11 +93,11 @@ include "header-body.php";
                                         <div class="card-title">
                                             <h4>Cliente: {{delivery.Info_delivery.Nombre_cliente}}</h4>
                                             <p style="font-size:12px"> <b>Pedido realizado: </b> {{ formatoFecha_hora(delivery.Info_delivery.FechaHora_pedido) }}</p>
-                                            
+
                                             <p v-if="delivery.Info_delivery.FechaHora_cocina == null">
-                                                <button v-on:click="reportarCocina(delivery.Info_delivery.Id)" type="submit" class="btn btn-info">Preparado</button>
+                                                <button v-on:click="reportarCocina(delivery.Info_delivery.Id)" type="submit" class="btn btn-info" :disabled="Tipo_suscripcion == 1">Preparado</button>
                                             </p>
-                                            
+
                                             <p style="font-size:12px" v-else>
                                                 <b>Preparado:</b> {{ formatoFecha_hora(delivery.Info_delivery.FechaHora_cocina) }}
                                             </p>
@@ -132,6 +132,13 @@ include "header-body.php";
 
 
                     </div> <!-- /# row -->
+                    <div class="card" v-show="Tipo_suscripcion == 1">
+                        <h5 class="text-success">
+                            <b>Adquiera PX Resto PRO</b> para activar botón de comida PREPARADA. </h5>
+                            El botón PROPARADO permite al personal de cocina avisar con un solo click que el pedido esta listo para ser retirado de cocina, ya sea por el moso para llevar a la mesa o para ser
+                            retirada por el repartidor del delivery. Usted en tal caso estaría ahorrandose un tiempo preciado desvinculandose de ese paso clave y evitando demoras, logrando siempre una comida 
+                            enviada al comensal de manera rápida y caliente. <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
+                    </div>
                 </section>
             </div>
         </div>

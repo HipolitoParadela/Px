@@ -52,6 +52,12 @@ include "header-body.php";
                             </div>
                         </div> -->
                         <!-- /# card -->
+                        <div class="card" v-show="Tipo_suscripcion == 1">
+                            <h5 class="text-success">
+                                <b>Adquiera PX Resto PRO</b> para utilizar todas las funciones del Módulo Clientes. </h5>
+                            Control completo de sus clientes. Tenga una ficha con sus datos completos, lleve un seguimiento y vea el listado de comandas y deliverys realizados por él.
+                            Además gestione su cuenta corriente. <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
+                        </div>
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="bootstrap-data-table-panel">
@@ -88,10 +94,13 @@ include "header-body.php";
                                                             <th align="center">
                                                                 <h1>{{cliente.Datos_cliente.Cant_compras}}</h1>
                                                             </th>
-                                                            <td valign="middle">
+                                                            <td valign="middle" v-if="Tipo_suscripcion > 1">
                                                                 <a v-bind:href="'clientes/datos/?Id='+cliente.Datos_cliente.Id" class="btn btn-dark btn-outline m-b-10 m-l-5">
                                                                     {{cliente.Datos_cliente.Nombre}}
                                                                 </a>
+                                                            </td>
+                                                            <td v-else>
+                                                                {{cliente.Datos_cliente.Nombre}}
                                                             </td>
                                                             <td>{{cliente.Datos_cliente.Telefono}}</td>
                                                             <td>{{cliente.Datos_cliente.Direccion}}</td>

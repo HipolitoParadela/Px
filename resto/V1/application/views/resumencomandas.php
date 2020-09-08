@@ -44,12 +44,14 @@ include "header-body.php";
                     <div class="row">
                         <div class="col-lg-2">
                             <div class="card">
+                            <h4>Filtrar</h4>
                                 <div class="row">
-                                    <h4>Filtrar</h4>
+                                    
+
                                     <form class="form-horizontal" action="post">
                                         <div class="form-group">
                                             <label for="desde">Desde</label>
-                                            <input type='date' class="form-control" v-model="fecha_desde" />
+                                            <input type='date' class="form-control" v-model="fecha_desde"  :disabled="Tipo_suscripcion == 1"/>
                                         </div>
                                         <div class="form-group">
                                             <label for="desde">Hasta</label>
@@ -58,21 +60,27 @@ include "header-body.php";
                                     </form>
                                     <div class="form-group">
                                         Filtrar por jornada
-                                        <select class="form-control" v-model="filtro_jornada" v-on:change="comandasEntreFechas()">
+                                        <select class="form-control" v-model="filtro_jornada" v-on:change="comandasEntreFechas()" :disabled="Tipo_suscripcion == 1">
                                             <option value="0">Todas</option>
                                             <option v-for="jornada in listaJornadas" v-bind:value="jornada.Id">{{jornada.Descripcion}} | Del {{jornada.Fecha_inicio | FechaTimestampBaseDatos}} al {{jornada.Fecha_final | FechaTimestampBaseDatos}}</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         Filtrar por mozo
-                                        <select class="form-control" v-model="Filtro_mozo" v-on:change="comandasEntreFechas()">
+                                        <select class="form-control" v-model="Filtro_mozo" v-on:change="comandasEntreFechas()" :disabled="Tipo_suscripcion == 1">
                                             <option value="X">Todos</option>
                                             <option v-for="mozo in listaMozos" v-bind:value="mozo.Id">{{mozo.Nombre}}</option>
                                         </select>
                                     </div>
                                     <br>
-                                    <p v-show="fecha_hasta == 0">Por defecto se muestran los últimos 30 días</p>
+                                    <p v-show="fecha_hasta == 0">Por defecto se muestran los últimos 7 días</p>
                                 </div>
+                            </div>
+                            <div class="card" v-show="Tipo_suscripcion == 1">
+                                <h5 class="text-success">
+                                    <b>Adquiera PX Resto PRO</b> para activar los filtros. </h5>
+                                Filtrar los datos le permitirá analizar los resultados en periodos más extensos de tiempo o buscando una jornada especifica, o incluso también ver las comandas gestionadas por un mozo en particular;
+                                y así tomar mejores decisiones con respecto al manejo de comandas. <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
                             </div>
                         </div>
                         <div class="col-lg-10">

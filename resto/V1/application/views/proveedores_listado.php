@@ -48,6 +48,12 @@ include "header-body.php";
                             <a href="#proveedormodal" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-flat btn-addon m-b-10 m-l-5" v-on:click="limpiarFormularioProveedor()"><i class="ti-plus"></i> Nuevo proveedor</a>
                         </div>
                     </div>
+                    <div class="card" v-show="Tipo_suscripcion == 1">
+                        <h5 class="text-success">
+                            <b>Adquiera PX Resto PRO</b> para utilizar todas las funciones del Módulo Proveedores. </h5>
+                        Control completo de sus clientes. Tenga una ficha con sus datos completos, lleve un seguimiento y vea el listado de compras realizadas a él.
+                        Además gestione su cuenta corriente. <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
+                    </div>
                     <div class="row">
 
                         <div class="col-lg-2">
@@ -94,16 +100,19 @@ include "header-body.php";
                                                 <tr class="tr-shadow" v-for="proveedor in buscarProveedor">
                                                     <td>
                                                         <div class="round-img">
-                                                            <a href="#modalproveedorsFoto" data-toggle="modal" v-on:click="editarFormularioProveedorFoto(proveedor.Datos_proveedor)">
+                                                            <a href="#modalproveedorsFoto" data-toggle="modal" v-on:click="editarFormularioProveedorFoto(proveedor.Datos_proveedor)" :disabled="Tipo_suscripcion > 1">
                                                                 <img v-if="proveedor.Datos_proveedor.Imagen != null" v-bind:src="'<?php echo base_url(); ?>uploads/imagenes/'+proveedor.Datos_proveedor.Imagen" width="60px">
                                                                 <img v-else src="<?php echo base_url(); ?>uploads/imagenes/addimagen.jpg" width="50px" alt="">
                                                             </a>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td v-if="Tipo_suscripcion > 1">
                                                         <a v-bind:href="'proveedores/datos/?Id='+proveedor.Datos_proveedor.Id" class="btn btn-dark btn-outline m-b-10 m-l-5">
                                                             {{proveedor.Datos_proveedor.Nombre_proveedor}}
                                                         </a>
+                                                    </td>
+                                                    <td v-else>
+                                                        {{proveedor.Datos_proveedor.Nombre_proveedor}}
                                                     </td>
                                                     <td>
                                                         <h2 v-bind:class="[{ 'text-danger' : proveedor.Saldo < 0}, { 'text-success' : proveedor.Saldo > 0}]"> ${{ proveedor.Saldo | Moneda }} </h2>
@@ -114,7 +123,7 @@ include "header-body.php";
                                                     <td><span class="block-email">{{proveedor.Datos_proveedor.Email}}</span></td>
                                                     <td><a v-bind:href="'http://'+proveedor.Datos_proveedor.Web" target="_blank">{{proveedor.Datos_proveedor.Web}}</a></td>
                                                     <td>{{proveedor.Datos_proveedor.Nombre_persona_contacto}}</td>
-                                                    
+
                                                     <td>
                                                         <div class="table-data-feature">
                                                             <button class="item" v-on:click="editarFormularioProveedor(proveedor)" data-toggle="modal" data-target="#proveedormodal" data-placement="top" title="Edición rápida">

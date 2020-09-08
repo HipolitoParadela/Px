@@ -49,7 +49,7 @@ include "header-body.php";
 
                                 <div class="form-group">
                                     <label for="desde">Desde</label>
-                                    <input type='date' class="form-control" v-model="fecha_desde" />
+                                    <input type='date' class="form-control" v-model="fecha_desde" :disabled="Tipo_suscripcion == 1"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="desde">Hasta</label>
@@ -57,20 +57,26 @@ include "header-body.php";
                                 </div>
                                 <div class="form-group">
                                     Filtrar por categorías
-                                    <select class="form-control" v-model="filtro_categoria" v-on:change="obtenerAnalisisVentas()">
+                                    <select class="form-control" v-model="filtro_categoria" v-on:change="obtenerAnalisisVentas() " :disabled="Tipo_suscripcion == 1">
                                         <option value="0">Todas</option>
                                         <option v-for="categoria in categoriasCarta" v-bind:value="categoria.Id">{{categoria.Nombre_categoria}}</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     Filtrar por jornada
-                                    <select class="form-control" v-model="filtro_jornada" v-on:change="obtenerAnalisisVentas()">
+                                    <select class="form-control" v-model="filtro_jornada" v-on:change="obtenerAnalisisVentas()" :disabled="Tipo_suscripcion == 1">
                                         <option value="0">Todas</option>
                                         <option v-for="jornada in listaJornadas" v-bind:value="jornada.Id">{{jornada.Descripcion}} | Del {{jornada.Fecha_inicio | FechaTimestampBaseDatos}} al {{jornada.Fecha_final | FechaTimestampBaseDatos}}</option>
                                     </select>
                                 </div>
                                 <br>
                                 <p v-show="fecha_hasta == 0">Por defecto se contabilizan las ventas desde los inicios</p>
+                                <div class="card" v-show="Tipo_suscripcion == 1">
+                                <h5 class="text-success">
+                                    <b>Adquiera PX Resto PRO</b> para activar los filtros. </h5>
+                                    Filtrar los datos le permitirá analizar los resultados en periodos diferentes y así tomar mejores decisiones con respecto a la gestión comercial de su negocio. 
+                                    <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
+                            </div>
                             </div>
                         </div>
                         <div class="col-lg-9">

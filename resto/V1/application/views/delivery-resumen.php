@@ -51,23 +51,27 @@ include "header-body.php";
                                     <form class="form-horizontal" action="post">
                                         <div class="form-group">
                                             <label for="desde">Desde</label>
-                                            <input type='date' class="form-control" v-model="fecha_desde" v-on:change="fecha_hasta = null" />
+                                            <input type='date' class="form-control" v-model="fecha_desde" v-on:change="fecha_hasta = null" :disabled="Tipo_suscripcion == 1" />
                                         </div>
                                         <div class="form-group">
                                             <label for="desde">Hasta</label>
                                             <input type='date' class="form-control" v-model="fecha_hasta" :disabled="fecha_desde == 0" v-on:change="deliveryEntreFechas()" v-bind:min="fecha_desde" />
                                         </div>
                                     </form>
+                                </div>
+                                <div class="row">
                                     <div class="form-group">
                                         Filtrar por jornada
-                                        <select class="form-control" v-model="filtro_jornada" v-on:change="deliveryEntreFechas()">
+                                        <select class="form-control" v-model="filtro_jornada" v-on:change="deliveryEntreFechas()" :disabled="Tipo_suscripcion == 1">
                                             <option value="0">Todas</option>
                                             <option v-for="jornada in listaJornadas" v-bind:value="jornada.Id">{{jornada.Descripcion}} | Del {{jornada.Fecha_inicio | FechaTimestampBaseDatos}} al {{jornada.Fecha_final | FechaTimestampBaseDatos}}</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="form-group">
                                         Filtrar por repartidor
-                                        <select class="form-control" v-model="Filtro_repartidor" v-on:change="deliveryEntreFechas()">
+                                        <select class="form-control" v-model="Filtro_repartidor" v-on:change="deliveryEntreFechas()" :disabled="Tipo_suscripcion == 1">
                                             <option value="X">Todas</option>
                                             <option value="0">Retirado por cliente</option>
                                             <option v-for="repartidor in listaUsuariosRepartidores" v-bind:value="repartidor.Id">{{repartidor.Nombre}}</option>
@@ -76,7 +80,12 @@ include "header-body.php";
                                     <br>
                                     <p v-show="fecha_hasta == 0">Por defecto se muestran los últimos 7 días</p>
                                 </div>
-
+                            </div>
+                            <div class="card" v-show="Tipo_suscripcion == 1">
+                                <h5 class="text-success">
+                                    <b>Adquiera PX Resto PRO</b> para activar los filtros. </h5>
+                                Filtrar los datos le permitirá analizar los resultados en periodos más extensos de tiempo o buscando una jornada especifica, o incluso también ver los deliverys de un repartidor en particular;
+                                y así tomar mejores decisiones con respecto al manejo de Deliverys. <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
                             </div>
                         </div>
                         <div class="col-lg-10">
@@ -94,7 +103,7 @@ include "header-body.php";
                                                     <td align="right">Valor cuenta</td>
                                                     <td align="right">Valor delivery</td>
                                                     <td align="right">Valor descuento</td>
-                                                    
+
                                                     <td align="right">Valor final</td>
                                                 </tr>
                                             </thead>

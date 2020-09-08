@@ -26,6 +26,13 @@ class Login extends CI_Controller
         $this->load->model('user');
         $fila = $this->user->getUser($dni);
 
+        // BUSCO TIPO DE SUSCRIPCIÓN Y DEMAS DATOS PARA VER SI SE HABILITA O NO EL ACCESO
+            $this->db->select('Tipo_suscripcion');
+            $this->db->from('tbl_negocios');
+            $this->db->where("	Id", $fila->Negocio_id);
+		    $query = $this->db->get();
+		    $result = $query->result_array();
+
         if($fila != null) //// si el usuario existe
         {
             if($fila->Pass == $Pass) /// si la contraseña es correcta
@@ -37,7 +44,8 @@ class Login extends CI_Controller
                         'Id' => $fila->Id,
                         'Login' => true,
                         'Rol_id' => $fila->Rol_id,
-                        'Negocio_id' => $fila->Negocio_id
+                        'Negocio_id' => $fila->Negocio_id,
+                        'Tipo_suscripcion' => $result[0]["Tipo_suscripcion"]
                     
                     );
 
@@ -46,7 +54,7 @@ class Login extends CI_Controller
                     header("Location: ".base_url()."dashboard");
                 }
                 
-                else /// si no es admin 
+                else /// si no es admin, controla también si tiene activo el control de presencia
                 {
                     if($fila->Presencia == 1) /// si tiene activo el control de presencia y con un rol distinto a 1 y a 5
                     {
@@ -55,7 +63,8 @@ class Login extends CI_Controller
                             'Id' => $fila->Id,
                             'Login' => true,
                             'Rol_id' => $fila->Rol_id,
-                            'Negocio_id' => $fila->Negocio_id
+                            'Negocio_id' => $fila->Negocio_id,
+                            'Tipo_suscripcion' => $result[0]["Tipo_suscripcion"]
                         );
 
                         $this->session->set_userdata($data);
@@ -196,6 +205,7 @@ class Login extends CI_Controller
                     'Id' =>         $insert_usuario_id,
                     'Login' =>      true,
                     'Rol_id' =>     4,
+                    'Negocio_id' => $insert_negocio_id,
                     'Negocio_id' => $insert_negocio_id
                 
                 );

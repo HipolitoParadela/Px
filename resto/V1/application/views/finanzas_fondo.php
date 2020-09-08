@@ -88,17 +88,23 @@ include "header-body.php";
                                         </div>
                                     </div>
                                     <br>
-                                    <a href="#modalEfectivo" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-block" v-on:click="limpiarFormularioMovimiento()">
+                                    <a href="#modalEfectivo" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-block" v-on:click="limpiarFormularioMovimiento()" :disabled="Tipo_suscripcion == 1">
                                         <i class="ti-plus"></i> Registrar movimiento
                                     </a>
-                                    <a href="#modalRegistrarCheque" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-block" v-on:click="limpiarFormularioCheques()">
+                                    <a href="#modalRegistrarCheque" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-block" v-on:click="limpiarFormularioCheques()" :disabled="Tipo_suscripcion == 1">
                                         <i class="ti-plus"></i> Registrar cheque
                                     </a>
-                                    <a href="#modalCheque" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-block" v-on:click="limpiarFormularioCheques()">
+                                    <a href="#modalCheque" data-toggle="modal" title="Nuevo item" class="btn btn-success btn-block" v-on:click="limpiarFormularioCheques()" :disabled="Tipo_suscripcion == 1">
                                         <i class="ti-plus"></i> Utilizar cheque
                                     </a>
                                     <br>
                                     <em>* Los monton se basan en los movimientos registrados en el sistema. Si algún movimiento se ha omitido de registrar, estos valores pueden discrepar de la realidad.</em>
+                                    <div class="card" v-show="Tipo_suscripcion == 1">
+                                            <h5 class="text-success">
+                                                <b>Adquiera PX Resto PRO</b> para poder utilizar todas las funciones del Módulo Finanzas. </h5>
+                                                Lleve un registro completo de todas sus finanzas. Desde movimientos en efectivos, bancarios y hasta un control super cómodo de cheques.
+                                                <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
+                                        </div>
                                 </div>
 
                                 <!-- SECCION FICHA cliente -->
@@ -109,10 +115,10 @@ include "header-body.php";
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col-lg-3">
-                                                            <button class="btn btn-secondary btn-block" v-on:click="consultarMovimientos(null, null, 0)"> Desde siempre</button>
+                                                            <button class="btn btn-secondary btn-block" v-on:click="consultarMovimientos(null, null, 0)" :disabled="Tipo_suscripcion == 1"> Desde siempre</button>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <select class="form-control" v-model="filtro_jornada" v-on:change="consultarMovimientos(null, null, filtro_jornada)">
+                                                            <select class="form-control" v-model="filtro_jornada" v-on:change="consultarMovimientos(null, null, filtro_jornada)" :disabled="Tipo_suscripcion == 1">
                                                                 <option value="0">Todas las jornadas</option>
                                                                 <option v-for="jornada in listaJornadas" v-bind:value="jornada.Id">{{jornada.Descripcion}}</option>
                                                             </select>
@@ -121,7 +127,7 @@ include "header-body.php";
                                                             <p align="right">Seleccionar fechas a consultar</p>
                                                         </div>
                                                         <div class="col-lg-2">
-                                                            <input type="date" class="form-control" v-model="Filtro_fecha_inicial">
+                                                            <input type="date" class="form-control" v-model="Filtro_fecha_inicial" :disabled="Tipo_suscripcion == 1">
                                                         </div>
                                                         <div class="col-lg-2">
                                                             <input type="date" class="form-control" v-model="Filtro_fecha_final" :disabled="Filtro_fecha_inicial == null" v-on:change="consultarMovimientos(Filtro_fecha_inicial, Filtro_fecha_final, 0)">

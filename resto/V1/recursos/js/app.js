@@ -1,24 +1,3 @@
-/// --- SETEANDO VARIABLES DE URL ----- //////
-var pathname = window.location.pathname;
-var carpeta = '/resto/V1/' /// carpeta que hay q modificar segun cliente
-var base_url = window.location.origin + carpeta
-var URLactual = window.location.search;
-var Get_Id = URLactual.slice(4); ///ID QUE VIENE POR URL
-var token = "a8B6c4D4e8F2";
-
-//// FUNCIONES  | Fecha actual
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1; //January is 0!
-    var yyyy = today.getFullYear();
-    var hora = today.getHours()
-    var minutos = today.getMinutes()
-
-    if (dd < 10) { dd = '0' + dd; }
-    if (mm < 10) { mm = '0' + mm; }
-    var hoy = dd + '/' + mm + '/' + yyyy;
-    var hoy_php = yyyy + '-' + mm + '-' + dd;
-    var horaHoy_php = hora + ':' + minutos;
 
 /// FECHA TIME STAMP
 Vue.filter('FechaTimestamp', function (fecha) {
@@ -131,6 +110,10 @@ new Vue({
     el: '#app',
 
     created: function () {
+        
+        //// DATOS DE USUARIO PARA EL SISTEMA
+        this.setVariablesUsuario(Nombre, Id, Rol_id, Negocio_id, Tipo_suscripcion);
+
         /// CARGO FUNCIONES SEGUN EL SECCTOR QUE ESTE VISUALIZANDO - uso un if, pero tal vez un swich sea mejor en este caso
         if (pathname == carpeta + 'restaurant/itemscarta') {
             this.getListadoItems();
@@ -258,6 +241,13 @@ new Vue({
 
     data:
     {
+        //// DATOS DE USUARIO PARA EL SISTEMA
+            Nombre:'',
+            Usuario_id:'',
+            Rol_id:'',
+            Negocio_id:'',
+            Tipo_suscripcion,
+        
         Rol_usuario: '',
         Filtro_fecha_inicial: null,
         Filtro_fecha_final: null,
@@ -410,7 +400,15 @@ new Vue({
     },
 
     methods:
-    {
+    {   
+        //// DATOS DE USUARIO PARA EL SISTEMA
+        setVariablesUsuario: function (Nombre, Id, Rol_id, Negocio_id, Tipo_suscripcion) {
+            this.Nombre = Nombre;
+            this.Usuario_id = Id;
+            this.Rol_id = Rol_id;
+            this.Negocio_id = Negocio_id;
+            this.Tipo_suscripcion = Tipo_suscripcion;
+        },
 
         //// CARTA | MOSTRAR LISTADO DE ITEMS DE LA CARTA    
         getListadoItems: function () {
@@ -1230,7 +1228,7 @@ new Vue({
                 }
                 else if (pathname == carpeta + 'restaurant/cocina') 
                 { 
-                    this.obtener_regetListadoCocinapartos();
+                    this.getListadoCocina();
                 }
 
             }).catch(error => {
@@ -1241,7 +1239,7 @@ new Vue({
                 }
                 else if (pathname == carpeta + 'restaurant/cocina') 
                 { 
-                    this.obtener_regetListadoCocinapartos();
+                    this.getListadoCocina();
                 }
             });
         },
@@ -2961,6 +2959,9 @@ new Vue({
 
         this.getMovimientos();
 
+        //// DATOS DE USUARIO PARA EL SISTEMA
+        this.setVariablesUsuario(Nombre, Id, Rol_id, Negocio_id, Tipo_suscripcion);
+
     },
 
     data: {
@@ -3000,10 +3001,27 @@ new Vue({
         listaMovimientos : [],
         Total_pagado: 0,
         infoModal: {'Observaciones':''},
+
+        //// DATOS DE USUARIO PARA EL SISTEMA
+        Nombre:'',
+        Usuario_id:'',
+        Rol_id:'',
+        Negocio_id:'',
+        Tipo_suscripcion,
     },
 
     methods:
     {
+
+        //// DATOS DE USUARIO PARA EL SISTEMA
+        setVariablesUsuario: function (Nombre, Id, Rol_id, Negocio_id, Tipo_suscripcion) {
+            this.Nombre = Nombre;
+            this.Usuario_id = Id;
+            this.Rol_id = Rol_id;
+            this.Negocio_id = Negocio_id;
+            this.Tipo_suscripcion = Tipo_suscripcion;
+        },
+
         //// MOSTRAR DATOS DELIVERY
         getDeliveryId: function () {
             var url = base_url + 'restaurant/datosDelivery/?Id=' + Get_Id;  //averiguar como tomar el Id que viene por URL aca
@@ -3062,7 +3080,6 @@ new Vue({
         },
 
         
-
         //// Info item comanda en modal
         infoItem: function (item) {
             this.itemCarta = item;

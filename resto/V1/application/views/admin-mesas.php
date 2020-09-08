@@ -18,7 +18,7 @@ include "header-body.php";
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1>Carta, <span>Listado completo de items</span></h1>
+                                <h1>Mesas, <span>Administrar Mesas</span></h1>
                             </div>
                         </div>
                     </div>
@@ -27,8 +27,8 @@ include "header-body.php";
                         <div class="page-header">
                             <div class="page-title">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="#">Sistema restaurant</a></li>
-                                    <li class="breadcrumb-item active">Listado completo de items</li>
+                                    <li class="breadcrumb-item"><a href="#">Px Resto</a></li>
+                                    <li class="breadcrumb-item active">Administrar Mesas</li>
                                 </ol>
                             </div>
                         </div>

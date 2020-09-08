@@ -51,7 +51,7 @@ include "header-body.php";
                                     <form class="form-horizontal" action="post">
 
                                         <label for="desde">Desde</label>
-                                        <input type='date' class="form-control" v-model="fecha_desde" />
+                                        <input type='date' class="form-control" v-model="fecha_desde" :disabled="Tipo_suscripcion == 1"/>
 
                                         <label for="desde">Hasta</label>
                                         <input type='date' class="form-control" v-model="fecha_hasta" :disabled="fecha_desde == 0" v-on:change="getJornadasResumen(fecha_desde,fecha_hasta)" v-bind:min="fecha_desde" />
@@ -59,8 +59,14 @@ include "header-body.php";
                                     </form>
                                 </div>
                                 <br>
-                                <p v-show="fecha_hasta == 0">Por defecto se muestran las jornadas de los últimos 60 días</p>
+                                <p v-show="fecha_hasta == 0">Por defecto se muestran las jornadas de los últimos 28 días</p>
 
+                            </div>
+                            <div class="card" v-show="Tipo_suscripcion == 1">
+                                <h5 class="text-success">
+                                    <b>Adquiera PX Resto PRO</b> para activar los filtros. </h5>
+                                    Filtrar los datos le permitirá analizar los resultados en periodos más extensos y así tomar mejores decisiones con respecto a la gestión comercial de su negocio.
+                                    <a href="http://pxsistemas.com/px-resto-software-para-administrar-restaurantes-y-delivery/">Me interesa</a>
                             </div>
                         </div>
                         <div class="col-lg-10">
@@ -79,7 +85,6 @@ include "header-body.php";
                                                     <td class="text-info" align="center">Caja</td>
                                                     <td class="text-info" align="center">Res. Jornada</td>
                                                     <td class="text-info" align="right">Administrador</td>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
