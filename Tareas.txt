@@ -1,66 +1,50 @@
 PX Resto
 _________
 
-Filtro fechas en inicio jornada, y hora, no funcionan bien en firefox
 
-Controlar que al registrarse, no haga un registro duplicado.
+Armar imagenes de ejemplo
+	Reparto
+	Calendario
+	Stock
+	Items más Vendidos
 
+me pongo a jugar con juan cruz y la luz, y de eso que queda, tengo q copiar la pantalla.
+	armo una imagen media diagonal.
+	aunq también podria ser un video explicativo. 
 
----
-
-Gestion Comercial
-
-
-- Repartos
-	solo ver una imagen, la imagen será de muchos pedidos, que se vea como se ve en la compu, y como se ve en un celu.
-	Poner datos reales.
-
-- Cocina
-	arreglar la carga cuando marco finalizado algo, y también bloquear boton.
+-------------------------------------
 
 
-- Stock
-	solo ver una imagen, o video, o explicación sobre que se ve en ese lugar
-- Calendario
-	solo ver una imagen, o video, o explicación sobre que se ve en ese lugar
-
-ANALITICAS
-
-- no pueden usar los botones y filtros
-- no puede ver analitica de items mas vendidos
-
-ADMINISTRACION
-- items carta, uso normal
-- compras, bloquear el boton nueva compra, poner imagen
-- personal, uso normal
-- clientes, poder agregar clientes, pero no podria ver datos del cliente
-- proveedores, idem clientes
-- mesas, uso normal
+PAGOS 
+	a tbl_negocio
+	
+	Al generarse un pago, se carga la info del pago en la tbl_negocios_pagos, y el id insertado se carga en tbl_negocios
 
 
-Contabilizar 6 meses o un año de uso, luego obligar a pasar a la versión paga. Si no le gusta que se cague.
+Contabilizar 9 meses de registro gratis, o desde el último pago. 
+	Para controlar esto, uno de los pasos para el login, es controlar la fecha actual con la fecha de ultimo pago.
+		para la fecha de ultimo pago, me fijo en el ultimo_pago_pro_id, traigo la fecha y de ahi cuento
+		si no encuentra ningún movimiento, entonces toma la fecha de alta de la tbl_negocios		
 
-Para que todo funcione, tengo que integrar el config.js en un PHP... ver en cual sistema estaba esto andando.
+	A la fecha de ultimo pago sumarle 9 meses, si la fecha actual, es mayor que esa, no le permite entrar.
 
+	Si el tipo_suscripcion es 2, controla la fecha
+	Para darle acceso PRO, debe fijarte en la fecha de ultimo pago, le suma 30 días. Y controla con la fecha actual. 
+	Si la fecha actual es mayor que esa, el Tipo_suscripción será 1, o sea se le pasa a gratuito.
 
-Buscar una manera de controlar la fecha de registro, fecha de ultimo pago, para automáticamente volver el sistema a gratuito. O sea si no paga, vuelve a la opción gratis.
+		En este caso debería mostrar un aviso. 
 
-Campo, inicio tiempo gratis, desde ahi cuenta 6 meses.
 
 Con el ultimo pago también va mostrando alertas y emails avisando que debe abonar. El abonamiento se hace con mercado pago, el mismo boton para todos.
 
 --------
 
-es decir va a poder entrar a todo, pero no se le van a mostrar los botones. 
-
-en analiticas, solo va a poder ir viendo 3 dias para atras, o sea lo q se ve por defecto
-
-y en todo lo q no pueda ver, q le salga un msj o algo que diga "Desbloquea todas las funciones"
-
 Tengo q si o si ponerme a hacer los tutoriales
 
 __________________________________________________________________________________
 __________________________________________________________________________________
+
+- Resumen jornadas, no se si larga buenos datos. Ver eso con el tiempo.
 
 - Usar notificaciones push
 

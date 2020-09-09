@@ -762,10 +762,14 @@ class Restaurant extends CI_Controller {
 							tbl_roles.Nombre_rol');
 		$this->db->from('tbl_usuarios');
 		$this->db->join('tbl_roles', 'tbl_roles.Id = tbl_usuarios.Rol_id','left');
-		$this->db->where('tbl_usuarios.Activo',$estado);
+		
+		$this->db->where('tbl_usuarios.Activo', $estado);
+		
 		$this->db->where("tbl_usuarios.Negocio_id", $this->session->userdata('Negocio_id'));
+		
 		$this->db->order_by("Nombre", "asc");
-        $query = $this->db->get();
+		
+		$query = $this->db->get();
 		$result = $query->result_array();
 
 		echo json_encode($result);
@@ -782,7 +786,30 @@ class Restaurant extends CI_Controller {
 
 		
 		
-		$Id = NULL; if(isset($this->datosObtenidos->usuarioData->Id)) { $Id = $this->datosObtenidos->usuarioData->Id; }
+		$Id = NULL; 					if(isset($this->datosObtenidos->usuarioData->Id)) 				{ $Id = $this->datosObtenidos->usuarioData->Id; }
+		$Nombre = null; 				if(isset($this->datosObtenidos->usuarioData->Nombre)) 			{ $Nombre = $this->datosObtenidos->usuarioData->Nombre; }
+		$DNI = null; 					if(isset($this->datosObtenidos->usuarioData->DNI)) 				{ $DNI = $this->datosObtenidos->usuarioData->DNI; }
+		$Pass = null; 					if(isset($this->datosObtenidos->usuarioData->Pass)) 			{ $Pass = $this->datosObtenidos->usuarioData->Pass; }
+		$Rol_id = null; 				if(isset($this->datosObtenidos->usuarioData->Rol_id)) 			{ $Rol_id = $this->datosObtenidos->usuarioData->Rol_id; }
+		$Telefono = null; 				if(isset($this->datosObtenidos->usuarioData->Telefono)) 		{ $Telefono = $this->datosObtenidos->usuarioData->Telefono; }
+		$Fecha_nacimiento = null; 		if(isset($this->datosObtenidos->usuarioData->Fecha_nacimiento)) { $Fecha_nacimiento = $this->datosObtenidos->usuarioData->Fecha_nacimiento; }
+		$Domicilio = null; 				if(isset($this->datosObtenidos->usuarioData->Domicilio)) 		{ $Domicilio = $this->datosObtenidos->usuarioData->Domicilio; }
+		$Nacionalidad = null; 			if(isset($this->datosObtenidos->usuarioData->Nacionalidad))		{ $Nacionalidad = $this->datosObtenidos->usuarioData->Nacionalidad; }
+		$Genero = null; 				if(isset($this->datosObtenidos->usuarioData->Genero)) 			{ $Genero = $this->datosObtenidos->usuarioData->Genero; }
+		$Email = null; 					if(isset($this->datosObtenidos->usuarioData->Email)) 			{ $Email = $this->datosObtenidos->usuarioData->Email; }
+		$Obra_social = null; 			if(isset($this->datosObtenidos->usuarioData->Obra_social)) 		{ $Obra_social = $this->datosObtenidos->usuarioData->Obra_social; }
+		$Numero_obra_social = null; 	if(isset( $this->datosObtenidos->usuarioData->Numero_obra_social)) { $Numero_obra_social = $this->datosObtenidos->usuarioData->Numero_obra_social; }
+		$Hijos = null; 					if(isset($this->datosObtenidos->usuarioData->Hijos)) 			{ $Hijos = $this->datosObtenidos->usuarioData->Hijos; }
+		$Estado_civil = null; 			if(isset($this->datosObtenidos->usuarioData->Estado_civil)) 	{ $Estado_civil = $this->datosObtenidos->usuarioData->Estado_civil; }
+		$Datos_persona_contacto = null; if(isset($this->datosObtenidos->usuarioData->Datos_persona_contacto)) { $Datos_persona_contacto = $this->datosObtenidos->usuarioData->Datos_persona_contacto; }
+		$Datos_bancarios = null; 		if(isset($this->datosObtenidos->usuarioData->Datos_bancarios)) { $Datos_bancarios = $this->datosObtenidos->usuarioData->Datos_bancarios; }
+		$Remuneracion_jornada = null; 	if(isset($this->datosObtenidos->usuarioData->Remuneracion_jornada)) { $Remuneracion_jornada = $this->datosObtenidos->usuarioData->Remuneracion_jornada; }
+		$Periodo_liquidacion_sueldo = null; if(isset($this->datosObtenidos->usuarioData->Periodo_liquidacion_sueldo)) { $Periodo_liquidacion_sueldo = $this->datosObtenidos->usuarioData->Periodo_liquidacion_sueldo; }
+		$Horario_laboral = null;		if(isset($this->datosObtenidos->usuarioData->Horario_laboral)) 	{ $Horario_laboral = $this->datosObtenidos->usuarioData->Horario_laboral; }
+		$Lider = null; 					if(isset($this->datosObtenidos->usuarioData->Lider)) 			{ $Lider = $this->datosObtenidos->usuarioData->Lider; }
+		$Superior_inmediato = null; 	if(isset($this->datosObtenidos->usuarioData->Superior_inmediato)) { $Superior_inmediato = $this->datosObtenidos->usuarioData->Superior_inmediato; }
+		$Fecha_alta = null; 			if(isset($this->datosObtenidos->usuarioData->Fecha_alta)) 		{ $Fecha_alta = $this->datosObtenidos->usuarioData->Fecha_alta; }
+		$Observaciones = null; 			if(isset($this->datosObtenidos->usuarioData->Observaciones)) 	{ $Observaciones = $this->datosObtenidos->usuarioData->Observaciones; }
 		
 		$Activo = 1;
 		if(isset($this->datosObtenidos->usuarioData->Activo))
@@ -798,29 +825,29 @@ class Restaurant extends CI_Controller {
         {
 					$data = array(
 								
-						'Nombre' => 			$this->datosObtenidos->usuarioData->Nombre,
-						'DNI' => 				$this->datosObtenidos->usuarioData->DNI,
-						'Pass' => 				$this->datosObtenidos->usuarioData->Pass,
-						'Rol_id' => 			$this->datosObtenidos->usuarioData->Rol_id,
-						'Telefono' => 			$this->datosObtenidos->usuarioData->Telefono,
-						'Fecha_nacimiento' => 	$this->datosObtenidos->usuarioData->Fecha_nacimiento,
-						'Domicilio' => 			$this->datosObtenidos->usuarioData->Domicilio,
-						'Nacionalidad' => 		$this->datosObtenidos->usuarioData->Nacionalidad,
-						'Genero' => 			$this->datosObtenidos->usuarioData->Genero,
-						'Email' => 				$this->datosObtenidos->usuarioData->Email,
-						'Obra_social' => 		$this->datosObtenidos->usuarioData->Obra_social,
-						'Numero_obra_social' => $this->datosObtenidos->usuarioData->Numero_obra_social,
-						'Hijos' => 				$this->datosObtenidos->usuarioData->Hijos,
-						'Estado_civil' => 		$this->datosObtenidos->usuarioData->Estado_civil,
-						'Datos_persona_contacto' => 	$this->datosObtenidos->usuarioData->Datos_persona_contacto,
-						'Datos_bancarios' => 			$this->datosObtenidos->usuarioData->Datos_bancarios,
-						'Remuneracion_jornada' => 		$this->datosObtenidos->usuarioData->Remuneracion_jornada,
-						'Periodo_liquidacion_sueldo' => $this->datosObtenidos->usuarioData->Periodo_liquidacion_sueldo,
-						'Horario_laboral' => 			$this->datosObtenidos->usuarioData->Horario_laboral,
-						'Lider' => 				$this->datosObtenidos->usuarioData->Lider,
-						'Superior_inmediato' => 		$this->datosObtenidos->usuarioData->Superior_inmediato,
-						'Fecha_alta' => 		$this->datosObtenidos->usuarioData->Fecha_alta,
-						'Observaciones' => 		$this->datosObtenidos->usuarioData->Observaciones,
+						'Nombre' => 			$Nombre,
+						'DNI' => 				$DNI,
+						'Pass' => 				$Pass,
+						'Rol_id' => 			$Rol_id,
+						'Telefono' => 			$Telefono,
+						'Fecha_nacimiento' => 	$Fecha_nacimiento,
+						'Domicilio' => 			$Domicilio,
+						'Nacionalidad' => 		$Nacionalidad,
+						'Genero' => 			$Genero,
+						'Email' => 				$Email,
+						'Obra_social' => 		$Obra_social,
+						'Numero_obra_social' => $Numero_obra_social,
+						'Hijos' => 				$Hijos,
+						'Estado_civil' => 		$Estado_civil,
+						'Datos_persona_contacto' => 	$Datos_persona_contacto,
+						'Datos_bancarios' => 			$Datos_bancarios,
+						'Remuneracion_jornada' => 		$Remuneracion_jornada,
+						'Periodo_liquidacion_sueldo' => $Periodo_liquidacion_sueldo,
+						'Horario_laboral' => 			$Horario_laboral,
+						'Lider' => 				$Lider,
+						'Superior_inmediato' => 		$Superior_inmediato,
+						'Fecha_alta' => 		$Fecha_alta,
+						'Observaciones' => 		$Observaciones,
 						'Activo' => 			$Activo,
 						'Negocio_id' => $this->session->userdata('Negocio_id'),
 						

@@ -6,7 +6,7 @@
             <ul>
                 <li class="label">Home</li>
                 <li><a href="<?php echo base_url(); ?>restaurant/"><i class="ti-layout"></i>Dashboard</a></li>
-                <li><a target="blank" href="http://pxsistemas.com/resto/documentacion/planinicial-v1.pdf"><i class="ti-help-alt"></i>Tutorial</a></li>
+                
                 <!-- <li class="active"><a class="sidebar-sub-toggle"><i class="ti-home"></i> Dashboard <span class="sidebar-collapse-icon ti-angle-down"></span></a>
                             <ul>
                                 
@@ -54,7 +54,7 @@
                 </li>
 
 
-
+                <li><a target="blank" href="http://pxsistemas.com/resto/documentacion/planinicial-v1.pdf"><i class="ti-help-alt"></i>Tutorial</a></li>
                 <li><a href="<?php echo base_url(); ?>login/logout"><i class="ti-close"></i> Cerrar sesión</a></li>
             </ul>
         </div>

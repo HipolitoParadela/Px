@@ -658,17 +658,14 @@ new Vue({
                     this.getListadoUsuarios(1);
                 }
 
+                /////// USUARIOS -------------------- /////////////////
+                else if (pathname == carpeta + 'usuarios') {
+                    this.getListadoUsuarios(1);
+                }
 
             }).catch(error => {
                 console.log(response.data)
-                /////// DELIVERY -------------------- /////////////////
-                if (pathname == carpeta + 'restaurant/deliverys') {
-                    this.getListadoUsuariosRepartidores();
-                }
-                /////// USUARIOS -------------------- /////////////////
-                else if (pathname == carpeta + 'restaurant/usuarios') {
-                    this.getListadoUsuarios(1);
-                }
+                
             });
         },
 
