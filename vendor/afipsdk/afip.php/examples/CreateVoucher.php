@@ -18,8 +18,8 @@ echo $last_voucher;
 $num_factura = $last_voucher + 1;
 
 echo ' . ' . $num_factura;
-echo "<br>__DIR_ solo: " . __DIR__ . "<br>";
-echo "<br>__DIR_ retocado: " . __DIR__ . "<br><br><br>";
+/* echo "<em><br>__DIR_ solo: " . __DIR__ . "<br>";
+echo "<br>__DIR_ retocado: " . __DIR__ . "<br><br><br></em>"; */
 
 $data = array(
 	'CantReg' 		=> 1, // Cantidad de comprobantes a registrar
