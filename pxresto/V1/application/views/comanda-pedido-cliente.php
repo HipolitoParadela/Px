@@ -51,7 +51,7 @@ include "header-body.php";
                             <div class="col-lg-6">
                                 Buscar por nombre
                             </div>
-                            <div class="col-lg-12">
+                            <div class="row">
                                 Galería con las cosas.
 
                                 Mostrar la foto
@@ -62,7 +62,7 @@ include "header-body.php";
                                 Debe salir una notificacion de item Pedido.
                             </div>
                             <div class="col-lg-12">
-                                Listado simpre de items pedidos con su valor
+                                Listado simple de items pedidos con su valor
                                 y al final la cuenta.
                             </div>
                         </div>
