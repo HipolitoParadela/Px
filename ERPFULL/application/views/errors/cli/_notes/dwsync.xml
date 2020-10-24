@@ -18,4 +18,10 @@
 <file name="error_general.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949800000000" Dst="0" />
 <file name="error_php.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949800000000" Dst="0" />
 <file name="index.html" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949800000000" Dst="0" />
+<file name="error_404.php" server="c1361809.ferozo.com" local="132463412402570046" remote="132442555200000000" Dst="0" />
+<file name="error_exception.php" server="c1361809.ferozo.com" local="132463412404568101" remote="132442555200000000" Dst="0" />
+<file name="error_db.php" server="c1361809.ferozo.com" local="132463412404997643" remote="132442555200000000" Dst="0" />
+<file name="error_general.php" server="c1361809.ferozo.com" local="132463412406425793" remote="132442555200000000" Dst="0" />
+<file name="error_php.php" server="c1361809.ferozo.com" local="132463412407779277" remote="132442555200000000" Dst="0" />
+<file name="index.html" server="c1361809.ferozo.com" local="132463412408970741" remote="132442555200000000" Dst="0" />
 </dwsync>

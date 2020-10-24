@@ -18,9 +18,10 @@ include "header.php"; ?>
 
                         </div> -->
                         <p align="center">
-                            <img src="http://pxsistemas.com/resto/logo_fondos/logo_pxresto.png" width="300"><br>
-                            <a href="http://pxsistemas.com">Un software en la nube de www.pxsistemas.com</a>
+                            <img src="http://pxsistemas.com/pxresto/logo_fondos/logo_pxresto.png" width="300"><br>
+                            
                         </p>
+                        
                         <div class="login-form">
                             <!--<p align="center"><!-- <img src="<?php echo base_url(); ?>uploads/logo.jpeg" width="250">  DEMO</p>-->
                             <h4>Inicio de sesión</h4>
@@ -84,9 +85,11 @@ include "header.php"; ?>
                                     }
                                 </script>
                             </form>
-
+                            <p align="right">
+                            <a href="http://pxsistemas.com">Un software en la nube de www.pxsistemas.com</a>
+                        </p>
                         </div>
-
+                        
                     </div>
 
                 </div>

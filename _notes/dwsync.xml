@@ -4,4 +4,10 @@
 <file name="package-lock.json" server="c1260237.ferozo.com/public_html/" local="131679824130412004" remote="131695351800000000" Dst="0" />
 <file name=".htaccess" server="c1610606.ferozo.com" local="132440044800000000" remote="132440044800000000" Dst="0" />
 <file name=".spamkey" server="c1610606.ferozo.com" local="132103116000000000" remote="132103116000000000" Dst="0" />
+<file name=".gitattributes" server="c1361809.ferozo.com" local="132463411190700504" remote="132442554600000000" Dst="0" />
+<file name=".gitignore" server="c1361809.ferozo.com" local="132463411192997019" remote="132442554600000000" Dst="0" />
+<file name=".spamkey" server="c1361809.ferozo.com" local="132463411504230075" remote="132442554600000000" Dst="0" />
+<file name="BingSiteAuth.xml" server="c1361809.ferozo.com" local="132463411550893874" remote="132442555200000000" Dst="0" />
+<file name="composer.json" server="c1361809.ferozo.com" local="132463412884233382" remote="132442555200000000" Dst="0" />
+<file name="composer.lock" server="c1361809.ferozo.com" local="132463412885090797" remote="132442555200000000" Dst="0" />
 </dwsync>

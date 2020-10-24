@@ -2821,8 +2821,8 @@ tbody tr td:last-child {
 }
 .login-form {
   background: #ffffff;
-  padding: 30px 30px 20px;
-  border-radius: 2px;
+  padding: 50px 50px 50px;
+  border-radius: 30px;
 }
 .login-form h4 {
   color: #014b7c;
@@ -2841,6 +2841,8 @@ tbody tr td:last-child {
   font-size: 14px;
   padding: 15px;
   border: 0px;
+  
+  border-radius: 10px;
 }
 .login-form label {
   color: #014b7c;

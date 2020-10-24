@@ -18,12 +18,12 @@ include "header.php"; ?>
 
                         </div> -->
                         <p align="center">
-                            <img src="http://pxsistemas.com/resto/logo_fondos/logo_pxresto.png" width="300"><br>
-                            <a href="http://pxsistemas.com">Un software en la nube de www.pxsistemas.com</a>
+                            <img src="http://pxsistemas.com/pxresto/logo_fondos/logo_pxresto.png" width="300">
                         </p>
+                        
                         <div class="login-form">
-                            <!--<p align="center"><!-- <img src="<?php echo base_url(); ?>uploads/logo.jpeg" width="250">  DEMO</p>-->
-                            <h4>Registrate y comenzá ahora mismo a utilizar PX Resto Gratis</h4>
+                            <!--<p align="center"><!-- <img src="<?php echo base_url(); ?>uploads/logo.jpeg" width="250">  DEMO</p>--> <br>
+                            <h2>Completa el formulario para comenzar a utilizar PX Resto Gratis</h2>
                             <p align="center" class="text-danger">
                                 <?php
                                 if (isset($_GET["Error"])) {
@@ -37,7 +37,7 @@ include "header.php"; ?>
                                 }
 
                                 ?>
-                            </p>
+                            </p><br>
                             <form action="registro" method="post" role="form" id="login">
                                 <div class="row">
                                     <div class="col-sm-6">
@@ -125,7 +125,7 @@ include "header.php"; ?>
 									</label>
                                 </div> -->
 
-                                
+
                                 <!-- <div class="social-login-content">
                                     <div class="social-button">
                                         <button type="button" class="btn btn-primary bg-facebook btn-flat btn-addon m-b-10"><i class="ti-facebook"></i>Sign in with facebook</button>
@@ -151,7 +151,9 @@ include "header.php"; ?>
                                     }
                                 </script>
                             </form>
-
+                            <p align="right">
+                            <a href="http://pxsistemas.com">Un software en la nube de www.pxsistemas.com</a>
+                        </p>
                         </div>
 
                     </div>

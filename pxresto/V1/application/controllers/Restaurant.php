@@ -1180,13 +1180,13 @@ class Restaurant extends CI_Controller {
 			
 			$this->db->where('tbl_items_comanda.Comanda_id', $Comanda_id);
 			$this->db->where('tbl_items_comanda.Estado', 0);
-			//$this->db->where("tbl_items_comanda.Negocio_id", $this->session->userdata('Negocio_id'));
+			$this->db->where("tbl_items_comanda.Negocio_id", $this->session->userdata('Negocio_id'));
 
 			$query = $this->db->get();
 			$result = $query->result_array();
 			$total_pendientes = $query->num_rows();
 
-			/// buscando cantididad de comandas totales
+			/// buscando cantididad de items totales
 			$this->db->select('Id');
 			$this->db->from('tbl_items_comanda');			
 			$this->db->where('tbl_items_comanda.Comanda_id', $Comanda_id);
@@ -1722,6 +1722,40 @@ class Restaurant extends CI_Controller {
 		{
 			echo json_encode(array("Id" => 0));
 		}
+	}
+
+//// COMANDAS 	| OBTENER DATOS DE UNA COMANDA
+	public function datosComandaCodigo()
+	{
+			
+		//Esto siempre va es para instanciar la base de datos
+		$CI =& get_instance();
+		$CI->load->database();
+		$token = @$CI->db->token;
+
+		$Codigo = $_GET["Codigo"];
+
+		$this->db->select('	tbl_comandas.*,
+							tbl_clientes.Nombre as Nombre_cliente,
+							tbl_clientes.Telefono,
+							tbl_clientes.Direccion,
+							tbl_clientes.Cant_compras,
+							tbl_mesas.Identificador,
+							tbl_usuarios.Nombre as Nombre_moso');
+
+		$this->db->from('tbl_comandas');
+		$this->db->join('tbl_mesas', 'tbl_mesas.Id = tbl_comandas.Mesa_id','left');
+		$this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_comandas.Moso_id','left');
+		$this->db->join('tbl_clientes', 'tbl_clientes.Id = tbl_comandas.Cliente_id','left');
+
+		$this->db->where('tbl_comandas.Codigo', $Codigo);
+		$this->db->where("tbl_comandas.Negocio_id", $this->session->userdata('Negocio_id'));
+
+		$query = $this->db->get();
+		$result = $query->result_array();
+
+		echo json_encode($result);
+		
 	}
 
 //// USUARIOS 	| VISTA ADMIN CONTROL PRESENCIA

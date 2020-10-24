@@ -309,11 +309,12 @@ new Vue({
         Archivo: '',
 
         listaRoles: [],
-
+        
+        // COMANDAS
         listaComandas: [],
         listaComandasCerradas: [],
         comanda: { 'Id': '', 'Mesa_id': '', 'Cant_personas': '', 'Fecha_hora': '', 'Moso_id': '', 'Valor_cuenta': '', 'Valor_descuento': '', 'Valor_adicional': '' },
-
+        comandaQR : {},
         fecha_desde: 0,
         fecha_hasta: 0,
 
@@ -569,7 +570,7 @@ new Vue({
             });
         },
 
-        //// MOSTRAR LISTADO DE MESAS   
+        //// MESAS | MOSTRAR LISTADO DE MESAS   
         getListadoMesas: function () {
             var url = base_url + 'restaurant/obtener_mesas'; // url donde voy a mandar los datos
 
@@ -578,7 +579,7 @@ new Vue({
             });
         },
 
-        //// LIMPIAR EL FORMULARIO DE CREAR MESAS
+        //// MESAS | LIMPIAR EL FORMULARIO DE CREAR MESAS
         limpiarFormularioMesas() {
             this.mesa.Id = '';
             this.mesa.Identificador = '';
@@ -586,13 +587,13 @@ new Vue({
             this.texto_boton = "Cargar";
         },
 
-        //// Carga el formulario MESAS para editar
+        //// MESAS | Carga el formulario MESAS para editar
         editarFormularioMesa(mesa) {
             this.mesa = mesa;
             this.texto_boton = "Actualizar";
         },
 
-        //// CREAR O EDITAR MESAS  
+        //// MESAS | CREAR O EDITAR MESAS  
         crearMesas: function () {
             var url = base_url + 'restaurant/cargar_mesas'; // url donde voy a mandar los datos
 
@@ -612,7 +613,7 @@ new Vue({
             });
         },
 
-        //// MOSTRAR LISTADO DE Usuarios  
+        //// USUARIOS |  MOSTRAR LISTADO DE Usuarios  
         getListadoUsuarios: function (estado) {
             var url = base_url + 'restaurant/obtener_Usuarios/?estado=' + estado; // url donde voy a mandar los datos
 
@@ -623,20 +624,20 @@ new Vue({
 
         },
 
-        //// LIMPIAR EL FORMULARIO DE CREAR Usuarios
+        //// USUARIOS | LIMPIAR EL FORMULARIO DE CREAR Usuarios
         limpiarFormularioUsuarios() {
             this.usuario = {}
             this.texto_boton = "Cargar";
         },
 
-        //// Carga el formulario Usuarios para editar
+        //// USUARIOS |  Carga el formulario Usuarios para editar
         editarFormulariousuario(usuario) {
             //this.usuario = {};
             this.usuario = usuario;
             this.texto_boton = "Actualizar";
         },
 
-        //// CREAR O EDITAR Usuarios  
+        //// USUARIOS | CREAR O EDITAR Usuarios  
         crearUsuarios: function () {
             var url = base_url + 'restaurant/cargar_Usuarios'; // url donde voy a mandar los datos
 
@@ -669,7 +670,7 @@ new Vue({
             });
         },
 
-        //// ACTIVAR/DESACTIVAR USUARIOS    
+        //// USUARIOS | ACTIVAR/DESACTIVAR USUARIOS    
         activarUsuario: function (usuario) {
             var url = base_url + 'restaurant/cargar_Usuarios'; // url donde voy a mandar los datos
 
@@ -738,26 +739,32 @@ new Vue({
         },
 
 
-        //// Carga el formulario comanda para editar
+        //// COMANDAS | Carga el formulario comanda para editar
         editComanda(item) {
             this.comanda = item;
             console.log(item)
             this.texto_boton = "Actualizar";
         },
 
-        //// MOSTRAR LISTADO DE COMANDAS ABIERTAS DE LA FECHA
+        //// COMANDAS | MOSTRAR LISTADO DE COMANDAS ABIERTAS DE LA FECHA
         getListadoComandas: function () {
             var url = base_url + 'restaurant/obtener_listado_comandas_abiertas'; // url donde voy a mandar los datos
 
             axios.get(url).then(response => {
                 this.listaComandas = response.data
-
+                //console.log(this.listaComandas)
             }).catch(error => {
                 console.log(error.response.data)
             });
         },
 
-        //// ACTUALIZAR LISTADO COMANDAS
+        // COMANDAS | Código qr 
+        qrComanda: function(datos){
+            this.comandaQR = datos;
+            //console.log(comandaQR)
+        },
+
+        //// COMANDAS | ACTUALIZAR LISTADO COMANDAS
         actualizarListadoComandas: function () {
             this.getListadoComandas();
 
@@ -767,7 +774,7 @@ new Vue({
         },
 
 
-        //// MOSTRAR LISTADO DE CERRADAS
+        //// COMANDAS | MOSTRAR LISTADO DE CERRADAS
         comandasEntreFechas: function () {
             var url = base_url + 'restaurant/obtener_listado_comandas_cerradas'; // url donde voy a mandar los datos
 
@@ -1663,7 +1670,7 @@ new Vue({
             }).then(response => {
                 this.listaProductosFalta = response.data
 
-                console.log(response.data)
+                //console.log(response.data)
             }).catch(error => {
                 alert("mal");
                 console.log(error)
@@ -1682,7 +1689,7 @@ new Vue({
                 token: token
             }).then(response => {
                 this.listaClientes = response.data
-                console.log(response.data)
+                //console.log(response.data)
             }).catch(error => {
                 //alert("mal");
                 console.log(error.response.data)
@@ -5702,6 +5709,42 @@ new Vue({
         },
 
 
+        ////////////////////////////-----------------
+    },
+
+    ////// ACCIONES COMPUTADAS     
+    computed:
+    {
+
+    }
+});
+
+
+///         --------------------------------------------------------------------   ////
+//// Elemento para el manejo de carta por Id
+new Vue({
+    el: '#pedido_comanda',
+
+    created: function () {
+        this.datosComandaCodigo();
+        
+    },
+
+    data: {
+        datosComanda: {},
+    },
+
+    methods:
+    {
+        //// MOSTRAR DATOS COMANDA
+        datosComandaCodigo: function () {
+            var url = base_url + 'restaurant/datosComandaCodigo/?Codigo=' + Get_Id;  //averiguar como tomar el Id que viene por URL aca
+
+            axios.get(url).then(response => {
+                this.datosComanda = response.data[0]
+                //console.log(this.datoComanda)
+            });
+        },
         ////////////////////////////-----------------
     },
 

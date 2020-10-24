@@ -30,7 +30,7 @@ include "header-body.php";
                         <div class="page-header">
                             <div class="page-title">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="../comandas">Sistema restaurant</a></li>
+                                    <li class="breadcrumb-item"><a href="../comandas">Comandas</a></li>
                                     <li class="breadcrumb-item active">Mesa {{datoComanda.Identificador }}</li>
                                 </ol>
                             </div>

@@ -173,10 +173,10 @@ class Login extends CI_Controller
                 //SMTP & mail configuration
                 $config = array(
                     'protocol'  => 'smtp',
-                    'smtp_host' => 'ssl://c1610606.ferozo.com',
+                    'smtp_host' => 'ssl://c1970424.ferozo.com',
                     'smtp_port' => 465,
-                    'smtp_user' => 'no-reply@pxsistemas.com',
-                    'smtp_pass' => '@kl6lV@2lS',
+                    'smtp_user' => 'no-reply@c1970424.ferozo.com',
+                    'smtp_pass' => 'p6IK2moarm',
                     'mailtype'  => 'html',
                     'charset'   => 'utf-8'
                 );
@@ -190,7 +190,7 @@ class Login extends CI_Controller
                 $htmlContent .= '<hr><h6>www.pxsistemas.com</h6>';
 
                 $this->email->to($Destinatario);
-                $this->email->from('no-reply@pxsistemas.com','Px Sistemas');
+                $this->email->from('no-reply@c1970424.ferozo.com','Px Sistemas');
                 $this->email->subject($Asunto);
                 $this->email->message($htmlContent);
 

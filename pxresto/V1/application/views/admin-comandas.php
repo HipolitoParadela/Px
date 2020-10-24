@@ -73,9 +73,11 @@ include "header-body.php";
                                     </div>
                                 </a>
                             </div>
-                            <p align="center">
+                            <h4 align="center">
                                 <a href="#modalNuevaComanda" data-toggle="modal" title="Nueva comanda" v-on:click="editComanda(comanda.Datos_comanda)"><i class="ti-pencil-alt"></i></a>
-                            </p>
+
+                                <a href="#modalQR" data-toggle="modal" title="Mostrar QR" v-on:click="qrComanda(comanda.Datos_comanda)"><i class="fas fa-qrcode"></i></a>
+                            </h4>
                         </div>
                     </div>
                     <!-- /# row -->
@@ -192,7 +194,36 @@ include "header-body.php";
                 </div>
             </div>
             <!-- /.modal -->
-            
+            <!-- Modal NUEVA COMANDA -->
+            <div class="modal fade" id="modalQR" tabindex="-1" role="dialog" aria-labelledby="modalItemsCartaTitle" aria-hidden="true">
+                <div class="modal-dialog  modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalItemsCartaTitle">Escanear el código para cliente</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                <img src="https://www.emy.org/images/glossary-qr.png" alt="">
+                            </p>
+                            <p>
+                                <a target="_blank"
+                                    v-bind:href="'https://api.whatsapp.com/send?phone=+549' + comandaQR.Telefono + '&text=Hola!%20Sigue%20este%20enlace%20para%20realizar%20tu%20pedido%20http://pxsistemas.com/pxresto/V1/restaurant/comanda?codigo=' + comandaQR.Codigo"
+                                    class="btn btn-success btn-addon">
+                                    <i class="fab fa-whatsapp"></i> Enviar enlace al número {{comandaQR.Telefono}}
+                                </a>
+                            </p>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal -->
         </div>
         <?php /// FOOTER
         include "footer.php";

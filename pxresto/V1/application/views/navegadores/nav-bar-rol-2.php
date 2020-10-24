@@ -2,7 +2,7 @@
         <div class="sidebar sidebar-hide-to-small sidebar-shrink sidebar-gestures">
             <div class="nano">
                 <div class="nano-content">
-                    <div class="logo"><a href="<?php echo base_url(); ?>restaurant/"><!-- <img src="assets/images/logo.png" alt="" /> --><span> <img src="http://pxsistemas.com/resto/logo_fondos/logo_pxresto.png" alt=""></span></a></div>
+                    <div class="logo"><a href="<?php echo base_url(); ?>restaurant/"><!-- <img src="assets/images/logo.png" alt="" /> --><span> <img src="<?php echo base_url(); ?>uploads/logo_pxresto.png" alt=""></span></a></div>
                     <ul>
                         <!-- <li class="label">Home</li>
                         <li class="active"><a class="sidebar-sub-toggle"><i class="ti-home"></i> Dashboard <span class="sidebar-collapse-icon ti-angle-down"></span></a>

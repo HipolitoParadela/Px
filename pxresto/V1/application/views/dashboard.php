@@ -213,8 +213,8 @@ include "header-body.php";
                                                             <td v-if="dato.Accion == 0"><span class="badge badge-warning"><i class="ti-angle-down"></i></span></td>
                                                             <td>
                                                                 <div class="round-img">
-                                                                    <img v-if="dato.Imagen != null" v-bind:src="'http://127.0.0.7/ServicePHP/uploads/imagenes/'+dato.Imagen" alt="">
-                                                                    <img v-else src="http://127.0.0.7/ServicePHP/uploads/imagenes/agregarimagen.jpg" alt="">
+                                                                    <img v-if="dato.Imagen != null" v-bind:src="'<?php echo base_url(); ?>uploads/imagenes/'+dato.Imagen" alt="">
+                                                                    <img v-else src="<?php echo base_url(); ?>uploads/imagenes/addimagen.jpg" alt="">
                                                                 </div>
                                                             </td>
                                                             <td>

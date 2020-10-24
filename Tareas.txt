@@ -1,6 +1,30 @@
 PX Resto
 _________
 
+Poner en el home en grande los software gratis
+	PX Resto y ver si el de jardín, gym y cosas así.
+
+	imagen de un moso con tablet, boton Crear Cuenta y boton Ingresar a mi cuenta.
+
+Abajo de eso el resto de los software que ya no pueden ser gratis. (al menos por ahora).
+
+
+Armar una pagina que diga servicios especiales
+	Consultoría web, diseño web, 
+	Seguridad informática, camaras de seguridad
+
+---------
+
+Al registrar la cuenta de px resto, mostrar un cartel que avise que se le enviaron los datos de acceso.
+
+Armar la pagina que le devuelve la contraseña.
+
+Cambiar la imagen de fondo del formulario de ingreso.
+
+-- bloquear boton cargar delivery o comanda si no detecta el cliente
+
+_____________
+
 
 Armar imagenes de ejemplo
 	Reparto

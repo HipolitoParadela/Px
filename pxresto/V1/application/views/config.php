@@ -1,6 +1,6 @@
 /// --- SETEANDO VARIABLES DE URL ----- //////
 var pathname = window.location.pathname;
-var carpeta = '/resto/V1/' /// carpeta que hay q modificar segun cliente
+var carpeta = '/pxresto/V1/' /// carpeta que hay q modificar segun cliente
 var base_url = window.location.origin + carpeta
 var URLactual = window.location.search;
 var Get_Id = URLactual.slice(4); ///ID QUE VIENE POR URL

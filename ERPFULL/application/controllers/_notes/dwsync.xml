@@ -33,4 +33,21 @@
 <file name="Exportar.php" server="c1610606.ferozo.com/public_html/" local="131840164211916702" remote="132192949200000000" Dst="0" />
 <file name="Finanzas.php" server="c1610606.ferozo.com/public_html/" local="132158882196464756" remote="132192949200000000" Dst="0" />
 <file name="Proveedores.php" server="c1610606.ferozo.com/public_html/" local="132000812578873868" remote="132192949200000000" Dst="0" />
+<file name="Clientes.php" server="c1361809.ferozo.com" local="132463412345892221" remote="132442555200000000" Dst="0" />
+<file name="Compras.php" server="c1361809.ferozo.com" local="132463412348630311" remote="132442555200000000" Dst="0" />
+<file name="Curriculum.php" server="c1361809.ferozo.com" local="132463412349024414" remote="132442555200000000" Dst="0" />
+<file name="Exportar.php" server="c1361809.ferozo.com" local="132463412351036849" remote="132442555200000000" Dst="0" />
+<file name="Dashboard.php" server="c1361809.ferozo.com" local="132463412351455985" remote="132442555200000000" Dst="0" />
+<file name="Fabricacion.php" server="c1361809.ferozo.com" local="132463412353691871" remote="132442555200000000" Dst="0" />
+<file name="Finanzas.php" server="c1361809.ferozo.com" local="132463412355331576" remote="132442555200000000" Dst="0" />
+<file name="Funcionescomunes.php" server="c1361809.ferozo.com" local="132463412356668515" remote="132442555200000000" Dst="0" />
+<file name="Login.php" server="c1361809.ferozo.com" local="132463412357981541" remote="132442555200000000" Dst="0" />
+<file name="Periodos.php" server="c1361809.ferozo.com" local="132463412359800968" remote="132442555200000000" Dst="0" />
+<file name="Proveedores.php" server="c1361809.ferozo.com" local="132463412361260366" remote="132442555200000000" Dst="0" />
+<file name="Stock.php" server="c1361809.ferozo.com" local="132463412363718670" remote="132442555200000000" Dst="0" />
+<file name="Suscripciones.php" server="c1361809.ferozo.com" local="132463412364444889" remote="132442555200000000" Dst="0" />
+<file name="Usuarios.php" server="c1361809.ferozo.com" local="132463412366856840" remote="132442555200000000" Dst="0" />
+<file name="Ventas.php" server="c1361809.ferozo.com" local="132463412368318715" remote="132442555200000000" Dst="0" />
+<file name="Welcome.php" server="c1361809.ferozo.com" local="132463412369133340" remote="132442555200000000" Dst="0" />
+<file name="index.html" server="c1361809.ferozo.com" local="132463412370799430" remote="132442555200000000" Dst="0" />
 </dwsync>

@@ -2,7 +2,7 @@
     <div class="nano">
         <div class="nano-content">
             <div class="logo"><a href="<?php echo base_url(); ?>restaurant/">
-                    <!-- <img src="assets/images/logo.png" alt="" /> --><span> <img src="http://pxsistemas.com/resto/logo_fondos/logo_pxresto.png" width="200px" alt=""></span></a></div>
+                    <!-- <img src="assets/images/logo.png" alt="" /> --><span> <img src="<?php echo base_url(); ?>uploads/logo_pxresto.png" width="200px" alt=""></span></a></div>
             <ul>
                 <li class="label">Home</li>
                 <li><a href="<?php echo base_url(); ?>restaurant/"><i class="ti-layout"></i>Dashboard</a></li>
@@ -54,7 +54,7 @@
                 </li>
 
 
-                <li><a target="blank" href="http://pxsistemas.com/resto/documentacion/planinicial-v1.pdf"><i class="ti-help-alt"></i>Tutorial</a></li>
+                <li><a target="blank" href="<?php echo base_url(); ?>documentacion/planinicial-v1.pdf"><i class="ti-help-alt"></i>Tutorial</a></li>
                 <li><a href="<?php echo base_url(); ?>login/logout"><i class="ti-close"></i> Cerrar sesión</a></li>
             </ul>
         </div>

@@ -91,7 +91,7 @@ class Elementoscomunes extends CI_Controller
         }
         
 		$Asunto = $this->datosObtenidos->Asunto;
-		$Destinatario = $this->datosObtenidos->Destinatario . ', info@institutojlc.com';
+		$Destinatario = $this->datosObtenidos->Destinatario . ', info@pxsistemas.com';
 		$Mensaje = $this->datosObtenidos->Mensaje;
 		
 		//Load email library
@@ -100,10 +100,10 @@ class Elementoscomunes extends CI_Controller
 		//SMTP & mail configuration
 		$config = array(
 			'protocol'  => 'smtp',
-			'smtp_host' => 'ssl://c1570036.ferozo.com',
+			'smtp_host' => 'ssl://c1970424.ferozo.com',
 			'smtp_port' => 465,
-			'smtp_user' => 'info@institutojlc.com',
-			'smtp_pass' => 'ey@giyfjej6Vijg',
+			'smtp_user' => 'info@pxsistemas.com',
+			'smtp_pass' => 'iCreatix88',
 			'mailtype'  => 'html',
 			'charset'   => 'utf-8'
 		);

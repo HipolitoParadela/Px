@@ -1,6 +1,6 @@
-var base_url = "http://pxsistemas.com/resto/V1/" //MODIFICAR SEGUN EL LINK DEL PROYECTO
+var base_url = "http://pxsistemas.com/pxresto/V1/" //MODIFICAR SEGUN EL LINK DEL PROYECTO
 var URLactual = window.location;
-var carpeta = '/resto/V1/'
+var carpeta = '/pxresto/V1/'
 var defaultEvents = null;
 
 
@@ -62,7 +62,7 @@ var defaultEvents = null;
 
                 $.ajax({
                     type: "POST",
-                    url: "http://pxsistemas.com/resto/V1/planificaciones/eliminarevento", // url que me recibe los datos
+                    url: "http://pxsistemas.com/pxresto/V1/planificaciones/eliminarevento", // url que me recibe los datos
                     dataType: 'json',
                     data: datosEnviados,
                     success: function (msg) {
@@ -93,7 +93,7 @@ var defaultEvents = null;
 
                 $.ajax({
                     type: "POST",
-                    url: "http://pxsistemas.com/resto/V1/planificaciones/editarevento", // url que me recibe los datos
+                    url: "http://pxsistemas.com/pxresto/V1/planificaciones/editarevento", // url que me recibe los datos
                     dataType: 'json',
                     data: datosEnviados,
                     success: function (msg) {
@@ -187,7 +187,7 @@ var defaultEvents = null;
 
                     $.ajax({
                         type: "POST",
-                        url: "http://pxsistemas.com/resto/V1/planificaciones/crearevento", // url que me recibe los datos
+                        url: "http://pxsistemas.com/pxresto/V1/planificaciones/crearevento", // url que me recibe los datos
                         dataType: 'json',
                         data: datosEnviados,
                         success: function (msg) 
@@ -247,7 +247,7 @@ var defaultEvents = null;
             type: "GET",
             // Formato de datos que se espera en la respuesta
             dataType: "json",
-            url: "http://pxsistemas.com/resto/V1/planificaciones/obtener_eventos", // url que me recibe los datos
+            url: "http://pxsistemas.com/pxresto/V1/planificaciones/obtener_eventos", // url que me recibe los datos
             data: datosEnviados,
             success: function (response) {
                 

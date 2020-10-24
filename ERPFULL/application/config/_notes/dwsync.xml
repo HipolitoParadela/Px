@@ -42,4 +42,18 @@
 <file name="migration.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
 <file name="constants.php" server="c1610606.ferozo.com/public_html/" local="131732847460000000" remote="132192949200000000" Dst="0" />
 <file name="routes.php" server="c1610606.ferozo.com/public_html/" local="131769419234314112" remote="132192949200000000" Dst="0" />
+<file name="autoload.php" server="c1361809.ferozo.com" local="132463412327516898" remote="132442555200000000" Dst="0" />
+<file name="config.php" server="c1361809.ferozo.com" local="132463412329238808" remote="132442555200000000" Dst="0" />
+<file name="constants.php" server="c1361809.ferozo.com" local="132463412330601904" remote="132442555200000000" Dst="0" />
+<file name="database.php" server="c1361809.ferozo.com" local="132463412332443960" remote="132442555200000000" Dst="0" />
+<file name="doctypes.php" server="c1361809.ferozo.com" local="132463412333299743" remote="132442555200000000" Dst="0" />
+<file name="foreign_chars.php" server="c1361809.ferozo.com" local="132463412334975621" remote="132442555200000000" Dst="0" />
+<file name="hooks.php" server="c1361809.ferozo.com" local="132463412335786181" remote="132442555200000000" Dst="0" />
+<file name="memcached.php" server="c1361809.ferozo.com" local="132463412337455706" remote="132442555200000000" Dst="0" />
+<file name="migration.php" server="c1361809.ferozo.com" local="132463412337926661" remote="132442555200000000" Dst="0" />
+<file name="profiler.php" server="c1361809.ferozo.com" local="132463412339995576" remote="132442555200000000" Dst="0" />
+<file name="mimes.php" server="c1361809.ferozo.com" local="132463412340452961" remote="132442555200000000" Dst="0" />
+<file name="routes.php" server="c1361809.ferozo.com" local="132463412342190293" remote="132442555200000000" Dst="0" />
+<file name="smileys.php" server="c1361809.ferozo.com" local="132463412343093009" remote="132442555200000000" Dst="0" />
+<file name="user_agents.php" server="c1361809.ferozo.com" local="132463412344928395" remote="132442555200000000" Dst="0" />
 </dwsync>
