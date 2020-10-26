@@ -19,8 +19,6 @@ Al registrar la cuenta de px resto, mostrar un cartel que avise que se le enviar
 
 Armar la pagina que le devuelve la contraseña.
 
-Cambiar la imagen de fondo del formulario de ingreso.
-
 -- bloquear boton cargar delivery o comanda si no detecta el cliente
 
 _____________
@@ -79,8 +77,6 @@ ________________________________________________________________________________
 - Estadisticas en página de cada producto
 
 - ver si puedo poner ckeditor en algunos campos
-
-- codigo qr con enlace a pagina de la comanda creada para que el propio cliente pueda realizar el pedido
 
 - El dia de mañana la tabla clientes y proveedores deberia ser la misma. con un campo que los diferencie.
 Incluso deberia ser una sola tabla para todo lo que sea persona.

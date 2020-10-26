@@ -21,7 +21,7 @@ include "header-body.php";
                     <div class="col-lg-8 p-r-0 title-margin-right">
                         <div class="page-header">
                             <div class="page-title">
-                                <h1>Comanda mesa {{datoComanda.Identificador}}, <span> {{ formatoFecha(datoComanda.Fecha) }}, {{datoComanda.Nombre_cliente}}, atendidos por {{datoComanda.Nombre_moso}}</span></h1>
+                                <h1>Comanda mesa {{datoComanda.Identificador}}, <span> {{ datoComanda.Fecha | Fecha }}, {{datoComanda.Nombre_cliente}}, atendidos por {{datoComanda.Nombre_moso}}</span></h1>
                             </div>
                         </div>
                     </div>
@@ -322,93 +322,93 @@ include "header-body.php";
                     <?php if ($Rol_usuario > 3) {
                         echo ''; ?>
                         <div class="row" v-if="datoComanda.Estado == 1">
-                                <div class="col-lg-3">
-                                    <div class="card p-0">
-                                        <div class="stat-widget-three">
-                                            <div class="stat-icon bg-warning">
-                                                <i class="ti-money"></i>
-                                            </div>
-                                            <div class="stat-content">
-                                                <div class="stat-digit">$ {{datoComanda.Valor_cuenta - datoComanda.Valor_descuento | Moneda}}</div>
-                                                <div class="stat-text">Monto total</div>
-                                            </div>
+                            <div class="col-lg-3">
+                                <div class="card p-0">
+                                    <div class="stat-widget-three">
+                                        <div class="stat-icon bg-warning">
+                                            <i class="ti-money"></i>
                                         </div>
-                                    </div>
-
-                                    <div class="card p-0">
-                                        <div class="stat-widget-three">
-                                            <div class="stat-icon bg-success">
-                                                <i class="ti-money"></i>
-                                            </div>
-                                            <div class="stat-content">
-                                                <div class="stat-digit">$ {{Total_pagado | Moneda}}</div>
-                                                <div class="stat-text">Monto Abonado</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="card p-0">
-                                        <div class="stat-widget-three">
-                                            <div class="stat-icon bg-info">
-                                                <i class="ti-money"></i>
-                                            </div>
-                                            <div class="stat-content">
-                                                <div class="stat-digit">$ {{ datoComanda.Valor_cuenta - datoComanda.Valor_descuento - Total_pagado | Moneda}}</div>
-                                                <div class="stat-text">Saldo</div>
-                                            </div>
+                                        <div class="stat-content">
+                                            <div class="stat-digit">$ {{datoComanda.Valor_cuenta - datoComanda.Valor_descuento | Moneda}}</div>
+                                            <div class="stat-text">Monto total</div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-9">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <strong>Pagos</strong>
+
+                                <div class="card p-0">
+                                    <div class="stat-widget-three">
+                                        <div class="stat-icon bg-success">
+                                            <i class="ti-money"></i>
                                         </div>
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table id="table2excel" class="table table-striped">
-                                                    <thead>
-                                                        <tr>
+                                        <div class="stat-content">
+                                            <div class="stat-digit">$ {{Total_pagado | Moneda}}</div>
+                                            <div class="stat-text">Monto Abonado</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                                            <th>Método</th>
-                                                            <th>Monto</th>
-                                                            <th>Fecha</th>
-                                                            <th>
-                                                                <button data-toggle="modal" data-target="#modalEfectivo" v-on:click="limpiarFormularioMovimiento()">
-                                                                    <i class="fa fa-plus-circle text-success"></i> Cobrar
-                                                                </button>
-                                                                <button data-toggle="modal" data-target="#modalCheque" v-on:click="limpiarFormularioMovimiento()">
-                                                                    <i class="fa fa-plus-circle text-success"></i> Cobrar con cheque
-                                                                </button>
-                                                            </th>
+                                <div class="card p-0">
+                                    <div class="stat-widget-three">
+                                        <div class="stat-icon bg-info">
+                                            <i class="ti-money"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="stat-digit">$ {{ datoComanda.Valor_cuenta - datoComanda.Valor_descuento - Total_pagado | Moneda}}</div>
+                                            <div class="stat-text">Saldo</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <strong>Pagos</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="table2excel" class="table table-striped">
+                                                <thead>
+                                                    <tr>
 
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="movimiento in listaMovimientos">
-                                                            <td v-if="movimiento.Tipo_movimiento == 1">Efectivo</td>
-                                                            <td v-if="movimiento.Tipo_movimiento == 2">Tarjeta/Banco</td>
-                                                            <td v-if="movimiento.Tipo_movimiento == 3">Cheque</td>
-                                                            <td v-if="movimiento.Tipo_movimiento == 4">Mercado Pago</td>
+                                                        <th>Método</th>
+                                                        <th>Monto</th>
+                                                        <th>Fecha</th>
+                                                        <th>
+                                                            <button data-toggle="modal" data-target="#modalEfectivo" v-on:click="limpiarFormularioMovimiento()">
+                                                                <i class="fa fa-plus-circle text-success"></i> Cobrar
+                                                            </button>
+                                                            <button data-toggle="modal" data-target="#modalCheque" v-on:click="limpiarFormularioMovimiento()">
+                                                                <i class="fa fa-plus-circle text-success"></i> Cobrar con cheque
+                                                            </button>
+                                                        </th>
 
-                                                            <td>$ {{movimiento.Monto_bruto | Moneda}}</td>
-                                                            <td>{{movimiento.Fecha_ejecutado | Fecha}}</td>
-                                                            <td>
-                                                                {{movimiento.Observaciones}}
-                                                                <!--<button class="item" v-on:click="infoEtapa(movimiento.Observaciones)" data-toggle="modal" data-target="#modalObservaciones" data-placement="top" title="Ver observaciones">
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="movimiento in listaMovimientos">
+                                                        <td v-if="movimiento.Tipo_movimiento == 1">Efectivo</td>
+                                                        <td v-if="movimiento.Tipo_movimiento == 2">Tarjeta/Banco</td>
+                                                        <td v-if="movimiento.Tipo_movimiento == 3">Cheque</td>
+                                                        <td v-if="movimiento.Tipo_movimiento == 4">Mercado Pago</td>
+
+                                                        <td>$ {{movimiento.Monto_bruto | Moneda}}</td>
+                                                        <td>{{movimiento.Fecha_ejecutado | Fecha}}</td>
+                                                        <td>
+                                                            {{movimiento.Observaciones}}
+                                                            <!--<button class="item" v-on:click="infoEtapa(movimiento.Observaciones)" data-toggle="modal" data-target="#modalObservaciones" data-placement="top" title="Ver observaciones">
                                                                     <i class="fa fa-exclamation-circle"></i>
                                                                 </button>
                                                                  <button v-on:click="desactivarAlgo(movimiento.Id, 'tbl_dinero_efectivo')" class="item" data-toggle="tooltip" data-placement="top" title="Eliminar">
                                                                     <i class="zmdi zmdi-delete"></i>
                                                                 </button> -->
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
                         </div>
                     <?php '';

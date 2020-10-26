@@ -458,29 +458,20 @@ class Restaurant extends CI_Controller {
 		
 		$Id = $_GET["Id"];
 
-		/* 
-		$this->db->select('	tbl_items_carta.*,
-							tbl_categorias.Nombre_categoria');
-		$this->db->from('tbl_items_carta');
-		$this->db->join('tbl_categorias', 'tbl_categorias.Id = tbl_items_carta.Categoria_id','left');
-		$this->db->where('tbl_items_carta.Categoria_id',$Id);
-		$this->db->order_by("tbl_items_carta.Nombre", "asc");
-        $query = $this->db->get();
-		$result = $query->result_array();
-		 */
-		 
 		$this->db->select('	tbl_stock.*,
 							tbl_stock_categorias.Nombre_categoria');
 		$this->db->from('tbl_stock');
 
 		$this->db->join('tbl_stock_categorias', 'tbl_stock_categorias.Id = tbl_stock.Categoria_id','left');
 
-		$this->db->where('tbl_stock.Categoria_id', $Id);
 		$this->db->where('tbl_stock.Apto_carta', '1');
 		$this->db->where("tbl_stock.Negocio_id", $this->session->userdata('Negocio_id'));
 		$this->db->where('tbl_stock.Activo', 1);
 
+		if($Id > 0) {	$this->db->where('tbl_stock.Categoria_id', $Id);	}
+
 		$this->db->order_by("tbl_stock.Nombre_item", "asc");
+
         $query = $this->db->get();
 		$result = $query->result_array();
 
@@ -1018,18 +1009,17 @@ class Restaurant extends CI_Controller {
 //// COMANDAS 	| CARGAR O EDITAR COMANDAS
 	public function crear_comanda()
     {
+		
         $CI =& get_instance();
 		$CI->load->database();
-		
+		$this->load->library('Ciqrcode'); /// LIbreria de QR
 		$this->datosObtenidos = json_decode(file_get_contents('php://input'));
 
 		$Id = NULL; if(isset($this->datosObtenidos->comandaData->Id)) { $Id = $this->datosObtenidos->comandaData->Id; }
 		$Modo_pago = 1; if(isset($this->datosObtenidos->comandaData->Modo_pago)) { $Modo_pago = $this->datosObtenidos->comandaData->Modo_pago; }
 		$Direccion = "No informada."; if(isset($this->datosObtenidos->comandaData->Direccion)) { $Direccion = $this->datosObtenidos->comandaData->Direccion; }
 		
-		
 		$Cliente_id = $this->datosObtenidos->comandaData->Cliente_id;
-
 		//// OBTENIENDO DATO DE CLIENTE | SI EL CLIENTE NO EXISTIA LO DEBE CARGAR
 			if($Cliente_id == 0)
 			{
@@ -1059,17 +1049,43 @@ class Restaurant extends CI_Controller {
 		$fecha = date('Y-m-d');
 		$Hora = date("H:i");
 		
-		$data = array(
-                    'Jornada_id' =>		$Jornada_id,
+		//// GENERANDO EL QR
+			$str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+			$Codigo = "";
+			//Reconstruimos la contraseña segun la longitud que se quiera
+			for( $i=0; $i < 9; $i++ ) 
+			{
+			//obtenemos un caracter aleatorio escogido de la cadena de caracteres
+			$Codigo .= substr($str, rand(0,62), 1);
+			}
+
+			//hacemos configuraciones
+			$params['data'] = base_url()."restaurant/mipedido?Id=".$Codigo;
+			$params['level'] = 'H';
+			$params['size'] = 10;
+
+			//decimos el directorio a guardar el codigo qr, en este 
+			//caso una carpeta en la raíz llamada qr_code
+			$params['savename'] = FCPATH . "uploads/QRs/".$Codigo.".png";
+			//generamos el código qr
+			$this->ciqrcode->generate($params);
+
+			$QRimg = $Codigo.".png";
+			
+			$data = array(
+						
+					'Codigo' =>			$Codigo,
+					'QRimg' =>			$QRimg,
+					'Jornada_id' =>		$Jornada_id,
 					'Mesa_id' => 		$this->datosObtenidos->comandaData->Mesa_id,
-					'Cant_personas' => 		$this->datosObtenidos->comandaData->Cant_personas,
+					'Cant_personas' => 	$this->datosObtenidos->comandaData->Cant_personas,
 					'Cliente_id' => 	$Cliente_id,
-					'Moso_id' => 	$this->session->userdata('Id'),
-					'Fecha' => $fecha,
-					'Hora_llegada' => $Hora,
-					'Modo_pago' => $Modo_pago,
-					'Negocio_id' => $this->session->userdata('Negocio_id'),
-                );
+					'Moso_id' => 		$this->session->userdata('Id'),
+					'Fecha' => 			$fecha,
+					'Hora_llegada' => 	$Hora,
+					'Modo_pago' => 		$Modo_pago,
+					'Negocio_id' => 	$this->session->userdata('Negocio_id'),
+			);
 
         $this->load->model('Restaurant_model');
 		$insert_id = $this->Restaurant_model->insertar($data, $Id, 'tbl_comandas');
@@ -1080,7 +1096,8 @@ class Restaurant extends CI_Controller {
 			$data_timeline = array( 	'Comanda_id' => $insert_id,
 										'Accion' => 1,
 										'Negocio_id' => $this->session->userdata('Negocio_id'), );
-			//// insert del timeline
+			
+										//// insert del timeline
 			$this->load->model('Restaurant_model');
 			$insert_id_timeline = $this->Restaurant_model->insertar($data_timeline, NULL, 'tbl_comandas_timeline');
 
@@ -1724,7 +1741,18 @@ class Restaurant extends CI_Controller {
 		}
 	}
 
-//// COMANDAS 	| OBTENER DATOS DE UNA COMANDA
+//// COMANDAS 	| QR |	 VISTA COMANDA CLIENTE
+	public function mipedido()
+	{
+		/// VER ALGUN TIPO DE SEGURIDAD PARA QUE LA PERSONA NO SIGA JODIENDO CON EL ENLACE UNA VEZ CERRADO EL PEDIDO
+		// CONTROLAR QUE EL CODIGO QUE LLEGUE ESTE EN ESTADO ABIERTA LA COMANDA
+		
+		$this->load->view('comanda-pedido-cliente');	
+			
+	}	
+	
+
+//// COMANDAS 	| QR |	OBTENER DATOS DE UNA COMANDA POR CÓDIGO
 	public function datosComandaCodigo()
 	{
 			
@@ -1748,14 +1776,143 @@ class Restaurant extends CI_Controller {
 		$this->db->join('tbl_usuarios', 'tbl_usuarios.Id = tbl_comandas.Moso_id','left');
 		$this->db->join('tbl_clientes', 'tbl_clientes.Id = tbl_comandas.Cliente_id','left');
 
+		$this->db->where('tbl_comandas.Estado', 0);
 		$this->db->where('tbl_comandas.Codigo', $Codigo);
-		$this->db->where("tbl_comandas.Negocio_id", $this->session->userdata('Negocio_id'));
+		//$this->db->where("tbl_comandas.Negocio_id", $this->session->userdata('Negocio_id'));
 
 		$query = $this->db->get();
 		$result = $query->result_array();
 
 		echo json_encode($result);
 		
+	}
+
+//// COMANDAS 	| QR |	 LISTAR PRODUCTOS PEDIDOS EN UNA COMANDA
+	public function itemsPedidos()
+	{
+			
+		//Esto siempre va es para instanciar la base de datos
+		$CI =& get_instance();
+		$CI->load->database();
+		$token = @$CI->db->token;
+
+		$Id = $_GET["Id"];
+
+		// LISTADO DE PENDIENTES
+		$this->db->select('	tbl_items_comanda.Estado,
+							tbl_items_comanda.Id as Item_comanda_id,
+							tbl_stock.*,
+							tbl_categorias.Nombre_categoria');
+		
+		$this->db->from('tbl_items_comanda');
+		
+		$this->db->join('tbl_stock', 'tbl_stock.Id = tbl_items_comanda.Item_carga_id','left');
+		$this->db->join('tbl_categorias', 'tbl_categorias.Id = tbl_stock.Categoria_id','left');
+		
+		$this->db->where('tbl_items_comanda.Comanda_id', $Id);
+		$this->db->where("tbl_items_comanda.Negocio_id", $_GET["Negocio_id"]);
+
+		$query = $this->db->get();
+		$result = $query->result_array();
+		
+		echo json_encode($result);
+		
+	}
+
+//// COMANDAS 	| QR | OBTENER CATEGORIA DE ITEMS CARTA
+	public function obtener_categorias_items_qr()
+	{
+			
+		//Esto siempre va es para instanciar la base de datos
+		$CI =& get_instance();
+		$CI->load->database();
+		$token = @$CI->db->token;
+		
+		// PARA QUE ME FUNCIONEN LOS TAB DEBO ARMAR UN ARRAY CON TODAS LAS CATEGORIAS, LUEGO OTRO ARRAY QUE BUSCA CADA ITEM DE CADA CATEGORIA. 
+		// ENTONCES HAGO LOS VUE FOR UNO CON EL ARRAY CON NOMBRES DE CATEGORIA, Y OTRO CON CADA ITEM, ESTE DEBERIA SER UN FOR DENTRO DE OTRO FOR
+		//$variableGet = $_GET["Id"];
+
+		$this->db->select('*');
+		$this->db->from('tbl_stock_categorias');
+		$this->db->where('Apto_carta', 1);
+		$this->db->where("Negocio_id", $_GET["Negocio_id"]);
+		$this->db->order_by("Nombre_categoria", "asc");
+		$query = $this->db->get();
+		$result = $query->result_array();
+
+		echo json_encode($result);
+		
+	}
+
+//// COMANDAS 	| QR | MOSTRAR ITEMS CARTA POR CATEGORIA
+	public function mostrarItemsCategoria_qr()
+    {
+        //Esto siempre va es para instanciar la base de datos
+        $CI =& get_instance();
+        $CI->load->database();
+		$token = @$CI->db->token;
+		
+		$Id = $_GET["Id"];
+
+		$this->db->select('	tbl_stock.*,
+							tbl_stock_categorias.Nombre_categoria');
+		$this->db->from('tbl_stock');
+
+		$this->db->join('tbl_stock_categorias', 'tbl_stock_categorias.Id = tbl_stock.Categoria_id','left');
+
+		$this->db->where('tbl_stock.Apto_carta', '1');
+		$this->db->where("tbl_stock.Negocio_id", $_GET["Negocio_id"]);
+		$this->db->where('tbl_stock.Activo', 1);
+
+		if($Id > 0) {	$this->db->where('tbl_stock.Categoria_id', $Id);	}
+
+		$this->db->order_by("tbl_stock.Nombre_item", "asc");
+
+        $query = $this->db->get();
+		$result = $query->result_array();
+
+		echo json_encode($result);
+		
+	}
+
+
+//// COMANDAS 	| QR | CARGAR ITEM DE UNA COMANDA
+	public function cargar_item_comanda_qr()
+    {
+        $CI =& get_instance();
+		$CI->load->database();
+		
+		$this->datosObtenidos = json_decode(file_get_contents('php://input'));
+
+		if(isset($this->datosObtenidos->itemComandaData->Id))
+        {
+            $Id = $this->datosObtenidos->itemComandaData->Id;
+        }
+        else
+        {
+            $Id = NULL;
+		}
+		
+		$data = array(
+                        
+					'Comanda_id' => 	$this->datosObtenidos->itemComandaData->Comanda_id,
+					'Item_carga_id' => 	$this->datosObtenidos->itemComandaData->Item_carga_id,
+					'Estado' => 		0,
+					'Negocio_id' => 	$_GET["Negocio_id"],
+                    
+                );
+
+        $this->load->model('Restaurant_model');
+        $insert_id = $this->Restaurant_model->insertar($data, $Id, 'tbl_items_comanda');
+                
+		if ($insert_id >=0 ) 
+		{   
+            echo json_encode(array("Id" => $insert_id));         
+		} 
+		else 
+		{
+            echo json_encode(array("Id" => 0));
+        }
 	}
 
 //// USUARIOS 	| VISTA ADMIN CONTROL PRESENCIA

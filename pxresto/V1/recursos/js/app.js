@@ -103,6 +103,7 @@ Vue.filter('Moneda', function (numero) {
     }
 })
 
+
 ///// AVERIGUAR COMO IMPORTAR ELEMENTOS
 
 /// ELEMENTOS COMUNES PARA LA WEB
@@ -246,7 +247,7 @@ new Vue({
             Usuario_id:'',
             Rol_id:'',
             Negocio_id:'',
-            Tipo_suscripcion,
+            Tipo_suscripcion: '',
         
         Rol_usuario: '',
         Filtro_fecha_inicial: null,
@@ -2463,7 +2464,7 @@ new Vue({
     computed:
     {
         buscarItems: function () {
-            return this.itemsCarta.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar));
+            return this.itemsCarta.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar.toLowerCase()));
         },
 
         classComandas: function () {
@@ -2487,11 +2488,11 @@ new Vue({
         },
 
         buscarStock: function () {
-            return this.listaStock.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar));
+            return this.listaStock.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar.toLowerCase()));
         },
 
         buscarProveedor: function () {
-            return this.listaProveedores.filter((item) => item.Datos_proveedor.Nombre_proveedor.toLowerCase().includes(this.buscar));
+            return this.listaProveedores.filter((item) => item.Datos_proveedor.Nombre_proveedor.toLowerCase().includes(this.buscar.toLowerCase()));
         },
     }
 });
@@ -2763,19 +2764,6 @@ new Vue({
         },
 
 
-        //// FORMATO FECHA
-        formatoFecha: function (fecha) {
-            return fecha.replace(/^(\d{4})-(\d{2})-(\d{2})$/g, '$3/$2/$1');
-        },
-        //// FORMATO HORA
-        formatoHora: function (hora) {
-            separador = ":",
-                arrayHora = hora.split(separador);
-
-            return arrayHora[0] + ':' + arrayHora[1] + 'hs'
-
-        },
-
         //// CARGAR DESCUENTO
         cargarDescuento: function () {
             var url = base_url + 'restaurant/cargarDescuento'; // url donde voy a mandar los datos
@@ -2942,7 +2930,7 @@ new Vue({
     computed:
     {
         buscarItems: function () {
-            return this.itemsCarta.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar));
+            return this.itemsCarta.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar.toLowerCase()));
         }
     }
 });
@@ -3011,7 +2999,7 @@ new Vue({
         Usuario_id:'',
         Rol_id:'',
         Negocio_id:'',
-        Tipo_suscripcion,
+        Tipo_suscripcion:'',
     },
 
     methods:
@@ -3511,7 +3499,7 @@ new Vue({
     computed:
     {
         buscarItems: function () {
-            return this.itemsCarta.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar));
+            return this.itemsCarta.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar.toLowerCase()));
         }
     }
 });
@@ -3863,7 +3851,7 @@ new Vue({
     computed:
     {
         buscarItems: function () {
-            return this.itemsCarta.filter((item) => item.Nombre.toLowerCase().includes(this.buscar));
+            return this.itemsCarta.filter((item) => item.Nombre.toLowerCase().includes(this.buscar.toLowerCase()));
         }
     }
 });
@@ -5385,7 +5373,7 @@ new Vue({
     computed:
     {
         buscarProducto: function () {
-            return this.listaProductos.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar));
+            return this.listaProductos.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar.toLowerCase()));
         },
     }
 });
@@ -5728,29 +5716,121 @@ new Vue({
     created: function () {
         this.datosComandaCodigo();
         
+        
+        
     },
 
     data: {
         datosComanda: {},
+        categoriaItem: 0,
+        listaCategorias: [],
+        listadoItemsCarta: [],
+        mostrar: 1,
+        buscar:'',
+        listadoItemsPedidos:[],
+        itemComanda:{}
     },
 
     methods:
     {
-        //// MOSTRAR DATOS COMANDA
+        //// COMANDA | MOSTRAR DATOS COMANDA
         datosComandaCodigo: function () {
-            var url = base_url + 'restaurant/datosComandaCodigo/?Codigo=' + Get_Id;  //averiguar como tomar el Id que viene por URL aca
+            var url = base_url + 'restaurant/datosComandaCodigo/?Codigo=' + Get_Id ;  //averiguar como tomar el Id que viene por URL aca
 
             axios.get(url).then(response => {
-                this.datosComanda = response.data[0]
-                //console.log(this.datoComanda)
+                this.datosComanda = response.data[0];
+
+                this.categoriasItems();
+                this.obtenerlistadoItemsCarta();
+                
+                console.log(response.data)
+                console.log(Get_Id)
             });
         },
+
+        //// COMANDA | MOSTRAR CATEGORIAS
+        categoriasItems: function () {
+            var url = base_url + 'restaurant/obtener_categorias_items_qr?Negocio_id='+this.datosComanda.Negocio_id;  //averiguar como tomar el Id que viene por URL aca
+
+            axios.get(url).then(response => {
+                this.listaCategorias = response.data
+                console.log(response.data)
+            });
+        },
+
+
+        //// COMANDA | MOSTRAR CATEGORIAS
+        obtenerlistadoItemsCarta: function () {
+            var url = base_url + 'restaurant/mostrarItemsCategoria_qr/?Id=' + this.categoriaItem+'&Negocio_id=' + this.datosComanda.Negocio_id;  //averiguar como tomar el Id que viene por URL aca
+
+            axios.get(url).then(response => {
+                this.listadoItemsCarta = response.data
+                console.log(response.data)
+            });
+        },
+
+        //// COMANDA | ITEMS PEDIDOS
+        obtenerlistadoItemsPedidos: function () {
+            var url = base_url + 'restaurant/itemsPedidos/?Id=' + this.datosComanda.Id+'&Negocio_id=' + this.datosComanda.Negocio_id;  //averiguar como tomar el Id que viene por URL aca
+
+            axios.get(url).then(response => {
+                this.listadoItemsPedidos = response.data
+                console.log(response.data)
+
+                this.mostrar = 2;
+            });
+        },
+
+        
+         //// SUMAR CUENTA   
+         sumarCuenta: function (items) {
+
+            /// SUMAR LOS ENTREGADOS
+            var Total = 0;
+
+            for (var i = 0; i < items.length; i++) {
+                var item = 0;
+
+                if (isFinite(items[i].Precio_venta)) {
+                    item = parseInt(items[i].Precio_venta);
+                }
+
+                Total = Total + item;
+            }
+            return Total
+        },
+
+
+        //// AGREGAR ITEM A LA COMANDA
+        addItem: function (Id, Nombre) {
+
+            var url = base_url + 'restaurant/cargar_item_comanda_qr?Negocio_id=' + this.datosComanda.Negocio_id; // url donde voy a mandar los datos
+
+            this.itemComanda.Item_carga_id = Id;
+            this.itemComanda.Comanda_id = this.datosComanda.Id;
+            this.itemComanda.Estado = 0;
+
+            axios.post(url, {
+                itemComandaData: this.itemComanda
+            }).then(response => {
+
+                this.texto_boton = "Actualizar"
+                toastr.success('Se añadió '+ Nombre+ ' a su pedido.', 'Excelente')
+
+            }).catch(error => {
+                console.log(error)
+            });
+        },
+
+
         ////////////////////////////-----------------
     },
 
     ////// ACCIONES COMPUTADAS     
     computed:
     {
-
+        buscarItems: function () {
+            return this.listadoItemsCarta.filter((item) => item.Nombre_item.toLowerCase().includes(this.buscar.toLowerCase()));
+        },
     }
 });

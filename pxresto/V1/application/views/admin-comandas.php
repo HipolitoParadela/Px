@@ -206,11 +206,11 @@ include "header-body.php";
                         </div>
                         <div class="modal-body">
                             <p>
-                                <img src="https://www.emy.org/images/glossary-qr.png" alt="">
+                                <img v-bind:src="'<?php echo base_url(); ?>uploads/QRs/'+comandaQR.QRimg"> 
                             </p>
                             <p>
                                 <a target="_blank"
-                                    v-bind:href="'https://api.whatsapp.com/send?phone=+549' + comandaQR.Telefono + '&text=Hola!%20Sigue%20este%20enlace%20para%20realizar%20tu%20pedido%20http://pxsistemas.com/pxresto/V1/restaurant/comanda?codigo=' + comandaQR.Codigo"
+                                    v-bind:href="'https://api.whatsapp.com/send?phone=+549' + comandaQR.Telefono + '&text=Hola!%20Sigue%20este%20enlace%20para%20realizar%20tu%20pedido%20<?php echo base_url(); ?>restaurant/mipedido?Id=' + comandaQR.Codigo"
                                     class="btn btn-success btn-addon">
                                     <i class="fab fa-whatsapp"></i> Enviar enlace al número {{comandaQR.Telefono}}
                                 </a>
